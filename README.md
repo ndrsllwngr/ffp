@@ -1,2 +1,2 @@
 # ffp
-Fortgeschrittene Funktionale Programmierung (2018/2019) [WIP]
+Fortgeschrittene Funktionale Programmierung - Gruppenprojekt (2018/2019)
