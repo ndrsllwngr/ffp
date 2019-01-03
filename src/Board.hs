@@ -26,8 +26,7 @@ squareToChar :: Square -> Char
 squareToChar = maybe '-' pieceToChar
 
 readSquare :: Char -> Square
-readSquare '-' = Nothing
-readSquare c = Just(readPiece c)
+readSquare = readPiece
 
 
 data Piece = Piece PlayerColor PieceType deriving(Show)
@@ -53,15 +52,15 @@ pieceTypeToChar Rook   = 'r'
 pieceTypeToChar Queen  = 'q'
 pieceTypeToChar King   = 'k' 
  
-
-readPiece :: Char -> Piece
-readPiece c
-    | isLower c = (Piece White (parseToPiece c))
-    | otherwise = (Piece Black (parseToPiece (toLower c))) 
-    where 
-        parseToPiece 'p' =  Pawn
-        parseToPiece 'n' =  Knight
-        parseToPiece 'b' =  Bishop
-        parseToPiece 'r' =  Rook
-        parseToPiece 'q' =  Queen
-        parseToPiece 'k' =  King
+readPiece :: Char -> Maybe Piece
+readPiece c = fmap makePiece charToPiece
+    where   
+        color = if isLower c then White else Black
+        charToPiece = lookup (toLower c) charPieceMapping
+        makePiece = Piece color
+        charPieceMapping = [('p',Pawn),
+                        ('n',Knight),
+                        ('b',Bishop),
+                        ('r',Rook),
+                        ('q',Queen),
+                        ('k',King)]
