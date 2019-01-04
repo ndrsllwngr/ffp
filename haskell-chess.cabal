@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 1fff63546d02fa6daf2946ec30fe12ed117119e77d2a08c871ad27da0e19f501
+-- hash: f1dfec85b39ad1fd4451ef51b0ed1aa62b5852cc988b50fb25b82dd74c82b81e
 
 name:           haskell-chess
 version:        0.1.0.0
@@ -28,6 +28,7 @@ source-repository head
 library
   exposed-modules:
       Board
+      GameState
       Lib
   other-modules:
       Paths_haskell_chess

@@ -12,7 +12,6 @@ initBoardString = unlines ["RNBQKBNR",
                            "rnbqkbnr"]
 
 type Board = [[Square]] --Make board with padding possible
-type Square = Maybe Piece
 
 readBoard :: String -> Board
 readBoard = map readRow . lines
@@ -21,6 +20,8 @@ readBoard = map readRow . lines
 boardToString :: Board -> String
 boardToString = unlines . map rowToString
     where rowToString = map squareToChar
+
+type Square = Maybe Piece
 
 squareToChar :: Square -> Char 
 squareToChar = maybe '-' pieceToChar
@@ -59,8 +60,8 @@ readPiece c = fmap makePiece charToPiece
         charToPiece = lookup (toLower c) charPieceMapping
         makePiece = Piece color
         charPieceMapping = [('p',Pawn),
-                        ('n',Knight),
-                        ('b',Bishop),
-                        ('r',Rook),
-                        ('q',Queen),
-                        ('k',King)]
+                            ('n',Knight),
+                            ('b',Bishop),
+                            ('r',Rook),
+                            ('q',Queen),
+                            ('k',King)]
