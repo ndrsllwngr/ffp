@@ -1,6 +1,7 @@
 module GameState where
 
 import Board
+import Control.Monad.State.Lazy
 
 data GameState = GameState
   { key :: String,
@@ -17,5 +18,5 @@ data Player = Player {
 data CastellingState = CastellingState {
     kingMoved :: Bool,
     leftTowerMoved :: Bool,
-    rightTowerMoved :: Bool,
+    rightTowerMoved :: Bool
 }
