@@ -1,7 +1,7 @@
 module Piece where 
 
-data Piece = Piece PlayerColor PieceType deriving(Show)
-data PlayerColor = White | Black deriving(Show)
+data Piece = Piece Color PieceType deriving(Show)
+data Color = White | Black deriving(Show)
 {-|
   Englische Figuren Namen:
   Pawn = Bauer
