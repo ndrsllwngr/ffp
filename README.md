@@ -1,4 +1,6 @@
 # ffp
+![Haskell CI](https://github.com/ndrsllwngr/ffp/workflows/Haskell%20CI/badge.svg?branch=develop)
+
 Fortgeschrittene Funktionale Programmierung - Group project (2020)
 
 - Minesweepskell - a fun(ctional) Web-Minesweeper Client
