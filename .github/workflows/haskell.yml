@@ -23,8 +23,8 @@ jobs:
       with:
         postgresql version: '12'
         postgresql db: 'minesweepskell_test'
-        postgressql user: 'minesweepskell'
-        postgressql password: 'minesweepskell'
+        postgresql user: 'minesweepskell'
+        postgresql password: 'minesweepskell'
         
     - name: Wait / Sleep
       uses: jakejarvis/wait-action@v0.1.0
