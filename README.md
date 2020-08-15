@@ -19,11 +19,25 @@ Run in the project folder `stack build`.
 
 ### Requirements
 ```bash
-# install haskell-stack (includes ghc, package manager, cli), if it fails run `xcode-select --install before`
-brew install haskell-stack
+$ stack --version
+Version 2.3.3 x86_64
 
-# install yesod cli
+$ yesod version
+yesod-bin version: 1.6.0.6
+```
+
+### Setup on macOS
+Install [haskell-stack](http://haskellstack.org/) and [yesod](https://www.yesodweb.com/)
+```bash
+# - if it fails run `xcode-select --install before`
+brew install haskell-stack
 stack install yesod-bin --install-ghc
+```
+
+Add yesod installation path to your shell
+```
+# ~/.zshrc
+export PATH=$HOME/.local/bin:$PATH
 ```
 
 ## Usage
