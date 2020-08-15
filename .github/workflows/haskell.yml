@@ -22,7 +22,7 @@ jobs:
     - uses: harmon758/postgresql-action@v1
       with:
         postgresql version: 'latest'
-        postgresql db: 'minesweepskell'
+        postgresql db: 'minesweepskell_test'
         postgressql user: 'minesweepskell'
 
     - name: Cache stack global package db
@@ -51,11 +51,11 @@ jobs:
         restore-keys: |
              ${{ runner.os }}-stack-work-${{ matrix.plan.ghc }}
 
-    - name: Install dependencies
-      run: |
-        stack install yesod-bin --install-ghc
-        stack build
+    - name: Install Yesod
+      run: stack install yesod-bin --install-ghc
+      
     - name: Build
-      run: cabal build --enable-tests --enable-benchmarks all
+      run: stack build
+      
     - name: Run tests
-      run: cabal test all
+      run: stack test --flag minesweepskell:library-only --flag minesweepskell:dev
