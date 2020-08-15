@@ -15,8 +15,10 @@ jobs:
     - uses: actions/checkout@v2
     - uses: actions/setup-haskell@v1
       with:
-        ghc-version: '8.8.2'
-        cabal-version: '3.0'
+        ghc-version: 'latest'
+        cabal-version: 'latest'
+        enable-stack: true
+        stack-version: 'latest'
 
     - name: Cache stack global package db
       id:   stack-global
