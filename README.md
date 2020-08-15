@@ -14,6 +14,34 @@ Fortgeschrittene Funktionale Programmierung - Group project (2020)
 - Add simple KI which assists the gamer (Automated Problem Solving)
 - (Unit) test logic (Testing)
 
+## Installation
+Run in the project folder `stack build`.
+
+### Requirements
+```bash
+# install haskell-stack (includes ghc, package manager, cli), if it fails run `xcode-select --install before`
+brew install haskell-stack
+
+# install yesod cli
+stack install yesod-bin --install-ghc
+```
+
+## Usage
+### Development
+Start a server with
+```
+export JWT_SECRET="some secret value"
+stack exec -- yesod devel
+```
+it watches for changes and recompiles the project automatically. 
+
+## Dependencies
+```
+yesod
+```
+
+For more details take a look at the [package.yaml](package.yaml).
+
 ## Contributors
 
 - Andreas Ellwanger
