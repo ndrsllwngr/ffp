@@ -21,7 +21,7 @@ jobs:
         stack-version: 'latest'
     - uses: harmon758/postgresql-action@v1
       with:
-        postgresql version: 'latest'
+        postgresql version: '12'
         postgresql db: 'minesweepskell_test'
         postgressql user: 'minesweepskell'
 
