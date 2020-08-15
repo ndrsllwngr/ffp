@@ -19,6 +19,11 @@ jobs:
         cabal-version: 'latest'
         enable-stack: true
         stack-version: 'latest'
+    - uses: harmon758/postgresql-action@v1
+      with:
+        postgresql version: 'latest'
+        postgresql db: 'minesweepskell'
+        postgressql user: 'minesweepskell'
 
     - name: Cache stack global package db
       id:   stack-global
