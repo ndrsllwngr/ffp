@@ -35,7 +35,7 @@ database:
   # port:     "_env:YESOD_DBPORT:5432"
   # See config/test-settings.yml for an override during tests
   database: "_env:YESOD_DBDATABASE:minesweepskell"
-  poolsize: "_env:YESOD_DBPOOLSIZE:10"
+  # poolsize: "_env:YESOD_DBPOOLSIZE:10"
 
 copyright: Insert copyright statement here
 #analytics: UA-YOURCODE
