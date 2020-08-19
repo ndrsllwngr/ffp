@@ -10,7 +10,9 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-
+    strategy:
+      matrix:
+        mongodb-version: [4.4]
     steps:
     - uses: actions/checkout@v2
     - uses: actions/setup-haskell@v1
@@ -19,12 +21,12 @@ jobs:
         cabal-version: 'latest'
         enable-stack: true
         stack-version: 'latest'
-    - uses: harmon758/postgresql-action@v1
-      with:
-        postgresql version: '12'
-        postgresql db: 'minesweepskell_test'
-        postgresql user: 'minesweepskell'
-        postgresql password: 'minesweepskell'
+    #- uses: harmon758/postgresql-action@v1
+    #  with:
+    #    postgresql version: '12'
+    #    postgresql db: 'minesweepskell_test'
+    #    postgresql user: 'minesweepskell'
+    #    postgresql password: 'minesweepskell'
         
     #- name: Wait / Sleep
     #  uses: jakejarvis/wait-action@v0.1.0
@@ -33,9 +35,18 @@ jobs:
    
     #- name: Collect Docker Logs
     #  uses: jwalton/gh-docker-logs@v1.0.0
+
+    - name: Start MongoDB
+      uses: supercharge/mongodb-github-action@1.3.0
+      with:
+        mongodb-version: ${{ matrix.mongodb-version }}
+        mongodb-replica-set: insert-replica-set-name
+
+    - name: Check MongoDB process
+      run: ps aux | grep -v grep | grep mongod
    
-    - name: Check running containers
-      run: docker ps -a
+    #- name: Check running containers
+    #  run: docker ps -a
 
     - name: Cache stack global package db
       id:   stack-global
