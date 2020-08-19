@@ -22,6 +22,7 @@ library
   exposed-modules:
       Application
       Foundation
+      Game.Board
       Handler.Comment
       Handler.Common
       Handler.Home
@@ -53,11 +54,14 @@ library
     , hjsmin >=0.1 && <0.3
     , http-client-tls >=0.3 && <0.4
     , http-conduit >=2.3 && <2.4
+    , matrix
     , monad-control >=0.3 && <1.1
     , monad-logger >=0.3 && <0.4
     , persistent >=2.9 && <2.11
     , persistent-postgresql >=2.9 && <2.11
     , persistent-template >=2.5 && <2.9
+    , random
+    , random-shuffle
     , safe
     , shakespeare >=2.0 && <2.1
     , template-haskell
@@ -108,12 +112,15 @@ executable minesweepskell
     , hjsmin >=0.1 && <0.3
     , http-client-tls >=0.3 && <0.4
     , http-conduit >=2.3 && <2.4
+    , matrix
     , minesweepskell
     , monad-control >=0.3 && <1.1
     , monad-logger >=0.3 && <0.4
     , persistent >=2.9 && <2.11
     , persistent-postgresql >=2.9 && <2.11
     , persistent-template >=2.5 && <2.9
+    , random
+    , random-shuffle
     , safe
     , shakespeare >=2.0 && <2.1
     , template-haskell
@@ -167,12 +174,15 @@ test-suite minesweepskell-test
     , hspec >=2.0.0
     , http-client-tls >=0.3 && <0.4
     , http-conduit >=2.3 && <2.4
+    , matrix
     , minesweepskell
     , monad-control >=0.3 && <1.1
     , monad-logger >=0.3 && <0.4
     , persistent >=2.9 && <2.11
     , persistent-postgresql >=2.9 && <2.11
     , persistent-template >=2.5 && <2.9
+    , random
+    , random-shuffle
     , safe
     , shakespeare >=2.0 && <2.1
     , template-haskell
