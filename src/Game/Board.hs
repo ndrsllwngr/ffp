@@ -1,6 +1,7 @@
-module Game.Board (generateField) where
+module Game.Board (generateField, generateMatrixWithCellNumbers, neighbourCellNumbers) where
 
 import Data.Matrix
+import Data.List
 import System.Random
 import System.Random.Shuffle
 
@@ -11,30 +12,45 @@ data Cell = Cell { isRevealed :: Bool
                  , isFlagged :: Bool  
                  , hasBomb :: Bool  
                  , neighboringBombs :: Int
-                 } deriving (Show)  
+                 }
+
+instance Show Cell where
+   show (Cell _ _ b n) = "(" ++ show b ++ "-" ++ show n ++ ")"
 
 type Field = Matrix Cell
 
 generateField :: Dimension -> Int -> StdGen -> Field
-generateField (w,h) bombCount rand = matrix w h (\(i,j) -> Cell {
+generateField (h,w) bombCount rand = matrix h w (\(i,j) -> Cell {
                                                               isRevealed = False,
                                                               isFlagged = False,
-                                                              hasBomb = mapCoordinateToCellNumber (i,j) (w,h) `elem` bombPos,
-                                                              neighboringBombs = 1
+                                                              hasBomb = coordinateToCellNumber (i,j) (h,w) `elem` bombPos,
+                                                              neighboringBombs = length $ intersect (neighbourCellNumbers (i,j) (h,w)) bombPos
                                                             })
                                                             where
-                                                                numCells = w*h
+                                                                numCells = h * w
                                                                 bombPos = take bombCount (shuffle' [1..numCells] numCells rand)
-                                                                --neighbours = undefined
+
+
+
 
 --todo find shorter name
-mapCoordinateToCellNumber :: Coordinate -> Dimension -> Int
-mapCoordinateToCellNumber (i,j) (_,h)  = (i-1) * h + j
+coordinateToCellNumber :: Coordinate -> Dimension -> Int
+coordinateToCellNumber (i,j) (_,w) = (i-1) * w + j
 
+neighbourCellNumbers :: Coordinate -> Dimension -> [Int]
+neighbourCellNumbers (i,j) (h,w) = [c-w-1,  -- top-left
+                                    c-w,    -- top
+                                    c-w+1,  -- top-right
+                                    c-1,    -- left
+                                    c+1,    -- right
+                                    c+w-1,  -- bottom-left
+                                    c+w,    -- bottom
+                                    c+w+1]  -- bottom-right
+                                    where c = coordinateToCellNumber (i,j) (h,w)
 
 --todo debugging functions to visualize matrix behaviour
 generateMatrixWithCellNumbers :: Dimension -> Matrix Int
-generateMatrixWithCellNumbers (w,h) = matrix w h (\(i,j) -> mapCoordinateToCellNumber (i,j) (w,h))
+generateMatrixWithCellNumbers (w,h) = matrix w h (\(i,j) -> coordinateToCellNumber (i,j) (w,h))
 
 generateMatrixWithCellIndices :: Dimension -> Matrix String
 generateMatrixWithCellIndices (w,h) = matrix w h (\(i,j) -> (show i) ++ "/" ++ (show j))
