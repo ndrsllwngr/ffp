@@ -26,7 +26,7 @@ instance Show Cell where
 
 type Board = Matrix Cell
 
--- Generate StdGen with seed 42 => (mkStdGen 42)
+-- Generates a Minesweeper Board with a given dimension, number of bombs and random seed
 generateBoard :: Dimension -> Int -> Int -> Board
 generateBoard (h,w) bombCount seed = matrix h w (\(i,j) -> Cell {
                                                               isRevealed = False,
