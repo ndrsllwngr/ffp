@@ -27,30 +27,45 @@ yesod-bin version: 1.6.0.6
 ```
 
 ### Setup on macOS
-Install [haskell-stack](http://haskellstack.org/) and [yesod](https://www.yesodweb.com/)
+1. [Install MongoDB](https://docs.mongodb.com/manual/installation/)
+2. Install [haskell-stack](http://haskellstack.org/) and [yesod](https://www.yesodweb.com/)
 ```bash
 # - if it fails run `xcode-select --install before`
 brew install haskell-stack
 stack install yesod-bin --install-ghc
 ```
-
-Add yesod installation path to your shell
+3. Add yesod installation path to your shell
 ```
 # ~/.zshrc
 export PATH=$HOME/.local/bin:$PATH
 ```
+If you have trouble, refer to the [Yesod Quickstart guide](https://www.yesodweb.com/page/quickstart) for additional detail.
 
 ## Usage
 ### Development
-Start a server with
+- Build libraries: `stack build`
+- Start a development server with `stack exec -- yesod devel`, it watches for changes and recompiles the project automatically. 
+- Run `stack clean --full && stack build` to clean the project and to rebuild it.
+
+##### ADJUST GHC PROMPT
+- add the following to your `~/.ghc/ghci.conf`
+```haskell
+:set prompt      λ: 
+:set prompt-cont λ| 
 ```
-export JWT_SECRET="some secret value"
-stack exec -- yesod devel
+https://stackoverflow.com/a/47694134
+
+### Tests
 ```
-it watches for changes and recompiles the project automatically. 
+stack test --flag minesweepskell:library-only --flag minesweepskell:dev
+```
+
+(Because `yesod devel` passes the `library-only` and `dev` flags, matching those flags means you don't need to recompile between tests and development, and it disables optimization to speed up your test compile times).
+
 
 ## Dependencies
 ```
+mongodb
 yesod
 ```
 

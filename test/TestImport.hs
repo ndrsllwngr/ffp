@@ -1,37 +1,47 @@
 {-# LANGUAGE QuasiQuotes #-}
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE FlexibleContexts #-}
 module TestImport
     ( module TestImport
     , module X
     ) where
 
-import Application           (makeFoundation, makeLogWare)
-import ClassyPrelude         as X hiding (delete, deleteBy, Handler)
-import Database.Persist      as X hiding (get)
-import Database.Persist.Sql  (SqlPersistM, runSqlPersistMPool, rawExecute, rawSql, unSingle, connEscapeName)
-import Foundation            as X
-import Model                 as X
-import Test.Hspec            as X
-import Text.Shakespeare.Text (st)
-import Yesod.Default.Config2 (useEnv, loadYamlSettings)
-import Yesod.Auth            as X
-import Yesod.Test            as X
-import Yesod.Core.Unsafe     (fakeHandlerGetLogger)
+import Application              (makeFoundation, makeLogWare)
+import ClassyPrelude            as X hiding (delete, deleteBy, Handler)
+import Database.Persist         as X hiding (get)
+import Database.Persist.MongoDB hiding (master)
+import Foundation               as X
+import Model                    as X
+import Settings                 (appDatabaseConf)
+import Test.Hspec               as X
+import Yesod.Default.Config2    (useEnv, loadYamlSettings)
+import Yesod.Auth               as X
+import Yesod.Test               as X
+-- Wiping the test database
+import Database.MongoDB.Query (allCollections)
+import Database.MongoDB.Admin (dropCollection)
+import Control.Monad.Trans.Control (MonadBaseControl)
 
-runDB :: SqlPersistM a -> YesodExample App a
+import Yesod.Core.Unsafe     (fakeHandlerGetLogger)
+import Control.Monad.Fail (MonadFail)
+
+runDB :: Action IO a -> YesodExample App a
 runDB query = do
     app <- getTestYesod
     liftIO $ runDBWithApp app query
 
-runDBWithApp :: App -> SqlPersistM a -> IO a
-runDBWithApp app query = runSqlPersistMPool query (appConnPool app)
+runDBWithApp :: App -> Action IO a -> IO a
+runDBWithApp app query = do
+    liftIO $ runMongoDBPool
+        (mgAccessMode $ appDatabaseConf $ appSettings app)
+        query
+        (appConnPool app)
 
 runHandler :: Handler a -> YesodExample App a
 runHandler handler = do
     app <- getTestYesod
     fakeHandlerGetLogger appLogger app handler
-
 
 withApp :: SpecWith (TestApp App) -> Spec
 withApp = before $ do
@@ -44,32 +54,16 @@ withApp = before $ do
     logWare <- liftIO $ makeLogWare foundation
     return (foundation, logWare)
 
--- This function will truncate all of the tables in your database.
+-- This function will wipe your database.
 -- 'withApp' calls it before each test, creating a clean environment for each
 -- spec to run in.
 wipeDB :: App -> IO ()
-wipeDB app = runDBWithApp app $ do
-    tables <- getTables
-    sqlBackend <- ask
+wipeDB app = void $ runDBWithApp app dropAllCollections
 
-    -- TRUNCATEing all tables is the simplest approach to wiping the database.
-    -- Should your application grow to hundreds of tables and tests,
-    -- switching to DELETE could be a substantial speedup.
-    -- See: https://github.com/yesodweb/yesod-scaffold/issues/201
-    let escapedTables = map (connEscapeName sqlBackend . DBName) tables
-        query = "TRUNCATE TABLE " ++ intercalate ", " escapedTables
-    rawExecute query []
-
-getTables :: DB [Text]
-getTables = do
-    tables <- rawSql [st|
-        SELECT table_name
-        FROM information_schema.tables
-        WHERE table_schema = 'public'
-        AND table_type = 'BASE TABLE';
-    |] []
-
-    return $ map unSingle tables
+dropAllCollections :: (MonadIO m, MonadBaseControl IO m, MonadFail m) => Action m [Bool]
+dropAllCollections = (filter (not . isSystemCollection) <$> allCollections) >>= mapM dropCollection
+      where
+        isSystemCollection = isPrefixOf "system."
 
 -- | Authenticate as a user. This relies on the `auth-dummy-login: true` flag
 -- being set in test-settings.yaml, which enables dummy authentication in
