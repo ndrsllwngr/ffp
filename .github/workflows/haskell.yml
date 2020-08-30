@@ -5,12 +5,12 @@ on:
     branches: [ develop ]
   pull_request:
     branches: [ develop ]
-
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
+    strategy:
+      matrix:
+        mongodb-version: [4.4]
     steps:
     - uses: actions/checkout@v2
     - uses: actions/setup-haskell@v1
@@ -19,24 +19,13 @@ jobs:
         cabal-version: 'latest'
         enable-stack: true
         stack-version: 'latest'
-    - uses: harmon758/postgresql-action@v1
+    - name: Start MongoDB
+      uses: supercharge/mongodb-github-action@1.3.0
       with:
-        postgresql version: '12'
-        postgresql db: 'minesweepskell_test'
-        postgresql user: 'minesweepskell'
-        postgresql password: 'minesweepskell'
-        
-    #- name: Wait / Sleep
-    #  uses: jakejarvis/wait-action@v0.1.0
-    #  with:
-    #    time: '10s'
-   
-    #- name: Collect Docker Logs
-    #  uses: jwalton/gh-docker-logs@v1.0.0
-   
-    - name: Check running containers
-      run: docker ps -a
-
+        mongodb-version: ${{ matrix.mongodb-version }}
+        mongodb-replica-set: insert-replica-set-name
+    - name: Check MongoDB process
+      run: ps aux | grep -v grep | grep mongod
     - name: Cache stack global package db
       id:   stack-global
       uses: actions/cache@v2
@@ -45,7 +34,6 @@ jobs:
         key: ${{ runner.os }}-stack-global-${{ matrix.plan.ghc }}-${{ hashFiles('**.yaml') }}
         restore-keys: |
              ${{ runner.os }}-stack-global-${{ matrix.plan.ghc }}
-             
     - name: Cache stack-installed programs in ~/.local/bin
       id:   stack-programs
       uses: actions/cache@v2
@@ -54,7 +42,6 @@ jobs:
         key: ${{ runner.os }}-stack-programs-${{ matrix.plan.ghc }}-${{ hashFiles('**.yaml') }}
         restore-keys: |
              ${{ runner.os }}-stack-programs-${{ matrix.plan.ghc }}
-             
     - name: Cache .stack-work
       uses: actions/cache@v2
       with:
@@ -62,12 +49,9 @@ jobs:
         key: ${{ runner.os }}-stack-work-${{ matrix.plan.ghc }}-${{ hashFiles('**.yaml') }}
         restore-keys: |
              ${{ runner.os }}-stack-work-${{ matrix.plan.ghc }}
-
     - name: Install Yesod
       run: stack install yesod-bin --install-ghc
-      
     - name: Build
       run: stack build
-      
     - name: Run tests
       run: stack test --flag minesweepskell:library-only --flag minesweepskell:dev

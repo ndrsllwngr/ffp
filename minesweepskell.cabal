@@ -5,7 +5,7 @@ cabal-version: 1.12
 -- see: https://github.com/sol/hpack
 
 name:           minesweepskell
-version:        0.0.0
+version:        0.1.0
 build-type:     Simple
 
 flag dev
@@ -57,8 +57,9 @@ library
     , matrix
     , monad-control >=0.3 && <1.1
     , monad-logger >=0.3 && <0.4
+    , mongoDB
     , persistent >=2.9 && <2.11
-    , persistent-postgresql >=2.9 && <2.11
+    , persistent-mongoDB >=2.9 && <2.11
     , persistent-template >=2.5 && <2.9
     , random
     , random-shuffle
@@ -116,8 +117,9 @@ executable minesweepskell
     , minesweepskell
     , monad-control >=0.3 && <1.1
     , monad-logger >=0.3 && <0.4
+    , mongoDB
     , persistent >=2.9 && <2.11
-    , persistent-postgresql >=2.9 && <2.11
+    , persistent-mongoDB >=2.9 && <2.11
     , persistent-template >=2.5 && <2.9
     , random
     , random-shuffle
@@ -178,8 +180,9 @@ test-suite minesweepskell-test
     , minesweepskell
     , monad-control >=0.3 && <1.1
     , monad-logger >=0.3 && <0.4
+    , mongoDB
     , persistent >=2.9 && <2.11
-    , persistent-postgresql >=2.9 && <2.11
+    , persistent-mongoDB >=2.9 && <2.11
     , persistent-template >=2.5 && <2.9
     , random
     , random-shuffle
