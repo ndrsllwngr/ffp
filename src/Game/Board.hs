@@ -1,8 +1,10 @@
 module Game.Board  (generateBoard,
-                    generateMatrixWithCellNumbers,
-                    generateMatrixWithCellIndices,
                     revealCell,
-                    flagCell) where
+                    flagCell,
+                    coordinateToCellNumber, -- todo Remove when util functions get removed
+                    Coordinate,
+                    Dimension,
+                    Board) where
 
 import Data.Matrix
 import Data.List
@@ -19,7 +21,7 @@ data Cell = Cell { isRevealed :: Bool
                  }
 
 instance Show Cell where
-   show (Cell _ True _ n)       = "F"
+   show (Cell _ True _ _)       = "F"
    show (Cell True _ _ n)       = show n 
    show (Cell False _ True _)   = "B"
    show _                       = "_"
@@ -53,6 +55,8 @@ revealCell :: Board -> Coordinate -> Board
 revealCell board (i,j) = resultBoard where
                             -- dimension of the board
                             dim =  (nrows board, ncols board)
+                            -- helper function to set a specific cells isRevealed flag to True
+                            setCellToRevealed b (x,y) = setElem newCell (x,y) b where newCell = (getElem x y b) {isRevealed = True}
                             resultBoard = case getElem i j board of
                                             -- case of a unrevealed cell with no neighboring bombs and which also does not contain a bomb
                                             -- in this case we want to reveal the neighboring cells as well
@@ -71,9 +75,6 @@ flagCell :: Board -> Coordinate -> Board
 flagCell b (i,j) = setElem newCell (i,j) b where
                                             oldCell = getElem i j b
                                             newCell = oldCell {isFlagged = not $ isFlagged oldCell }
-
-setCellToRevealed :: Board -> Coordinate -> Board
-setCellToRevealed b (i,j) = setElem newCell (i,j) b where newCell = (getElem i j b) {isRevealed = True}
 
 
 -- Calculates the cell number of a given XY-Coordinate for a given Board size
@@ -115,12 +116,3 @@ neighbourCells (i,j) (h,w) = filter (\x -> inBounds x (h,w)) theoreticalNeighbor
                                                               (i+1,j-1),  -- bottom-left
                                                               (i+1,j),    -- bottom
                                                               (i+1,j+1)]  -- bottom-right
-
-
-
---todo debugging functions to visualize matrix behaviour
-generateMatrixWithCellNumbers :: Dimension -> Matrix Int
-generateMatrixWithCellNumbers (w,h) = matrix w h (\(i,j) -> coordinateToCellNumber (i,j) (w,h))
-
-generateMatrixWithCellIndices :: Dimension -> Matrix String
-generateMatrixWithCellIndices (w,h) = matrix w h (\(i,j) -> (show i) ++ "/" ++ (show j))
