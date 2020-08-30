@@ -15,7 +15,6 @@ dependencies:
   - text >=0.11 && <2.0
   - persistent >=2.9 && <2.11
   - persistent-mongoDB >=2.9 && <2.11
-  - persistent-postgresql >=2.9 && <2.11
   - persistent-template >=2.5 && <2.9
   - mongoDB
   - template-haskell

@@ -58,7 +58,6 @@ library
     , mongoDB
     , persistent >=2.9 && <2.11
     , persistent-mongoDB >=2.9 && <2.11
-    , persistent-postgresql >=2.9 && <2.11
     , persistent-template >=2.5 && <2.9
     , safe
     , shakespeare >=2.0 && <2.1
@@ -116,7 +115,6 @@ executable minesweepskell
     , mongoDB
     , persistent >=2.9 && <2.11
     , persistent-mongoDB >=2.9 && <2.11
-    , persistent-postgresql >=2.9 && <2.11
     , persistent-template >=2.5 && <2.9
     , safe
     , shakespeare >=2.0 && <2.1
@@ -177,7 +175,6 @@ test-suite minesweepskell-test
     , mongoDB
     , persistent >=2.9 && <2.11
     , persistent-mongoDB >=2.9 && <2.11
-    , persistent-postgresql >=2.9 && <2.11
     , persistent-template >=2.5 && <2.9
     , safe
     , shakespeare >=2.0 && <2.1
