@@ -14,11 +14,10 @@ import System.Random.Shuffle
 type Dimension = (Int,Int)
 type Coordinate = (Int,Int)
 
-data Cell = Cell { isRevealed :: Bool
-                 , isFlagged :: Bool  
-                 , hasBomb :: Bool  
-                 , neighboringBombs :: Int
-                 }
+data Cell = Cell { isRevealed :: Bool, 
+                   isFlagged :: Bool, 
+                   hasBomb :: Bool, 
+                   neighboringBombs :: Int }
 
 instance Show Cell where
    show (Cell _ True _ _)       = "F"
