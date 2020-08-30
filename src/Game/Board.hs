@@ -50,21 +50,21 @@ generateBoard (h,w) bombCount seed = matrix h w (\(i,j) -> Cell {
 -- Reveals a cell at a given coordinate for a given Board 
 -- Rule explanation: will also reveal any direct neighbouring Cells which have no bomb and their neighbour cells if the have 0 neighboring bombs
 revealCell :: Board -> Coordinate -> Board
-revealCell board (i,j) = newField where
-                                    -- dimension of the board
-                                    dim =  (nrows board, ncols board)
-                                    newField = case getElem i j board of
-                                                    -- case of a unrevealed cell with no neighboring bombs and which also does not contain a bomb
-                                                    -- in this case we want to reveal the neighboring cells as well
-                                                    (Cell False _ False 0 ) -> newBoard where
-                                                                          -- the board with the cell (i,j) set to revealed
-                                                                          modBoard = setCellToRevealed board (i,j)
-                                                                          -- all the direct neighbours of the cell (i,j)
-                                                                          neighbours = directNeighbourCells (i,j) dim
-                                                                          -- fold over the list of neighbours and recursively call revealCell for each one
-                                                                          newBoard = foldl revealCell modBoard neighbours
-                                                    -- In any other case just reveal the cell at (i,j)                 
-                                                    _ -> setCellToRevealed board (i,j)
+revealCell board (i,j) = resultBoard where
+                            -- dimension of the board
+                            dim =  (nrows board, ncols board)
+                            resultBoard = case getElem i j board of
+                                            -- case of a unrevealed cell with no neighboring bombs and which also does not contain a bomb
+                                            -- in this case we want to reveal the neighboring cells as well
+                                            (Cell False _ False 0 ) -> neighboursBoard where
+                                                                  -- the board with the cell (i,j) set to revealed
+                                                                  cellBoard = setCellToRevealed board (i,j)
+                                                                  -- all the direct neighbours of the cell (i,j)
+                                                                  neighbours = directNeighbourCells (i,j) dim
+                                                                  -- fold over the list of neighbours and recursively call revealCell for each one
+                                                                  neighboursBoard = foldl revealCell cellBoard neighbours
+                                            -- In any other case just reveal the cell at (i,j)                 
+                                            _ -> setCellToRevealed board (i,j)
 
 -- Toggles the isFlagged state of a cell at a given coordinate for a given board
 flagCell :: Board -> Coordinate -> Board
