@@ -25,16 +25,37 @@ Version 2.3.3 x86_64
 $ yesod version
 yesod-bin version: 1.6.0.6
 ```
+### Install MongoDB
+1. Install MongoDB
+```sh
+brew tap mongodb/brew
+brew install mongodb-community@4.4
+```
+2. Run MongoDB
+```sh
+brew services start mongodb-community@4.4
+brew services stop mongodb-community@4.4
+```
+3. Verify that it is running `ps aux | grep -v grep | grep mongod`, logs can be found here `/usr/local/var/log/mongodb/mongo.log.` and settings here `/usr/local/etc/mongod.conf`
 
-### Setup on macOS
-1. [Install MongoDB](https://docs.mongodb.com/manual/installation/)
-2. Install [haskell-stack](http://haskellstack.org/) and [yesod](https://www.yesodweb.com/)
+For more information take a look at https://docs.mongodb.com/manual/tutorial/install-mongodb-on-os-x/
+
+#### Use MongoDB Compass as GUI
+- https://www.mongodb.com/products/compass
+
+#### Use DataGrip as GUI
+- https://www.jetbrains.com/de-de/datagrip/ 
+- 
+![Screenshot 2020-08-30 at 16 33 59](https://user-images.githubusercontent.com/10077258/91661825-aa5bbe80-eade-11ea-98ce-4a0572999590.png)
+
+### Install Haskell and Yesod
+1. Install [haskell-stack](http://haskellstack.org/) and [yesod](https://www.yesodweb.com/)
 ```bash
 # - if it fails run `xcode-select --install before`
 brew install haskell-stack
 stack install yesod-bin --install-ghc
 ```
-3. Add yesod installation path to your shell
+2. Add yesod installation path to your shell
 ```
 # ~/.zshrc
 export PATH=$HOME/.local/bin:$PATH
