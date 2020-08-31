@@ -6,7 +6,6 @@ module Game.Board  (generateBoard,
                     coordinateToCellNumber, -- todo Remove when util functions get removed
                     Coordinate,
                     Dimension,
-                    Cell,
                     Board) where
 
 import Data.Matrix
@@ -106,7 +105,7 @@ inBounds :: Coordinate -> Dimension -> Bool
 inBounds (i,j) (h,w) = (i > 0) && (i <= h) && (j > 0) && (j <= w)
 
 
--- Calculates all inBounds neighbour cells of a given cell
+-- Calculates all inBounds direct (non diagonal) neighbour cells of a given cell
 directNeighbourCells :: Coordinate -> Dimension -> [Coordinate]
 directNeighbourCells (i,j) (h,w) = filter (\x -> inBounds x (h,w)) theoreticalNeighbors
                                     where
@@ -115,7 +114,7 @@ directNeighbourCells (i,j) (h,w) = filter (\x -> inBounds x (h,w)) theoreticalNe
                                                               (i,j+1),    -- right
                                                               (i+1,j)]    -- bottom
 
--- Calculates all inBounds neighbour cells of a given cell
+-- Calculates all inBounds (including diagonal) neighbour cells of a given cell
 neighbourCells :: Coordinate -> Dimension -> [Coordinate]
 neighbourCells (i,j) (h,w) = filter (\x -> inBounds x (h,w)) theoreticalNeighbors
                                     where
