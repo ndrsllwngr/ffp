@@ -23,6 +23,8 @@ library
       Application
       Foundation
       Game.Board
+      Game.Game
+      Game.Util
       Handler.Comment
       Handler.Common
       Handler.Home
