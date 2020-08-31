@@ -1,9 +1,12 @@
 module Game.Board  (generateBoard,
                     revealCell,
                     flagCell,
+                    checkLost,
+                    checkWon,
                     coordinateToCellNumber, -- todo Remove when util functions get removed
                     Coordinate,
                     Dimension,
+                    Cell,
                     Board) where
 
 import Data.Matrix
@@ -75,6 +78,15 @@ flagCell b (i,j) = setElem newCell (i,j) b where
                                             oldCell = getElem i j b
                                             newCell = oldCell {isFlagged = not $ isFlagged oldCell }
 
+-- Checks if any bomb has been revealed
+checkLost :: Board -> Bool
+checkLost board = any (\c -> isRevealed c && hasBomb c) (toList board)     
+
+-- Checks if all non bomb fields are revealed OR if all bombs have been flagged
+checkWon :: Board -> Bool
+checkWon board = allRevealed || allFlagged where
+                                             allRevealed  = all isRevealed $ filter (not . hasBomb) (toList board)
+                                             allFlagged   = all isFlagged  $ filter hasBomb (toList board)
 
 -- Calculates the cell number of a given XY-Coordinate for a given Board size
 -- will also calculate out of bounds cells if out of bounds coordinates are provided
