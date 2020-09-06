@@ -6,9 +6,12 @@ module Game.Board  (generateBoard,
                     coordinateToCellNumber, -- todo Remove when util functions get removed
                     Coordinate,
                     Dimension,
-                    Board) where
+                    Board,
+                    Cell
+                    ) where
 
 import Data.Matrix
+import Model
 import Data.List
 import System.Random
 import System.Random.Shuffle
@@ -16,29 +19,18 @@ import System.Random.Shuffle
 type Dimension = (Int,Int)
 type Coordinate = (Int,Int)
 
-data Cell = Cell { isRevealed :: Bool, 
-                   isFlagged :: Bool, 
-                   hasBomb :: Bool, 
-                   neighboringBombs :: Int }
-
-instance Show Cell where
-   show (Cell _ True _ _)       = "F"
-   show (Cell True _ _ n)       = show n 
-   show (Cell False _ True _)   = "B"
-   show _                       = "_"
-
 type Board = Matrix Cell
 
 -- Generates a Minesweeper Board with a given dimension, number of bombs and random seed
 generateBoard :: Dimension -> Int -> Int -> Board
 generateBoard (h,w) bombCount seed = matrix h w (\(i,j) -> Cell {
-                                                              isRevealed = False,
-                                                              isFlagged = False,
+                                                              cellIsRevealed = False,
+                                                              cellIsFlagged = False,
                                                               -- the cell has a bomb on it if the cell number is part of the bomb cells
-                                                              hasBomb = coordinateToCellNumber (i,j) (h,w) `elem` bombPos,
+                                                              cellHasBomb = coordinateToCellNumber (i,j) (h,w) `elem` bombPos,
                                                               -- the amount of neighboring bombs is equal to:
                                                               -- the length of the intersection between the neighbouring cell numbers & the bomb cell numbers
-                                                              neighboringBombs = length $ map toCellNumber (neighbourCells (i,j) (h,w)) `intersect` bombPos
+                                                              cellNeighboringBombs = length $ map toCellNumber (neighbourCells (i,j) (h,w)) `intersect` bombPos
                                                             })
                                                             where
                                                                 -- initialize randomizer with seed
@@ -57,7 +49,7 @@ revealCell board (i,j) = resultBoard where
                             -- dimension of the board
                             dim =  (nrows board, ncols board)
                             -- helper function to set a specific cells isRevealed flag to True
-                            setCellToRevealed b (x,y) = setElem newCell (x,y) b where newCell = (getElem x y b) {isRevealed = True}
+                            setCellToRevealed b (x,y) = setElem newCell (x,y) b where newCell = (getElem x y b) {cellIsRevealed = True}
                             resultBoard = case getElem i j board of
                                             -- case of a unrevealed cell with no neighboring bombs and which also does not contain a bomb
                                             -- in this case we want to reveal the neighboring cells as well
@@ -75,17 +67,17 @@ revealCell board (i,j) = resultBoard where
 flagCell :: Board -> Coordinate -> Board
 flagCell b (i,j) = setElem newCell (i,j) b where
                                             oldCell = getElem i j b
-                                            newCell = oldCell {isFlagged = not $ isFlagged oldCell }
+                                            newCell = oldCell {cellIsFlagged = not $ cellIsFlagged oldCell }
 
 -- Checks if any bomb has been revealed
 checkLost :: Board -> Bool
-checkLost board = any (\c -> isRevealed c && hasBomb c) (toList board)     
+checkLost board = any (\c -> cellIsRevealed c && cellHasBomb c) (toList board)     
 
 -- Checks if all non bomb fields are revealed OR if all bombs have been flagged
 checkWon :: Board -> Bool
 checkWon board = allRevealed || allFlagged where
-                                             allRevealed  = all isRevealed $ filter (not . hasBomb) (toList board)
-                                             allFlagged   = all isFlagged  $ filter hasBomb (toList board)
+                                             allRevealed  = all cellIsRevealed $ filter (not . cellHasBomb) (toList board)
+                                             allFlagged   = all cellIsFlagged  $ filter cellHasBomb (toList board)
 
 -- Calculates the cell number of a given XY-Coordinate for a given Board size
 -- will also calculate out of bounds cells if out of bounds coordinates are provided

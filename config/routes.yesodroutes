@@ -12,3 +12,6 @@
 /comments CommentR POST
 
 /profile ProfileR GET
+
+/games GamesR GET POST
+/game/#Text GameR GET

@@ -27,10 +27,13 @@ library
       Game.Util
       Handler.Comment
       Handler.Common
+      Handler.Game
+      Handler.Games
       Handler.Home
       Handler.Profile
       Import
       Import.NoFoundation
+      Marshalling
       Model
       Settings
       Settings.StaticFiles
