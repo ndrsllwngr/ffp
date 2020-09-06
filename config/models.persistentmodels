@@ -30,6 +30,7 @@ MoveEntity json
     action String
     coordX Int
     coordY Int
+    timeStamp UTCTime
     deriving Eq
     deriving Show
 Row json
@@ -49,6 +50,7 @@ NewGameEntity json
     bombCount Int
     seed Int
     gameId String
+    createdAt UTCTime
     deriving Eq
     deriving Show
 GameStateEntity json
@@ -59,6 +61,8 @@ GameStateEntity json
     status String -- Type Status
     --userId UserId Maybe
     gameId String
+    createdAt UTCTime
+    updatedAt UTCTime
     UniqueGameStateEntity gameId
     deriving Eq
     deriving Show

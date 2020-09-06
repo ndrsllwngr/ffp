@@ -11,8 +11,9 @@ module Game.Game (newGame,
 import Model
 import Game.Board
 import Data.Matrix
+import ClassyPrelude.Conduit (UTCTime)
 
-data Move = Reveal Coordinate | Flag Coordinate deriving (Show, Eq, Read) -- TODO maybe add unflag
+data Move = Reveal Coordinate UTCTime | Flag Coordinate UTCTime deriving (Show, Eq, Read) -- TODO maybe add unflag
 data GameStatus = Ongoing | Won | Lost deriving (Show, Eq, Read)
 --derivePersistField "Status"
 
@@ -30,13 +31,15 @@ instance Show GameState where
 
 --type GameStateEntity = [[Cell]] [Move] Int Int GameStatus
 
-gameStateToGameStateEntity :: GameState -> [Char] -> GameStateEntity
-gameStateToGameStateEntity state gameId = GameStateEntity {
+gameStateToGameStateEntity :: GameState -> [Char] -> UTCTime -> UTCTime -> GameStateEntity
+gameStateToGameStateEntity state gameId createdAt updatedAt = GameStateEntity {
                                 gameStateEntityBoard = map createRow $ Data.Matrix.toLists $ board state, 
                                 gameStateEntityMoves = map moveToMoveEntity (moves state),
                                 gameStateEntityBombCount = bombCount state,
                                 gameStateEntitySeed = seed state,
                                 gameStateEntityGameId = gameId,
+                                gameStateEntityCreatedAt = createdAt,
+                                gameStateEntityUpdatedAt = updatedAt,
                                 gameStateEntityStatus = show (status state)
 }
 
@@ -63,12 +66,12 @@ removeRow :: Row -> [Cell]
 removeRow row = rowCells row
 
 moveToMoveEntity :: Move -> MoveEntity
-moveToMoveEntity (Flag (x,y)) = MoveEntity {moveEntityAction = "Flag",moveEntityCoordX = x,moveEntityCoordY = y}
-moveToMoveEntity (Reveal (x,y)) =  MoveEntity {moveEntityAction = "Reveal",moveEntityCoordX = x ,moveEntityCoordY = y}
+moveToMoveEntity (Flag (x,y) timeStamp) = MoveEntity {moveEntityAction = "Flag",moveEntityCoordX = x,moveEntityCoordY = y, moveEntityTimeStamp=timeStamp}
+moveToMoveEntity (Reveal (x,y) timeStamp) =  MoveEntity {moveEntityAction = "Reveal",moveEntityCoordX = x ,moveEntityCoordY = y, moveEntityTimeStamp=timeStamp}
 
 moveEntityToMove :: MoveEntity -> Move
-moveEntityToMove MoveEntity{moveEntityAction="Flag", moveEntityCoordX=x, moveEntityCoordY=y} = Flag (x,y)
-moveEntityToMove MoveEntity{moveEntityAction=_, moveEntityCoordX=x, moveEntityCoordY=y} = Reveal (x,y)
+moveEntityToMove MoveEntity{moveEntityAction="Flag", moveEntityCoordX=x, moveEntityCoordY=y,moveEntityTimeStamp=timeStamp} = Flag (x,y) timeStamp
+moveEntityToMove MoveEntity{moveEntityAction=_, moveEntityCoordX=x, moveEntityCoordY=y,moveEntityTimeStamp=timeStamp} = Reveal (x,y) timeStamp
 
 -- Creates a new game for a given Dimension, bombCount & seed
 newGame :: Dimension -> Int -> Int -> GameState
@@ -84,8 +87,8 @@ makeMove :: GameState -> Move -> GameState
 makeMove state m  = state { board   = boardAfterMove,
                             moves   = moves state ++ [m],
                             status  = checkStatus boardAfterMove}
-                              where boardAfterMove = case m of (Flag c)   -> flagCell (board state) c
-                                                               (Reveal c) -> revealCell (board state) c
+                              where boardAfterMove = case m of (Flag c _)   -> flagCell (board state) c
+                                                               (Reveal c _) -> revealCell (board state) c
 
 
 checkStatus :: Board -> GameStatus
