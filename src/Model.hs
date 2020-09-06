@@ -25,6 +25,6 @@ import Language.Haskell.TH.Syntax
 --    $(persistFileWith lowerCaseSettings "config/models.persistentmodels")
 let mongoSettings = mkPersistSettings (ConT ''MongoContext)
   in share [mkPersist mongoSettings]
-    $(persistFileWith lowerCaseSettings "config/models.persistentmodels")
+    $(persistFileWith upperCaseSettings "config/models.persistentmodels")
 -- in share [mkPersist mongoSettings] -- mkMigrate "migrateAll"
 --    $(persistFileWith lowerCaseSettings "config/models.persistentmodels")
