@@ -1,19 +1,20 @@
-{-# LANGUAGE NoImplicitPrelude #-}
-{-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE BlockArguments        #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
-{-# LANGUAGE TypeFamilies #-}
-{-# LANGUAGE BlockArguments #-}
+{-# LANGUAGE NoImplicitPrelude     #-}
+{-# LANGUAGE OverloadedStrings     #-}
+{-# LANGUAGE TemplateHaskell       #-}
+{-# LANGUAGE TypeFamilies          #-}
 module Handler.Game where
 
-import Import
-import Yesod.Form.Bootstrap3 (BootstrapFormLayout (..), renderBootstrap3)
-import Text.Julius (RawJS (..))
-import Game.Game
+import           Game.Game
+import           Import
+import           Text.Julius           (RawJS (..))
+import           Yesod.Form.Bootstrap3 (BootstrapFormLayout (..),
+                                        renderBootstrap3)
 
 -- Define our data that will be used for creating the form.
 data FileForm = FileForm
-    { fileInfo :: FileInfo
+    { fileInfo        :: FileInfo
     , fileDescription :: Text
     }
 
@@ -40,7 +41,8 @@ putGameR gameId = do
               Nothing -> error "HELP ME!"
     let createdAt = case gameStateEntity of
               Just entity -> gameStateEntityCreatedAt entity
-              Nothing -> error "HELP ME!"
+              Nothing     -> error "HELP ME!"
+    print gameState
     insertedGameState <- runDB $ insertEntity $ gameStateToGameStateEntity gameState (unpack gameId) createdAt (moveEntityTimeStamp moveEntity)
     -- print $ gameState
     -- -- The YesodAuth instance in Foundation.hs defines the UserId to be the type used for authentication.
@@ -63,4 +65,4 @@ putGameR gameId = do
 
 getGameStateEntity :: [Entity GameStateEntity] -> Maybe GameStateEntity
 getGameStateEntity (x:_) = Just $ entityVal x
-getGameStateEntity _ = Nothing
+getGameStateEntity _     = Nothing

@@ -10,11 +10,11 @@ module Game.Board  (generateBoard,
                     Cell
                     ) where
 
-import Data.Matrix
-import Model
-import Data.List
-import System.Random
-import System.Random.Shuffle
+import           Data.List
+import           Data.Matrix
+import           Model
+import           System.Random
+import           System.Random.Shuffle
 
 type Dimension = (Int,Int)
 type Coordinate = (Int,Int)
@@ -36,13 +36,13 @@ generateBoard (h,w) bombCount seed = matrix h w (\(i,j) -> Cell {
                                                                 -- initialize randomizer with seed
                                                                 rand = mkStdGen seed
                                                                 -- calculate number of total cells on the board
-                                                                numCells = h * w 
+                                                                numCells = h * w
                                                                 -- calculate the cell numbers with bombs
                                                                 bombPos = take bombCount (shuffle' [1..numCells] numCells rand)
                                                                 -- helper function to slim down the neighboring Bomb calculation
                                                                 toCellNumber x = coordinateToCellNumber x (h,w)
 
--- Reveals a cell at a given coordinate for a given Board 
+-- Reveals a cell at a given coordinate for a given Board
 -- Rule explanation: will also reveal any direct neighbouring Cells which have no bomb and their neighbour cells if the have 0 neighboring bombs
 revealCell :: Board -> Coordinate -> Board
 revealCell board (i,j) = resultBoard where
@@ -60,7 +60,7 @@ revealCell board (i,j) = resultBoard where
                                                                   neighbours = directNeighbourCells (i,j) dim
                                                                   -- fold over the list of neighbours and recursively call revealCell for each one
                                                                   neighboursBoard = foldl revealCell cellBoard neighbours
-                                            -- In any other case just reveal the cell at (i,j)                 
+                                            -- In any other case just reveal the cell at (i,j)
                                             _ -> setCellToRevealed board (i,j)
 
 -- Toggles the isFlagged state of a cell at a given coordinate for a given board
@@ -71,7 +71,7 @@ flagCell b (i,j) = setElem newCell (i,j) b where
 
 -- Checks if any bomb has been revealed
 checkLost :: Board -> Bool
-checkLost board = any (\c -> cellIsRevealed c && cellHasBomb c) (toList board)     
+checkLost board = any (\c -> cellIsRevealed c && cellHasBomb c) (toList board)
 
 -- Checks if all non bomb fields are revealed OR if all bombs have been flagged
 checkWon :: Board -> Bool

@@ -1,6 +1,6 @@
 module Handler.Comment where
 
-import Import
+import           Import
 
 postCommentR :: Handler Value
 postCommentR = do

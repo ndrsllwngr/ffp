@@ -1,8 +1,8 @@
 module Game.Util (generateMatrixWithCellNumbers,
                   generateMatrixWithCellIndices) where
 
-import Data.Matrix
-import Game.Board (Dimension, coordinateToCellNumber)
+import           Data.Matrix
+import           Game.Board  (Dimension, coordinateToCellNumber)
 
 
 generateMatrixWithCellNumbers :: Dimension -> Matrix Int

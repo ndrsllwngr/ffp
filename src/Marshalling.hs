@@ -1,11 +1,11 @@
-{-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
-{-# LANGUAGE TypeFamilies #-}
-{-# LANGUAGE NamedFieldPuns #-}
+{-# LANGUAGE NamedFieldPuns        #-}
+{-# LANGUAGE NoImplicitPrelude     #-}
+{-# LANGUAGE TypeFamilies          #-}
 module Marshalling where
 
-import Handler.Game
-import Import
+import           Handler.Game
+import           Import
 --import Game.Board (Cell(Cell))
 
 --fromCellEntry :: Game -> Cell

@@ -8,20 +8,20 @@ module Game.Game (newGame,
                   moveEntityToMove,
                   removeRow) where
 
-import Model
-import Game.Board
-import Data.Matrix
-import ClassyPrelude.Conduit (UTCTime)
+import           ClassyPrelude.Conduit (UTCTime)
+import           Data.Matrix
+import           Game.Board
+import           Model
 
 data Move = Reveal Coordinate UTCTime | Flag Coordinate UTCTime deriving (Show, Eq, Read) -- TODO maybe add unflag
 data GameStatus = Ongoing | Won | Lost deriving (Show, Eq, Read)
 --derivePersistField "Status"
 
-data GameState = GameState { board :: Board,
-                             moves :: [Move],
+data GameState = GameState { board     :: Board,
+                             moves     :: [Move],
                              bombCount :: Int,
-                             seed :: Int,
-                             status :: GameStatus}
+                             seed      :: Int,
+                             status    :: GameStatus}
 
 instance Show GameState where
    show (GameState board moves bombs seed status) = "Bombcount: " ++ show bombs ++ " Seed: " ++ show seed ++ " Status: " ++ show status ++ "\n" ++ show moves ++ "\n" ++ show board
@@ -33,7 +33,7 @@ instance Show GameState where
 
 gameStateToGameStateEntity :: GameState -> [Char] -> UTCTime -> UTCTime -> GameStateEntity
 gameStateToGameStateEntity state gameId createdAt updatedAt = GameStateEntity {
-                                gameStateEntityBoard = map createRow $ Data.Matrix.toLists $ board state, 
+                                gameStateEntityBoard = map createRow $ Data.Matrix.toLists $ board state,
                                 gameStateEntityMoves = map moveToMoveEntity (moves state),
                                 gameStateEntityBombCount = bombCount state,
                                 gameStateEntitySeed = seed state,
@@ -54,8 +54,8 @@ gameStateEntityToGameState entity = GameState {
 
 statusEntityToStatus :: [Char] -> GameStatus
 statusEntityToStatus "Ongoing" = Ongoing
-statusEntityToStatus "Won" = Won
-statusEntityToStatus _ = Lost
+statusEntityToStatus "Won"     = Won
+statusEntityToStatus _         = Lost
 
 createRow :: [Cell] -> Row
 createRow cells = Row {
