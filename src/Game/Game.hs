@@ -3,7 +3,10 @@
 module Game.Game (newGame,
                   makeMove,
                   GameState,
-                  gameStateToGameStateEntity) where
+                  gameStateToGameStateEntity,
+                  gameStateEntityToGameState,
+                  moveEntityToMove,
+                  removeRow) where
 
 import Model
 import Game.Board
@@ -37,16 +40,35 @@ gameStateToGameStateEntity state gameId = GameStateEntity {
                                 gameStateEntityStatus = show (status state)
 }
 
+gameStateEntityToGameState :: GameStateEntity -> GameState
+gameStateEntityToGameState entity = GameState {
+      board = Data.Matrix.fromLists $ map removeRow $ gameStateEntityBoard entity,
+      moves = map moveEntityToMove $ gameStateEntityMoves entity,
+      bombCount = gameStateEntityBombCount entity,
+      seed = gameStateEntitySeed entity,
+      status = statusEntityToStatus $ gameStateEntityStatus entity
+}
+
+statusEntityToStatus :: [Char] -> GameStatus
+statusEntityToStatus "Ongoing" = Ongoing
+statusEntityToStatus "Won" = Won
+statusEntityToStatus _ = Lost
+
 createRow :: [Cell] -> Row
 createRow cells = Row {
    rowCells = cells
 }
 
+removeRow :: Row -> [Cell]
+removeRow row = rowCells row
+
 moveToMoveEntity :: Move -> MoveEntity
-moveToMoveEntity move = case move of (Flag (x,y)) -> MoveEntity {moveEntityAction = "Flag",moveEntityCoordX = x,moveEntityCoordY = y}
-                                     (Reveal (x,y)) -> MoveEntity {moveEntityAction = "Reveal",moveEntityCoordX = x ,moveEntityCoordY = y}
+moveToMoveEntity (Flag (x,y)) = MoveEntity {moveEntityAction = "Flag",moveEntityCoordX = x,moveEntityCoordY = y}
+moveToMoveEntity (Reveal (x,y)) =  MoveEntity {moveEntityAction = "Reveal",moveEntityCoordX = x ,moveEntityCoordY = y}
 
-
+moveEntityToMove :: MoveEntity -> Move
+moveEntityToMove MoveEntity{moveEntityAction="Flag", moveEntityCoordX=x, moveEntityCoordY=y} = Flag (x,y)
+moveEntityToMove MoveEntity{moveEntityAction=_, moveEntityCoordX=x, moveEntityCoordY=y} = Reveal (x,y)
 
 -- Creates a new game for a given Dimension, bombCount & seed
 newGame :: Dimension -> Int -> Int -> GameState

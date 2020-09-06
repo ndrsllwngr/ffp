@@ -14,4 +14,4 @@
 /profile ProfileR GET
 
 /games GamesR GET POST
-/game/#Text GameR GET
+/game/#Text GameR GET PUT

@@ -3,6 +3,7 @@
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE TypeFamilies #-}
+{-# LANGUAGE BlockArguments #-}
 module Handler.Game where
 
 import Import
@@ -24,19 +25,26 @@ getGameR gameId = do
     returnJson gameState
 
 -- MAKE MOVE
-putGameR :: Handler Value
-putGameR = do
+putGameR :: Text -> Handler Value
+putGameR gameId = do
     -- requireCheckJsonBody will parse the request body into the appropriate type, or return a 400 status code if the request JSON is invalid.
     -- (The ToJSON and FromJSON instances are derived in the config/models file).
     moveEntity <- (requireCheckJsonBody :: Handler MoveEntity)
     print $ moveEntity
-    -- let gameState = makeMove state moveEntityAction moveEntity (moveEntityCoordX moveEntity, moveEntityCoordY moveEntity)
+    state <- runDB $ selectList [GameStateEntityGameId ==. unpack gameId] [LimitTo 1]
+    print state
+    let firstEl = getEl state
+    print "STATE 2"
+    print firstEl
+    let gameState = case firstEl of
+              Just e -> makeMove (gameStateEntityToGameState e) $ moveEntityToMove moveEntity -- ERROR maybe here?
+              Nothing -> error "HELP ME!"
     -- print $ gameState
     -- -- The YesodAuth instance in Foundation.hs defines the UserId to be the type used for authentication.
     -- maybeCurrentUserId <- maybeAuthId
     -- --let newGameEntity' = newGameEntity { newGameUserId = maybeCurrentUserId }
     -- insertedGameState <- runDB $ insertEntity gameState
-    returnJson moveEntity
+    returnJson $ gameStateToGameStateEntity gameState $ unpack gameId
 
 -- postGameR :: Handler Value
 -- postGameR = do
@@ -50,5 +58,6 @@ putGameR = do
 --     insertedCell <- runDB $ insertEntity cell'
 --     returnJson insertedCell
 
-getAllGames :: DB [Entity GameStateEntity]
-getAllGames = selectList [] []
+getEl :: [Entity GameStateEntity] -> Maybe GameStateEntity
+getEl (x:_) = Just $ entityVal x
+getEl _ = Nothing
