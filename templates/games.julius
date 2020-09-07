@@ -22,7 +22,7 @@ $(function() {
         height: parseInt(height, 10),
         width: parseInt(width, 10),
         bombCount: parseInt(bombCount, 10),
-        seed: 4888,
+        seed: 42,
         gameId: gameId
       }),
       success: function (data) {

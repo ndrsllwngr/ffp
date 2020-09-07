@@ -58,7 +58,9 @@ revealCell board (i,j) = resultBoard where
                             resultBoard = case getElem i j board of
                                             -- case of a unrevealed cell with no neighboring bombs and which also does not contain a bomb
                                             -- in this case we want to reveal the neighboring cells as well
-                                            (Cell False _ False 0 ) -> neighboursBoard where
+                                            (Cell _ True _ _ ) -> board
+                                            (Cell True _ _ _ ) -> board
+                                            (Cell False False False 0 ) -> neighboursBoard where
                                                                   -- the board with the cell (i,j) set to revealed
                                                                   cellBoard = setCellToRevealed board (i,j)
                                                                   -- all the direct neighbours of the cell (i,j)

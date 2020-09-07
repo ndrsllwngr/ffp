@@ -6,7 +6,8 @@ module Game.Game (newGame,
                   gameStateToGameStateEntity,
                   gameStateEntityToGameState,
                   moveEntityToMove,
-                  removeRow) where
+                  removeRow,
+                  Move(Reveal, Flag)) where
 
 import           ClassyPrelude.Conduit (UTCTime)
 import           Data.Matrix
@@ -85,15 +86,15 @@ createRow cells = Row {
 }
 
 removeRow :: Row -> [Cell]
-removeRow row = map cellEntityToCell $ rowCells row 
+removeRow row = map cellEntityToCell $ rowCells row
 
 moveToMoveEntity :: Move -> MoveEntity
-moveToMoveEntity (Flag (x,y) timeStamp) = MoveEntity {moveEntityAction = "Flag",moveEntityCoordX = x,moveEntityCoordY = y, moveEntityTimeStamp=timeStamp}
-moveToMoveEntity (Reveal (x,y) timeStamp) =  MoveEntity {moveEntityAction = "Reveal",moveEntityCoordX = x ,moveEntityCoordY = y, moveEntityTimeStamp=timeStamp}
+moveToMoveEntity (Flag (x,y) timeStamp) = MoveEntity {moveEntityAction = "Flag", moveEntityCoordX = x, moveEntityCoordY = y, moveEntityTimeStamp=timeStamp}
+moveToMoveEntity (Reveal (x,y) timeStamp) = MoveEntity {moveEntityAction = "Reveal", moveEntityCoordX = x, moveEntityCoordY = y, moveEntityTimeStamp=timeStamp}
 
 moveEntityToMove :: MoveEntity -> Move
-moveEntityToMove MoveEntity{moveEntityAction="Flag", moveEntityCoordX=x, moveEntityCoordY=y,moveEntityTimeStamp=timeStamp} = Flag (x,y) timeStamp
-moveEntityToMove MoveEntity{moveEntityAction=_, moveEntityCoordX=x, moveEntityCoordY=y,moveEntityTimeStamp=timeStamp} = Reveal (x,y) timeStamp
+moveEntityToMove MoveEntity{moveEntityAction="Flag", moveEntityCoordX=x, moveEntityCoordY=y, moveEntityTimeStamp=timeStamp} = Flag (x,y) timeStamp
+moveEntityToMove MoveEntity{moveEntityAction=_, moveEntityCoordX=x, moveEntityCoordY=y, moveEntityTimeStamp=timeStamp} = Reveal (x,y) timeStamp
 
 -- Creates a new game for a given Dimension, bombCount & seed
 newGame :: Dimension -> Int -> Int -> GameState
