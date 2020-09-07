@@ -8,8 +8,7 @@ function revealBomb(x, y, gameId) {
         data: JSON.stringify({
           action: "Reveal",
           coordX: x,
-          coordY: y,
-          timeStamp: new Date(Date.now()).toISOString()
+          coordY: y
         }),
         success: function (data) {
           console.log(data);

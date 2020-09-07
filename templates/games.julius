@@ -23,8 +23,7 @@ $(function() {
         width: parseInt(width, 10),
         bombCount: parseInt(bombCount, 10),
         seed: 4888,
-        gameId: gameId,
-        createdAt: new Date(Date.now()).toISOString()
+        gameId: gameId
       }),
       success: function (data) {
         console.log(data);

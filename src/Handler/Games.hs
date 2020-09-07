@@ -23,10 +23,11 @@ postGamesR :: Handler Value
 postGamesR = do
     -- requireCheckJsonBody will parse the request body into the appropriate type, or return a 400 status code if the request JSON is invalid.
     -- (The ToJSON and FromJSON instances are derived in the config/models file).
+    timeStamp <- liftIO getCurrentTime
     newGameEntity <- (requireCheckJsonBody :: Handler NewGameEntity)
     print $ newGameEntity
     let gameState = newGame (newGameEntityHeight newGameEntity, newGameEntityWidth newGameEntity) (newGameEntityBombCount newGameEntity) (newGameEntitySeed newGameEntity)
-    let gameStateEntity = gameStateToGameStateEntity gameState (newGameEntityGameId newGameEntity) (newGameEntityCreatedAt newGameEntity) (newGameEntityCreatedAt newGameEntity)
+    let gameStateEntity = gameStateToGameStateEntity gameState (newGameEntityGameId newGameEntity) timeStamp timeStamp
     print $ gameStateEntity
     -- The YesodAuth instance in Foundation.hs defines the UserId to be the type used for authentication.
     --maybeCurrentUserId <- maybeAuthId

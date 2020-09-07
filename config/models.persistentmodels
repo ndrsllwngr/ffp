@@ -26,11 +26,17 @@ Game json
     --UniqueGame userId seed status
     deriving Eq
     deriving Show
+MoveRequest json
+    action String
+    coordX Int
+    coordY Int
+    deriving Eq
+    deriving Show
 MoveEntity json
     action String
     coordX Int
     coordY Int
-    timeStamp UTCTime
+    timeStamp UTCTime default=CURRENT_TIME
     deriving Eq
     deriving Show
 Row json
@@ -52,7 +58,6 @@ NewGameEntity json
     bombCount Int
     seed Int
     gameId String
-    createdAt UTCTime
     deriving Eq
     deriving Show
 GameStateEntity json
