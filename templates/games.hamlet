@@ -1,0 +1,26 @@
+    <!-- JSON
+        ================================================== -->
+    <div .bs-docs-section>
+        <div .row>
+            <div .col-lg-12>
+                <div .page-header>
+                    <h1 #json>JSON
+
+                    <p>
+                        Yesod has JSON support baked-in.
+                        The form below makes an AJAX request with Javascript,
+                        then updates the page with your submission.
+                        (see <tt>Handler/Comment.hs</tt>, <tt>templates/homepage.julius</tt>,
+                        and <tt>Handler/Home.hs</tt> for the implementation).
+
+        <div .row>
+            <div .col-lg-6>
+                <div .bs-callout.bs-callout-info.well>
+                    <form .form-horizontal ##{newGameFormId}>
+                        <div .field>
+                            <textarea rows="2" ##{gameIdField} placeholder="Your gameId here..." required></textarea>
+
+                        <button .btn.btn-primary type=submit>
+                           Create game
+
+    <hr>

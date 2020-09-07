@@ -11,17 +11,12 @@ import           Text.Julius           (RawJS (..))
 import           Yesod.Form.Bootstrap3 (BootstrapFormLayout (..),
                                         renderBootstrap3)
 
--- Define our data that will be used for creating the form.
-data FileForm = FileForm
-    { fileInfo        :: FileInfo
-    , fileDescription :: Text
-    }
-
 getGamesR :: Handler Html
 getGamesR = do
-    allComments <- runDB $ getAllGames
     defaultLayout $ do
-        setTitle "Welcome To Yesod!"
+            let (gameIdField, newGameFormId) = gameIds
+            setTitle "Create New Game"
+            $(widgetFile "games")
 
 -- INIT NEW GAME
 postGamesR :: Handler Value
@@ -39,5 +34,5 @@ postGamesR = do
     insertedGameState <- runDB $ insertEntity gameStateEntity
     returnJson insertedGameState
 
-getAllGames :: DB [Entity Game]
-getAllGames = selectList [] []
+gameIds :: (Text, Text)
+gameIds = ("js-gameIdField", "js-newGameFormId")
