@@ -15,7 +15,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"height\": 10,\n    \"width\": 10,\n    \"bombCount\": 2,\n    \"seed\": 4888,\n    \"gameId\": \"{{GameId}}\",\n    \"createdAt\": \"2019-08-01T23:00:34.655Z\"\n}",
+							"raw": "{\n    \"height\": 10,\n    \"width\": 10,\n    \"bombCount\": 2,\n    \"seed\": 4888,\n    \"gameId\": \"{{GameId}}\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -38,7 +38,7 @@
 			"protocolProfileBehavior": {}
 		},
 		{
-			"name": "/game/#GameId",
+			"name": "/game/{{GameId}}",
 			"item": [
 				{
 					"name": "getOneGame",
@@ -59,13 +59,13 @@
 					"response": []
 				},
 				{
-					"name": "makeMove",
+					"name": "flagCell",
 					"request": {
 						"method": "PUT",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n        \"action\": \"Flag\",\n        \"coordX\": 1,\n        \"coordY\": 3,\n        \"timeStamp\": \"2020-09-03T23:00:34.655Z\"\n}",
+							"raw": "{\n        \"action\": \"Flag\",\n        \"coordX\": 2,\n        \"coordY\": 2\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -84,6 +84,55 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "revealCell",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n        \"action\": \"Reveal\",\n        \"coordX\": 1,\n        \"coordY\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/game/{{GameId}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"game",
+								"{{GameId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "51a263b2-d354-4bbf-908e-eb38e3141913",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "57ab6f75-48f4-4af5-8411-9fb23fea5c16",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
 				}
 			],
 			"protocolProfileBehavior": {}
@@ -113,12 +162,12 @@
 	],
 	"variable": [
 		{
-			"id": "0145628a-72f1-4c13-a57f-a07fae9adb35",
+			"id": "fd648366-a41f-49a2-b79a-a07fb1a98c21",
 			"key": "GameId",
-			"value": "game01"
+			"value": "dev"
 		},
 		{
-			"id": "35455bc3-fc06-46bb-9163-c72667800f29",
+			"id": "c7cd0564-2b2e-406b-8fac-3e6eb5f5d0fa",
 			"key": "url",
 			"value": "localhost:3000"
 		}
