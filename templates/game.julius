@@ -1,0 +1,21 @@
+function revealBomb(x, y, gameId) {
+   // Make an AJAX request to the server to create a new comment
+   console.log(x, y, gameId);
+   $.ajax({
+        url: '/game/' + gameId,
+        type: 'PUT',
+        contentType: "application/json",
+        data: JSON.stringify({
+          action: "Reveal",
+          coordX: x,
+          coordY: y,
+          timeStamp: new Date(Date.now()).toISOString()
+        }),
+        success: function (data) {
+          console.log(data);
+        },
+        error: function (data) {
+          console.log("Error making move: " + data);
+        },
+      });
+};

@@ -21,9 +21,9 @@ data FileForm = FileForm
 -- GET LATEST GAME
 getGameR :: Text -> Handler Html
 getGameR gameId = do
-    print $ unpack gameId
+    -- print $ unpack gameId
     gameStateDBEntity <- runDB $ selectList [GameStateEntityGameId ==. unpack gameId] [Desc GameStateEntityUpdatedAt, LimitTo 1]
-    print gameStateDBEntity
+    -- print gameStateDBEntity
     let maybeGameStateEntity = getGameStateEntity gameStateDBEntity
     let gameStateEntity = case maybeGameStateEntity of
                   Just entity -> entity -- ERROR maybe here?
@@ -39,9 +39,9 @@ putGameR gameId = do
     -- requireCheckJsonBody will parse the request body into the appropriate type, or return a 400 status code if the request JSON is invalid.
     -- (The ToJSON and FromJSON instances are derived in the config/models file).
     moveEntity <- (requireCheckJsonBody :: Handler MoveEntity)
-    print moveEntity
+    -- print moveEntity
     state <- runDB $ selectList [GameStateEntityGameId ==. unpack gameId] [Desc GameStateEntityUpdatedAt, LimitTo 1]
-    print state
+    -- print state
     let gameStateEntity = getGameStateEntity state
     let gameState = case gameStateEntity of
               Just entity -> makeMove (gameStateEntityToGameState entity) $ moveEntityToMove moveEntity -- ERROR maybe here?
@@ -49,7 +49,7 @@ putGameR gameId = do
     let createdAt = case gameStateEntity of
               Just entity -> gameStateEntityCreatedAt entity
               Nothing     -> error "HELP ME!"
-    print gameState
+    -- print gameState
     insertedGameState <- runDB $ insertEntity $ gameStateToGameStateEntity gameState (unpack gameId) createdAt (moveEntityTimeStamp moveEntity)
     -- print $ gameState
     -- -- The YesodAuth instance in Foundation.hs defines the UserId to be the type used for authentication.

@@ -34,10 +34,12 @@ MoveEntity json
     deriving Eq
     deriving Show
 Row json
-    cells [Cell]
+    cells [CellEntity]
     deriving Eq
     deriving Show
-Cell json
+CellEntity json
+    coordX Int
+    coordY Int
     isFlagged Bool
     isRevealed Bool
     hasBomb Bool

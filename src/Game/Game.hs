@@ -33,7 +33,7 @@ instance Show GameState where
 
 gameStateToGameStateEntity :: GameState -> [Char] -> UTCTime -> UTCTime -> GameStateEntity
 gameStateToGameStateEntity state gameId createdAt updatedAt = GameStateEntity {
-                                gameStateEntityBoard = map createRow $ Data.Matrix.toLists $ board state,
+                                gameStateEntityBoard = matrixToRows $ board state,
                                 gameStateEntityMoves = map moveToMoveEntity (moves state),
                                 gameStateEntityBombCount = bombCount state,
                                 gameStateEntitySeed = seed state,
@@ -57,13 +57,35 @@ statusEntityToStatus "Ongoing" = Ongoing
 statusEntityToStatus "Won"     = Won
 statusEntityToStatus _         = Lost
 
-createRow :: [Cell] -> Row
+matrixToRows :: Matrix Cell -> [Row]
+matrixToRows matrix = map createRow $ Data.Matrix.toLists $ mapPos (\(r,c) cell -> cellToCellEntity cell (r,c) ) matrix
+
+cellToCellEntity :: Cell -> (Int, Int) -> CellEntity
+cellToCellEntity cell (x, y) = CellEntity {
+    cellEntityCoordX = x,
+    cellEntityCoordY = y,
+    cellEntityIsFlagged = isFlagged cell,
+    cellEntityIsRevealed = isRevealed cell,
+    cellEntityHasBomb = hasBomb cell,
+    cellEntityNeighboringBombs = neighboringBombs cell
+}
+
+cellEntityToCell :: CellEntity -> Cell
+cellEntityToCell cellEntity = Cell {
+    isFlagged = cellEntityIsFlagged cellEntity,
+    isRevealed = cellEntityIsRevealed cellEntity,
+    hasBomb = cellEntityHasBomb cellEntity,
+    neighboringBombs = cellEntityNeighboringBombs cellEntity
+}
+
+
+createRow :: [CellEntity] -> Row
 createRow cells = Row {
    rowCells = cells
 }
 
 removeRow :: Row -> [Cell]
-removeRow row = rowCells row
+removeRow row = map cellEntityToCell $ rowCells row 
 
 moveToMoveEntity :: Move -> MoveEntity
 moveToMoveEntity (Flag (x,y) timeStamp) = MoveEntity {moveEntityAction = "Flag",moveEntityCoordX = x,moveEntityCoordY = y, moveEntityTimeStamp=timeStamp}
