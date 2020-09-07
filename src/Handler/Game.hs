@@ -51,7 +51,12 @@ putGameR gameId = do
               Just entity -> gameStateEntityCreatedAt entity
               Nothing     -> error "HELP ME!"
     -- print gameState
-    insertedGameState <- runDB $ insertEntity $ gameStateToGameStateEntity gameState (unpack gameId) createdAt timeStamp
+    let gameStateEntityKey = getGameStateEntityKey state
+    let gameStateKey = case gameStateEntityKey of 
+              Just key -> key
+              Nothing -> error "HELP ME"
+    let updatedGameStateEntity = gameStateToGameStateEntity gameState (unpack gameId) createdAt timeStamp
+    insertedGameState <- runDB $ repsert gameStateKey updatedGameStateEntity
     -- print $ gameState
     -- -- The YesodAuth instance in Foundation.hs defines the UserId to be the type used for authentication.
     -- maybeCurrentUserId <- maybeAuthId
@@ -74,6 +79,10 @@ putGameR gameId = do
 getGameStateEntity :: [Entity GameStateEntity] -> Maybe GameStateEntity
 getGameStateEntity (x:_) = Just $ entityVal x
 getGameStateEntity _     = Nothing
+
+getGameStateEntityKey :: [Entity GameStateEntity] -> Maybe (Key GameStateEntity)
+getGameStateEntityKey (x:_) = Just $ entityKey x
+getGameStateEntityKey _     = Nothing
 
 gameIds :: (Text, Text)
 gameIds = ("js-gameTableId", "js-cellId")
