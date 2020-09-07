@@ -46,6 +46,6 @@
                                         $elseif cellEntityIsFlagged cellEntity
                                             <img src="/static/assets/flag.svg" width="24" height="24">
                                         $else
-                                            <div onclick="revealBomb(#{cellEntityCoordX cellEntity}, #{cellEntityCoordY cellEntity}, '#{gameStateEntityGameId gameStateEntity}' )">
+                                            <div onclick="revealBomb(#{cellEntityCoordX cellEntity}, #{cellEntityCoordY cellEntity}, '#{gameStateEntityGameId gameStateEntity}', event)">
                                                 <img src="/static/assets/closed.svg" width="24" height="24">
     <hr>
