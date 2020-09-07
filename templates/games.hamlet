@@ -18,9 +18,17 @@
                 <div .bs-callout.bs-callout-info.well>
                     <form .form-horizontal ##{newGameFormId}>
                         <div .field>
-                            <textarea rows="2" ##{gameIdField} placeholder="Your gameId here..." required></textarea>
-
+                            <label for="gameIdField">Game name</label>
+                            <input type="text" id="gameIdField" ##{gameIdField} placeholder="Game name..." required></input>
+                        <div .field>
+                            <label for="bombCountField">Bomb count</label>
+                            <input type="number" id="bombCountField" ##{bombCountField} placeholder="Bomb count..." required></input>
+                        <div .field>
+                            <label for="widthField">Width</label>
+                            <input type="number" id="widthField" ##{widthField} placeholder="Width..." required></input>
+                        <div .field>
+                            <label for="heightField">Height</label>
+                            <input type="number" id="heightField" ##{heightField} placeholder="Height..." required></input>
                         <button .btn.btn-primary type=submit>
                            Create game
-
     <hr>
