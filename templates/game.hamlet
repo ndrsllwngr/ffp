@@ -1,0 +1,50 @@
+    <!-- JSON
+        ================================================== -->
+    <div .bs-docs-section>
+        <div .row>
+            <div .col-lg-12>
+                <div .page-header>
+                    <h1 #json>JSON
+
+                    <p>
+                        Yesod has JSON support baked-in.
+                        The form below makes an AJAX request with Javascript,
+                        then updates the page with your submission.
+                        (see <tt>Handler/Comment.hs</tt>, <tt>templates/homepage.julius</tt>,
+                        and <tt>Handler/Home.hs</tt> for the implementation).
+
+        <div .row>
+            <div .col-lg-6>
+                <div .bs-callout.bs-callout-info.well>
+                     <table ##{gameTableId}style="width:40%">
+                        $forall row <- gameStateEntityBoard gameStateEntity
+                            <tr>
+                                $forall cell <- rowCells row
+                                    <td ##{cellId}>
+                                        $if cellIsRevealed cell
+                                            $if cellHasBomb cell
+                                                <img src="/static/assets/mine.svg" width="24" height="24">
+                                            $else
+                                                $if cellNeighboringBombs cell == 1
+                                                    <img src="/static/assets/type1.svg" width="24" height="24">
+                                                $elseif cellNeighboringBombs cell == 2
+                                                    <img src="/static/assets/type2.svg" width="24" height="24">
+                                                $elseif cellNeighboringBombs cell == 3
+                                                    <img src="/static/assets/type3.svg" width="24" height="24">
+                                                $elseif cellNeighboringBombs cell == 4
+                                                    <img src="/static/assets/type4.svg" width="24" height="24">
+                                                $elseif cellNeighboringBombs cell == 5
+                                                    <img src="/static/assets/type5.svg" width="24" height="24">
+                                                $elseif cellNeighboringBombs cell == 6
+                                                    <img src="/static/assets/type6.svg" width="24" height="24">
+                                                $elseif cellNeighboringBombs cell == 7
+                                                    <img src="/static/assets/type7.svg" width="24" height="24">
+                                                $elseif cellNeighboringBombs cell == 8
+                                                    <img src="/static/assets/type8.svg" width="24" height="24">
+                                                $else
+                                                    <img src="/static/assets/type0.svg" width="24" height="24">
+                                        $elseif cellIsFlagged cell
+                                            <img src="/static/assets/flag.svg" width="24" height="24">
+                                        $else
+                                            <img src="/static/assets/closed.svg" width="24" height="24">
+    <hr>
