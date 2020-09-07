@@ -16,36 +16,22 @@
         <div .row>
             <div .col-lg-6>
                 <div .bs-callout.bs-callout-info.well>
+                     $if gameStateEntityStatus gameStateEntity == "Ongoing"
+                        <span>ONGOING</span>
+                     $elseif gameStateEntityStatus gameStateEntity == "Won"
+                        <span>WON</span>
+                     $else
+                        <span>LOST</span>
                      <table ##{gameTableId}style="width:40%">
                         $forall row <- gameStateEntityBoard gameStateEntity
                             <tr>
                                 $forall cellEntity <- rowCells row
                                     <td ##{cellId}>
-                                        $if cellEntityIsRevealed cellEntity
-                                            $if cellEntityHasBomb cellEntity
-                                                <img src="/static/assets/mine.svg" width="24" height="24">
-                                            $else
-                                                $if cellEntityNeighboringBombs cellEntity == 1
-                                                    <img src="/static/assets/type1.svg" width="24" height="24">
-                                                $elseif cellEntityNeighboringBombs cellEntity == 2
-                                                    <img src="/static/assets/type2.svg" width="24" height="24">
-                                                $elseif cellEntityNeighboringBombs cellEntity == 3
-                                                    <img src="/static/assets/type3.svg" width="24" height="24">
-                                                $elseif cellEntityNeighboringBombs cellEntity == 4
-                                                    <img src="/static/assets/type4.svg" width="24" height="24">
-                                                $elseif cellEntityNeighboringBombs cellEntity == 5
-                                                    <img src="/static/assets/type5.svg" width="24" height="24">
-                                                $elseif cellEntityNeighboringBombs cellEntity == 6
-                                                    <img src="/static/assets/type6.svg" width="24" height="24">
-                                                $elseif cellEntityNeighboringBombs cellEntity == 7
-                                                    <img src="/static/assets/type7.svg" width="24" height="24">
-                                                $elseif cellEntityNeighboringBombs cellEntity == 8
-                                                    <img src="/static/assets/type8.svg" width="24" height="24">
-                                                $else
-                                                    <img src="/static/assets/type0.svg" width="24" height="24">
-                                        $elseif cellEntityIsFlagged cellEntity
-                                            <img src="/static/assets/flag.svg" width="24" height="24">
-                                        $else
+                                        $if gameStateEntityStatus gameStateEntity == "Ongoing"
                                             <div onclick="revealBomb(#{cellEntityCoordX cellEntity}, #{cellEntityCoordY cellEntity}, '#{gameStateEntityGameId gameStateEntity}', event)">
-                                                <img src="/static/assets/closed.svg" width="24" height="24">
+                                                <img src="#{getCellTile (cellEntityIsFlagged cellEntity) (cellEntityIsRevealed cellEntity) (cellEntityHasBomb cellEntity) (cellEntityNeighboringBombs cellEntity)}" width="24" height="24">
+                                        $elseif gameStateEntityStatus gameStateEntity == "Won"
+                                            <img src="#{getCellTileWon (cellEntityIsFlagged cellEntity) (cellEntityIsRevealed cellEntity) (cellEntityHasBomb cellEntity) (cellEntityNeighboringBombs cellEntity)}" width="24" height="24">
+                                        $else
+                                            <img src="#{getCellTileLost (cellEntityIsFlagged cellEntity) (cellEntityIsRevealed cellEntity) (cellEntityHasBomb cellEntity) (cellEntityNeighboringBombs cellEntity)}" width="24" height="24">
     <hr>
