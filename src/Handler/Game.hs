@@ -19,12 +19,19 @@ data FileForm = FileForm
     }
 
 -- GET LATEST GAME
-getGameR :: Text -> Handler Value
+getGameR :: Text -> Handler Html
 getGameR gameId = do
     print $ unpack gameId
-    gameState <- runDB $ selectList [GameStateEntityGameId ==. unpack gameId] [Desc GameStateEntityUpdatedAt, LimitTo 1]
-    print gameState
-    returnJson gameState
+    gameStateDBEntity <- runDB $ selectList [GameStateEntityGameId ==. unpack gameId] [Desc GameStateEntityUpdatedAt, LimitTo 1]
+    print gameStateDBEntity
+    let maybeGameStateEntity = getGameStateEntity gameStateDBEntity
+    let gameStateEntity = case maybeGameStateEntity of
+                  Just entity -> entity -- ERROR maybe here?
+                  Nothing -> error "HELP ME!"
+    defaultLayout $ do
+            let (gameTableId, cellId) = gameIds
+            setTitle "Game"
+            $(widgetFile "game")
 
 -- MAKE MOVE
 putGameR :: Text -> Handler Value
@@ -66,3 +73,6 @@ putGameR gameId = do
 getGameStateEntity :: [Entity GameStateEntity] -> Maybe GameStateEntity
 getGameStateEntity (x:_) = Just $ entityVal x
 getGameStateEntity _     = Nothing
+
+gameIds :: (Text, Text)
+gameIds = ("js-gameTableId", "js-cellId")
