@@ -14,7 +14,7 @@ import           Yesod.Form.Bootstrap3 (BootstrapFormLayout (..),
 getGamesR :: Handler Html
 getGamesR = do
     defaultLayout $ do
-            let (gameIdField, newGameFormId) = gameIds
+            let (newGameFormId, gameIdField, bombCountField, widthField, heightField) = variables
             setTitle "Create New Game"
             $(widgetFile "games")
 
@@ -34,5 +34,5 @@ postGamesR = do
     insertedGameState <- runDB $ insertEntity gameStateEntity
     returnJson insertedGameState
 
-gameIds :: (Text, Text)
-gameIds = ("js-gameIdField", "js-newGameFormId")
+variables :: (Text, Text, Text, Text, Text)
+variables = ("js-newGameFormId", "js-gameIdField", "js-bombCountField", "js-widthField", "js-heightField")

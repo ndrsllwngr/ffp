@@ -3,9 +3,13 @@ $(function() {
     event.preventDefault();
 
     var gameId = $("##{rawJS gameIdField}").val();
+    var bombCount = $("##{rawJS bombCountField}").val();
+    var width = $("##{rawJS widthField}").val();
+    var height = $("##{rawJS heightField}").val();
     // (Browsers that enforce the "required" attribute on the textarea won't see this alert)
-    if (!gameId) {
-      alert("Please fill out the comment form first.");
+    if (!gameId || !bombCount || !width || !height) {
+      console.log({gameId,bombCount,width,height});
+      alert("Please fill out the create new game form first.");
       return;
     }
 
@@ -15,15 +19,18 @@ $(function() {
       type: 'POST',
       contentType: "application/json",
       data: JSON.stringify({
-        height: 10,
-        width: 10,
-        bombCount: 2,
+        height: parseInt(height, 10),
+        width: parseInt(width, 10),
+        bombCount: parseInt(bombCount, 10),
         seed: 4888,
         gameId: gameId,
         createdAt: new Date(Date.now()).toISOString()
       }),
       success: function (data) {
         console.log(data);
+        const newUrl = "http://localhost:3000/game/"+gameId
+        console.log(newUrl);
+        window.location.replace(newUrl);
       },
       error: function (data) {
         console.log("Error creating game: " + data);
