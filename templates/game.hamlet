@@ -12,27 +12,19 @@
                         then updates the page with your submission.
                         (see <tt>Handler/Comment.hs</tt>, <tt>templates/homepage.julius</tt>,
                         and <tt>Handler/Home.hs</tt> for the implementation).
-        <div .row><div class="flex flex-row items-start"><div class="mr-10" id="flags"></div><div id="seconds"></div></div></div>
+        <div .row><div class="flex flex-row items-start"><div id="flags"></div><div id="face" status="#{status}" onclick="resetGame('#{gameStateEntityGameId gameStateEntity}','#{status}')"></div><div id="seconds" init="False" prevTime="#{getTimeElapsed(gameStateEntityLastStartedAt gameStateEntity) (gameStateEntityTimeElapsed gameStateEntity) now (gameStateEntityStatus gameStateEntity)}"></div></div></div>
         <div .row>
             <div .col-lg-6>
                 <div .bs-callout.bs-callout-info.well>
-                     $if gameStateEntityStatus gameStateEntity == "Ongoing"
-                        <span>ONGOING</span>
-                     $elseif gameStateEntityStatus gameStateEntity == "Won"
-                        <span>WON</span>
-                     $else
-                        <span>LOOST</span>
                      <button onclick="pauseGame('#{gameStateEntityGameId gameStateEntity}')">
                         Spiel pausieren
-                     <span id="timerId">
-                        #{getTimeElapsed(gameStateEntityLastStartedAt gameStateEntity) (gameStateEntityTimeElapsed gameStateEntity) now (gameStateEntityStatus gameStateEntity)}
                      <table ##{gameTableId}style="width:40%">
                         $forall row <- gameStateEntityBoard gameStateEntity
                             <tr>
                                 $forall cellEntity <- rowCells row
                                     <td ##{cellId}>
                                         $if gameStateEntityStatus gameStateEntity == "Ongoing"
-                                            <div onclick="revealBomb(#{cellEntityCoordX cellEntity}, #{cellEntityCoordY cellEntity}, '#{gameStateEntityGameId gameStateEntity}', event)">
+                                            <div onclick="makeMove(#{cellEntityCoordX cellEntity}, #{cellEntityCoordY cellEntity}, '#{gameStateEntityGameId gameStateEntity}', event)">
                                                 <img src="#{getCellTile (cellEntityIsFlagged cellEntity) (cellEntityIsRevealed cellEntity) (cellEntityHasBomb cellEntity) (cellEntityNeighboringBombs cellEntity)}" width="24" height="24">
                                         $elseif gameStateEntityStatus gameStateEntity == "Won"
                                             <img src="#{getCellTileWon (cellEntityIsFlagged cellEntity) (cellEntityIsRevealed cellEntity) (cellEntityHasBomb cellEntity) (cellEntityNeighboringBombs cellEntity)}" width="24" height="24">

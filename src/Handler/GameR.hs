@@ -31,6 +31,7 @@ getGameR gameIdText = do
     -- If gameState was Paused, continue game and set lastStartedAt
     let gameStateEntity = case gameStateEntityStatus gsEntity of "Paused" -> gsEntity {gameStateEntityStatus = "Ongoing", gameStateEntityLastStartedAt = now}
                                                                  _        -> gsEntity
+    let status = gameStateEntityStatus gameStateEntity
     -- Insert updated game back to db                                                             
     _ <- runDB $ repsert gsKey gameStateEntity
                                                  
