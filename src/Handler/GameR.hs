@@ -55,10 +55,16 @@ putGameR gameIdText = do
                                       moveEntityCoordX    = moveRequestCoordX moveRequest,
                                       moveEntityCoordY    = moveRequestCoordY moveRequest,
                                       moveEntityTimeStamp = now}-- TODO ERROR maybe here?
+                                     
+    let timeElapsed = case status newGameState of Won   -> finishGame
+                                                  Lost  -> finishGame
+                                                  _     -> gameStateEntityTimeElapsed gsEntity
+                      where
+                      finishGame = calculateTimeElapsed (gameStateEntityLastStartedAt gsEntity) (gameStateEntityTimeElapsed gsEntity) now                           
+
 
     let createdAt = gameStateEntityCreatedAt gsEntity
     let lastStartedAt = gameStateEntityLastStartedAt gsEntity
-    let timeElapsed = gameStateEntityTimeElapsed gsEntity
 
     let updatedGameStateEntity = gameStateToGameStateEntity newGameState gameId createdAt now lastStartedAt timeElapsed
     insertedGameStateEntity <- runDB $ repsert gsKey updatedGameStateEntity
@@ -120,7 +126,13 @@ getCellTileLost False True True _  = "/static/assets/mine_red.svg"
 getCellTileLost _ False True _     = "/static/assets/mine.svg"
 getCellTileLost _ _ _ _            = "/static/assets/closed.svg"
 
+getTimeElapsed :: UTCTime -> Int -> UTCTime -> String -> Int
+getTimeElapsed lastStartedAt timeElapsed now status = case status of
+                                                      "Won"   -> timeElapsed
+                                                      "Lost"  -> timeElapsed
+                                                      _       -> calculateTimeElapsed lastStartedAt timeElapsed now
+                                                      
 calculateTimeElapsed :: UTCTime -> Int -> UTCTime -> Int
 calculateTimeElapsed lastStartedAt timePrevElapsed now = do
   let (timeElapsed, _) = properFraction $ diffUTCTime now lastStartedAt
-  timeElapsed + timePrevElapsed
+  timePrevElapsed + timeElapsed

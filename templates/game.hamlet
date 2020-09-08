@@ -25,7 +25,7 @@
                      <button onclick="pauseGame('#{gameStateEntityGameId gameStateEntity}')">
                         Spiel pausieren
                      <span id="timerId">
-                        #{calculateTimeElapsed (gameStateEntityLastStartedAt gameStateEntity) (gameStateEntityTimeElapsed gameStateEntity) now}
+                        #{getTimeElapsed(gameStateEntityLastStartedAt gameStateEntity) (gameStateEntityTimeElapsed gameStateEntity) now (gameStateEntityStatus gameStateEntity)}
                      <table ##{gameTableId}style="width:40%">
                         $forall row <- gameStateEntityBoard gameStateEntity
                             <tr>
