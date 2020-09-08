@@ -25,14 +25,14 @@ data FileForm = FileForm {
 -- GET GAME VIEW
 getGameR :: Text -> Handler Html
 getGameR gameIdText = do
-    let gameId = unpack gameIdText
-    gameStateDBEntities <- runDB $ selectList [GameStateEntityGameId ==. gameId] [Desc GameStateEntityUpdatedAt, LimitTo 1]
     now <- liftIO getCurrentTime
-    let gse = getGameStateEntity gameStateDBEntities
-    let gameStateEntityKey = getGameStateEntityKey gameStateDBEntities
-    let gameStateEntity = case gameStateEntityStatus gse of "Paused" -> gse {gameStateEntityStatus = "Ongoing", gameStateEntityLastStartedAt = now}
-                                                            _        -> gse
-    _ <- runDB $ repsert gameStateEntityKey gameStateEntity
+    gameStateDBEntities <- runDB $ selectList [GameStateEntityGameId ==. unpack gameIdText] [Desc GameStateEntityUpdatedAt, LimitTo 1]
+    let (gsEntity, gsKey) = getGameStateEntityAndKey gameStateDBEntities
+    -- If gameState was Paused, continue game and set lastStartedAt
+    let gameStateEntity = case gameStateEntityStatus gsEntity of "Paused" -> gsEntity {gameStateEntityStatus = "Ongoing", gameStateEntityLastStartedAt = now}
+                                                                 _        -> gsEntity
+    -- Insert updated game back to db                                                             
+    _ <- runDB $ repsert gsKey gameStateEntity
                                                  
     defaultLayout $ do
             let (gameTableId, cellId) = gameIds
@@ -49,30 +49,25 @@ putGameR gameIdText = do
     now <- liftIO getCurrentTime
 
     gameStateDBEntities <- runDB $ selectList [GameStateEntityGameId ==. gameId] [Desc GameStateEntityUpdatedAt, LimitTo 1]
-    let gameStateEntity = getGameStateEntity gameStateDBEntities
-    let newGameState = makeMove (gameStateEntityToGameState gameStateEntity) $ moveEntityToMove
+    let (gsEntity, gsKey) = getGameStateEntityAndKey gameStateDBEntities
+    let newGameState = makeMove (gameStateEntityToGameState gsEntity) $ moveEntityToMove
                           MoveEntity {moveEntityAction    = moveRequestAction moveRequest,
                                       moveEntityCoordX    = moveRequestCoordX moveRequest,
                                       moveEntityCoordY    = moveRequestCoordY moveRequest,
                                       moveEntityTimeStamp = now}-- TODO ERROR maybe here?
 
-    let createdAt = gameStateEntityCreatedAt gameStateEntity
-    let lastStartedAt = gameStateEntityLastStartedAt gameStateEntity
-    let timeElapsed = gameStateEntityTimeElapsed gameStateEntity
-    let gameStateEntityKey = getGameStateEntityKey gameStateDBEntities
+    let createdAt = gameStateEntityCreatedAt gsEntity
+    let lastStartedAt = gameStateEntityLastStartedAt gsEntity
+    let timeElapsed = gameStateEntityTimeElapsed gsEntity
 
     let updatedGameStateEntity = gameStateToGameStateEntity newGameState gameId createdAt now lastStartedAt timeElapsed
-    insertedGameStateEntity <- runDB $ repsert gameStateEntityKey updatedGameStateEntity
+    insertedGameStateEntity <- runDB $ repsert gsKey updatedGameStateEntity
     returnJson insertedGameStateEntity
 
 
-getGameStateEntity :: [Entity GameStateEntity] -> GameStateEntity
-getGameStateEntity (x:_) = entityVal x
-getGameStateEntity _     = error "HELP ME!"
-
-getGameStateEntityKey :: [Entity GameStateEntity] -> Key GameStateEntity
-getGameStateEntityKey (x:_) = entityKey x
-getGameStateEntityKey _     = error "HELP ME!"
+getGameStateEntityAndKey :: [Entity GameStateEntity] -> (GameStateEntity, Key GameStateEntity)
+getGameStateEntityAndKey (x:_) = (entityVal x, entityKey x)
+getGameStateEntityAndKey _     = error "HELP ME!"
 
 gameIds :: (Text, Text)
 gameIds = ("js-gameTableId", "js-cellId")

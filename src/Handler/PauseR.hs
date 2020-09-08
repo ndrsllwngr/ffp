@@ -30,13 +30,12 @@ postPauseR gameIdText = do
     let gameId = unpack gameIdText
     now <- liftIO getCurrentTime
     gameStateDBEntities <- runDB $ selectList [GameStateEntityGameId ==. gameId] [Desc GameStateEntityUpdatedAt, LimitTo 1]
-    let gameStateEntity = getGameStateEntity gameStateDBEntities
-    let gameStateEntityKey = getGameStateEntityKey gameStateDBEntities
-    let updatedGameStateEntity = gameStateEntity {
-                                          gameStateEntityStatus = "Paused",
-                                          gameStateEntityUpdatedAt = now,
-                                          gameStateEntityTimeElapsed = calculateTimeElapsed (gameStateEntityLastStartedAt gameStateEntity) (gameStateEntityTimeElapsed gameStateEntity) now
-                                          }
-    insertedGameStateEntity <- runDB $ repsert gameStateEntityKey updatedGameStateEntity
-    returnJson insertedGameStateEntity                                    
+    let (gsEntity, gsKey) = getGameStateEntityAndKey gameStateDBEntities
+    let updatedGameStateEntity = gsEntity {
+                                    gameStateEntityStatus = "Paused",
+                                    gameStateEntityUpdatedAt = now,
+                                    gameStateEntityTimeElapsed = calculateTimeElapsed (gameStateEntityLastStartedAt gsEntity) (gameStateEntityTimeElapsed gsEntity) now
+                                    }
+    insertedGameStateEntity <- runDB $ repsert gsKey updatedGameStateEntity
+    returnJson insertedGameStateEntity -- TODO check if return is working                                   
 
