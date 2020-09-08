@@ -81,6 +81,25 @@ const renderDigits = (number, id) => {
   return;
 };
 
+const pauseGame = (gameId) => {
+   // Make an AJAX request to the server to create a new comment
+   console.log("PAUSE GAME");
+   $.ajax({
+        url: '/game/' + gameId + '/pause',
+        type: 'POST',
+        contentType: "application/json",
+        data: JSON.stringify({}),
+        success: function (data) {
+          console.log(data);
+          //location.reload(); TODO go to home
+        },
+        error: function (data) {
+          console.log({data});
+          console.log("Error pausing game: " + data);
+        },
+      });
+};
+
 setInterval(setTimer, 1000);
 // renderDigits(90,"seconds");
 renderDigits(-12,"flags");

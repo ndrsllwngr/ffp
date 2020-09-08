@@ -21,7 +21,9 @@
                      $elseif gameStateEntityStatus gameStateEntity == "Won"
                         <span>WON</span>
                      $else
-                        <span>LOST</span>
+                        <span>LOOST</span>
+                     <button onclick="pauseGame('#{gameStateEntityGameId gameStateEntity}')">
+                        Spiel pausieren
                      <span id="timerId">
                         #{calculateTimeElapsed (gameStateEntityLastStartedAt gameStateEntity) (gameStateEntityTimeElapsed gameStateEntity) now}
                      <table ##{gameTableId}style="width:40%">
