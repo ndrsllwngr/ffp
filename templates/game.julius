@@ -1,6 +1,17 @@
-setInterval(setTimer, 1000);
+const digits = [
+  "/static/assets/d0.svg",
+  "/static/assets/d1.svg",
+  "/static/assets/d2.svg",
+  "/static/assets/d3.svg",
+  "/static/assets/d4.svg",
+  "/static/assets/d5.svg",
+  "/static/assets/d6.svg",
+  "/static/assets/d7.svg",
+  "/static/assets/d8.svg",
+  "/static/assets/d9.svg"
+];
 
-function revealBomb(x, y, gameId, event) {
+const revealBomb = (x, y, gameId, event) => {
    // Make an AJAX request to the server to create a new comment
    console.log(x, y, gameId, event);
    $.ajax({
@@ -23,10 +34,53 @@ function revealBomb(x, y, gameId, event) {
       });
 };
 
-function setTimer() {
+
+const setTimer = () => {
     let timer = document.getElementById("timerId");
     let prevTime = parseInt(timer.textContent, 10);
     let newTime = prevTime + 1;
     console.log({prevTime, newTime, timer});
     timer.textContent = newTime;
+    renderDigits(newTime, "seconds");
+    return;
 };
+
+
+const renderDigits = (number, id) => {
+  let numberStr;
+  let el = document.getElementById(id);
+  if (number < 0) {
+    const _number = -number % 100;
+    if (_number === 0) {
+      numberStr = '00';
+    } else if (_number < 10) {
+      numberStr = '0' + _number;
+    } else {
+      numberStr = String(_number);
+    }
+    let resFlags = numberStr.split('').map((n, i) => (
+          `<img src=${digits[n]} key=${i} class="h-12" alt=${n} />`
+        ));
+    console.log(resFlags.join());
+    let inner = `<div class="flex flex-row"><img src=${digits[0]} class="h-12" alt="-" />
+        ${resFlags.join('')}</div>`;
+    el.innerHTML=inner;
+    return;
+  }
+
+  numberStr = number < 999 ? String(number) : '999';
+  if (number < 10) numberStr = '00' + numberStr;
+  else if (number < 100) numberStr = '0' + numberStr;
+  console.log("hi2");
+  let resSeconds = numberStr
+    .split('')
+    .map((n, i) => `<img key=${i} src=${digits[n]} alt=${n} class="h-12" />`);
+  
+  let inner = `<div class="flex flex-row">${resSeconds.join('')}</div>`;
+  el.innerHTML=inner;
+  return;
+};
+
+setInterval(setTimer, 1000);
+// renderDigits(90,"seconds");
+renderDigits(-12,"flags");

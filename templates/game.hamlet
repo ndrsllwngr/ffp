@@ -12,7 +12,7 @@
                         then updates the page with your submission.
                         (see <tt>Handler/Comment.hs</tt>, <tt>templates/homepage.julius</tt>,
                         and <tt>Handler/Home.hs</tt> for the implementation).
-
+        <div .row><div class="flex flex-row items-start"><div class="mr-10" id="flags"></div><div id="seconds"></div></div></div>
         <div .row>
             <div .col-lg-6>
                 <div .bs-callout.bs-callout-info.well>
