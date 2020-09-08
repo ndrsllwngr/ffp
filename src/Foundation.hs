@@ -164,6 +164,7 @@ instance Yesod App where
     isAuthorized CommentR _    = return Authorized
     isAuthorized (GameR _) _   = return Authorized
     isAuthorized GamesR _      = return Authorized
+    isAuthorized (PauseR _) _  = return Authorized
     isAuthorized HomeR _       = return Authorized
     isAuthorized FaviconR _    = return Authorized
     isAuthorized RobotsR _     = return Authorized

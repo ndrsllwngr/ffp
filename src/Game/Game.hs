@@ -15,7 +15,7 @@ import           Game.Board
 import           Model
 
 data Move = Reveal Coordinate UTCTime | Flag Coordinate UTCTime deriving (Show, Eq, Read) -- TODO maybe add unflag
-data GameStatus = Ongoing | Won | Lost deriving (Show, Eq, Read)
+data GameStatus = Ongoing | Won | Lost | Paused deriving (Show, Eq, Read)
 --derivePersistField "Status"
 
 data GameState = GameState { board     :: Board,
@@ -58,7 +58,8 @@ gameStateEntityToGameState entity = GameState {
 statusEntityToStatus :: [Char] -> GameStatus
 statusEntityToStatus "Ongoing" = Ongoing
 statusEntityToStatus "Won"     = Won
-statusEntityToStatus _         = Lost
+statusEntityToStatus "Lost"    = Lost
+statusEntityToStatus _         = Paused
 
 matrixToRows :: Matrix Cell -> [Row]
 matrixToRows matrix = map createRow $ Data.Matrix.toLists $ mapPos (\(r,c) cell -> cellToCellEntity cell (r,c) ) matrix

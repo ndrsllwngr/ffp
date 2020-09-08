@@ -27,7 +27,12 @@ getGameR gameIdText = do
     let gameId = unpack gameIdText
     gameStateDBEntities <- runDB $ selectList [GameStateEntityGameId ==. gameId] [Desc GameStateEntityUpdatedAt, LimitTo 1]
     now <- liftIO getCurrentTime
-    let gameStateEntity = getGameStateEntity gameStateDBEntities
+    let gse = getGameStateEntity gameStateDBEntities
+    let gameStateEntityKey = getGameStateEntityKey gameStateDBEntities
+    let gameStateEntity = case gameStateEntityStatus gse of "Paused" -> gse {gameStateEntityStatus = "Ongoing", gameStateEntityLastStartedAt = now}
+                                                            _        -> gse
+    _ <- runDB $ repsert gameStateEntityKey gameStateEntity
+                                                 
     defaultLayout $ do
             let (gameTableId, cellId) = gameIds
             setTitle "Game"

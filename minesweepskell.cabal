@@ -30,6 +30,7 @@ library
       Handler.GameR
       Handler.GamesR
       Handler.Home
+      Handler.PauseR
       Handler.Profile
       Import
       Import.NoFoundation
