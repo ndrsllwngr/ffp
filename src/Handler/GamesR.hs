@@ -27,7 +27,7 @@ postGamesR = do
     now <- liftIO getCurrentTime
     print newGameRequest
     let newGameState = newGame (newGameRequestHeight newGameRequest, newGameRequestWidth newGameRequest) (newGameRequestBombCount newGameRequest) (newGameRequestSeed newGameRequest)
-    let newGameStateEntity = gameStateToGameStateEntity newGameState (newGameRequestGameId newGameRequest) now now
+    let newGameStateEntity = gameStateToGameStateEntity newGameState (newGameRequestGameId newGameRequest) now now now 0
     print newGameStateEntity
 
     insertedGameStateEntity <- runDB $ insertEntity newGameStateEntity

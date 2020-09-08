@@ -1,3 +1,5 @@
+setInterval(setTimer, 1000);
+
 function revealBomb(x, y, gameId, event) {
    // Make an AJAX request to the server to create a new comment
    console.log(x, y, gameId, event);
@@ -19,4 +21,12 @@ function revealBomb(x, y, gameId, event) {
           console.log("Error making move: " + data);
         },
       });
+};
+
+function setTimer() {
+    let timer = document.getElementById("timerId");
+    let prevTime = parseInt(timer.textContent, 10);
+    let newTime = prevTime + 1;
+    console.log({prevTime, newTime, timer});
+    timer.textContent = newTime;
 };

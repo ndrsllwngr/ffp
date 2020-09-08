@@ -32,16 +32,18 @@ instance Show GameState where
 
 --type GameStateEntity = [[Cell]] [Move] Int Int GameStatus
 
-gameStateToGameStateEntity :: GameState -> [Char] -> UTCTime -> UTCTime -> GameStateEntity
-gameStateToGameStateEntity state gameId createdAt updatedAt = GameStateEntity {
+gameStateToGameStateEntity :: GameState -> [Char] -> UTCTime -> UTCTime -> UTCTime -> Int -> GameStateEntity
+gameStateToGameStateEntity state gameId createdAt updatedAt lastStartedAt timeElapsed = GameStateEntity {
                                 gameStateEntityBoard = matrixToRows $ board state,
                                 gameStateEntityMoves = map moveToMoveEntity (moves state),
                                 gameStateEntityBombCount = bombCount state,
                                 gameStateEntitySeed = seed state,
+                                gameStateEntityStatus = show (status state),
                                 gameStateEntityGameId = gameId,
                                 gameStateEntityCreatedAt = createdAt,
                                 gameStateEntityUpdatedAt = updatedAt,
-                                gameStateEntityStatus = show (status state)
+                                gameStateEntityLastStartedAt = lastStartedAt,
+                                gameStateEntityTimeElapsed = timeElapsed
 }
 
 gameStateEntityToGameState :: GameStateEntity -> GameState

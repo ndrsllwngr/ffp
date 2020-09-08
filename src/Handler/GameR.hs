@@ -11,6 +11,9 @@ import           Import
 import           Text.Julius           (RawJS (..))
 import           Yesod.Form.Bootstrap3 (BootstrapFormLayout (..),
                                         renderBootstrap3)
+import Data.Maybe
+import Data.Time.Clock (diffUTCTime)
+import Data.Fixed
 
 -- Define our data that will be used for creating the form.
 data FileForm = FileForm
@@ -23,6 +26,7 @@ getGameR :: Text -> Handler Html
 getGameR gameIdText = do
     let gameId = unpack gameIdText
     gameStateDBEntities <- runDB $ selectList [GameStateEntityGameId ==. gameId] [Desc GameStateEntityUpdatedAt, LimitTo 1]
+    now <- liftIO getCurrentTime
     let gameStateEntity = getGameStateEntity gameStateDBEntities
     defaultLayout $ do
             let (gameTableId, cellId) = gameIds
@@ -40,16 +44,18 @@ putGameR gameIdText = do
 
     gameStateDBEntities <- runDB $ selectList [GameStateEntityGameId ==. gameId] [Desc GameStateEntityUpdatedAt, LimitTo 1]
     let gameStateEntity = getGameStateEntity gameStateDBEntities
-    let newGameState = makeMove (gameStateEntityToGameState gameStateEntity) $ moveEntityToMove 
-                          MoveEntity {moveEntityAction    = moveRequestAction moveRequest, 
-                                      moveEntityCoordX    = moveRequestCoordX moveRequest, 
+    let newGameState = makeMove (gameStateEntityToGameState gameStateEntity) $ moveEntityToMove
+                          MoveEntity {moveEntityAction    = moveRequestAction moveRequest,
+                                      moveEntityCoordX    = moveRequestCoordX moveRequest,
                                       moveEntityCoordY    = moveRequestCoordY moveRequest,
                                       moveEntityTimeStamp = now}-- TODO ERROR maybe here?
 
     let createdAt = gameStateEntityCreatedAt gameStateEntity
+    let lastStartedAt = gameStateEntityLastStartedAt gameStateEntity
+    let timeElapsed = gameStateEntityTimeElapsed gameStateEntity
     let gameStateEntityKey = getGameStateEntityKey gameStateDBEntities
 
-    let updatedGameStateEntity = gameStateToGameStateEntity newGameState gameId createdAt now
+    let updatedGameStateEntity = gameStateToGameStateEntity newGameState gameId createdAt now lastStartedAt timeElapsed
     insertedGameStateEntity <- runDB $ repsert gameStateEntityKey updatedGameStateEntity
     returnJson insertedGameStateEntity
 
@@ -112,3 +118,8 @@ getCellTileLost True False False _ = "/static/assets/mine_wrong.svg"
 getCellTileLost False True True _  = "/static/assets/mine_red.svg"
 getCellTileLost _ False True _     = "/static/assets/mine.svg"
 getCellTileLost _ _ _ _            = "/static/assets/closed.svg"
+
+calculateTimeElapsed :: UTCTime -> Int -> UTCTime -> Int
+calculateTimeElapsed lastStartedAt timePrevElapsed now = do
+  let (timeElapsed, _) = properFraction $ diffUTCTime now lastStartedAt
+  timeElapsed + timePrevElapsed
