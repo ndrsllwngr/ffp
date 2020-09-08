@@ -24,6 +24,7 @@ library
       Foundation
       Game.Board
       Game.Game
+      Game.Sessions
       Game.Util
       Handler.Comment
       Handler.Common
@@ -65,6 +66,7 @@ library
     , monad-control >=0.3 && <1.1
     , monad-logger >=0.3 && <0.4
     , mongoDB
+    , mtl
     , persistent >=2.9 && <2.11
     , persistent-mongoDB >=2.9 && <2.11
     , persistent-template >=2.5 && <2.9
@@ -125,6 +127,7 @@ executable minesweepskell
     , monad-control >=0.3 && <1.1
     , monad-logger >=0.3 && <0.4
     , mongoDB
+    , mtl
     , persistent >=2.9 && <2.11
     , persistent-mongoDB >=2.9 && <2.11
     , persistent-template >=2.5 && <2.9
@@ -188,6 +191,7 @@ test-suite minesweepskell-test
     , monad-control >=0.3 && <1.1
     , monad-logger >=0.3 && <0.4
     , mongoDB
+    , mtl
     , persistent >=2.9 && <2.11
     , persistent-mongoDB >=2.9 && <2.11
     , persistent-template >=2.5 && <2.9

@@ -1,12 +1,10 @@
-module Game.Util (generateMatrixWithCellNumbers,
-                  generateMatrixWithCellIndices) where
+module Game.Util (calculateTimeElapsed
+                 ) where
 
-import           Data.Matrix
-import           Game.Board  (Dimension, coordinateToCellNumber)
+import Data.Time (UTCTime, diffUTCTime)
 
 
-generateMatrixWithCellNumbers :: Dimension -> Matrix Int
-generateMatrixWithCellNumbers (w,h) = matrix w h (\(i,j) -> coordinateToCellNumber (i,j) (w,h))
-
-generateMatrixWithCellIndices :: Dimension -> Matrix String
-generateMatrixWithCellIndices (w,h) = matrix w h (\(i,j) -> (show i) ++ "/" ++ (show j))
+calculateTimeElapsed :: UTCTime -> Int -> UTCTime -> Int
+calculateTimeElapsed lastStartedAt timePrevElapsed now = do
+  let (timeElapsed, _) = properFraction $ diffUTCTime now lastStartedAt
+  timePrevElapsed + timeElapsed

@@ -103,14 +103,6 @@ checkWon board = all isRevealed $ filter (not . hasBomb) (toList board)
 coordinateToCellNumber :: Coordinate -> Dimension -> Int
 coordinateToCellNumber (i,j) (_,w) = (i-1) * w + j
 
-
--- Calculates the XY-Coordinate of a given cell number for a given Board size
--- will also calculate out of bounds cells if out of bounds cell numbers are provided
-cellNumberToCoordinate :: Int -> Dimension -> Coordinate
-cellNumberToCoordinate n (_,w) = (i, j) where
-                                    i = ((n - 1) `div` w) + 1
-                                    j = ((n - 1) `mod` w) + 1
-
 -- Checks if a coordinate is inBounds of a given Board size
 inBounds :: Coordinate -> Dimension -> Bool
 inBounds (i,j) (h,w) = (i > 0) && (i <= h) && (j > 0) && (j <= w)

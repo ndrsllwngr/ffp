@@ -8,6 +8,7 @@ module Marshalling (
                     statusEntityToStatus,
                     cellToCellEntity,
                     cellEntityToCell,
+                    moveRequestToMove,
                     moveToMoveEntity,
                     moveEntityToMove
                     ) where
@@ -17,19 +18,19 @@ import           Import
 import           Game.Board
 import           Game.Game
 
-gameStateToGameStateEntity :: GameState -> [Char] -> UTCTime -> UTCTime -> UTCTime -> Int -> GameStateEntity
-gameStateToGameStateEntity state gameId createdAt updatedAt lastStartedAt timeElapsed  = GameStateEntity {
-                                                                gameStateEntityBoard = boardToRows $ board state,
-                                                                gameStateEntityMoves = map moveToMoveEntity $ moves state,
-                                                                gameStateEntityBombCount = bombCount state,
-                                                                gameStateEntitySeed = seed state,
-                                                                gameStateEntityGameId = gameId,
-                                                                gameStateEntityCreatedAt = createdAt,
-                                                                gameStateEntityUpdatedAt = updatedAt,
-                                                                gameStateEntityStatus = show (status state),
-                                                                gameStateEntityLastStartedAt = lastStartedAt,
-                                                                gameStateEntityTimeElapsed = timeElapsed
-                                                              } where boardToRows board = map (Row . map cellToCellEntity) (Data.Matrix.toLists board)
+gameStateToGameStateEntity :: GameState -> GameStateEntity
+gameStateToGameStateEntity state = GameStateEntity {
+                                                      gameStateEntityBoard = boardToRows $ board state,
+                                                      gameStateEntityMoves = map moveToMoveEntity $ moves state,
+                                                      gameStateEntityBombCount = bombCount state,
+                                                      gameStateEntitySeed = seed state,
+                                                      gameStateEntityGameId = gameId state,
+                                                      gameStateEntityCreatedAt = createdAt state,
+                                                      gameStateEntityUpdatedAt = updatedAt state,
+                                                      gameStateEntityStatus = show (status state),
+                                                      gameStateEntityLastStartedAt = lastStartedAt state,
+                                                      gameStateEntityTimeElapsed = timeElapsed state
+                                                   } where boardToRows board = map (Row . map cellToCellEntity) (Data.Matrix.toLists board)
 
 gameStateEntityToGameState :: GameStateEntity -> GameState
 gameStateEntityToGameState entity = GameState {
@@ -37,7 +38,12 @@ gameStateEntityToGameState entity = GameState {
                                       moves = map moveEntityToMove $ gameStateEntityMoves entity,
                                       bombCount = gameStateEntityBombCount entity,
                                       seed = gameStateEntitySeed entity,
-                                      status = statusEntityToStatus $ gameStateEntityStatus entity
+                                      status = statusEntityToStatus $ gameStateEntityStatus entity,
+                                      gameId = gameStateEntityGameId entity,
+                                      createdAt = gameStateEntityCreatedAt entity,
+                                      updatedAt = gameStateEntityUpdatedAt entity,
+                                      lastStartedAt = gameStateEntityLastStartedAt entity,
+                                      timeElapsed = gameStateEntityTimeElapsed entity
                                     } where rowsToBoard rows = Data.Matrix.fromLists $ map (map cellEntityToCell . rowCells) rows
 
 statusEntityToStatus :: [Char] -> GameStatus
@@ -66,6 +72,13 @@ cellEntityToCell cellEntity = Cell {
                                 coordinate        = (cellEntityCoordX cellEntity, cellEntityCoordY cellEntity)
                               }
 
+
+moveRequestToMove :: MoveRequest -> UTCTime -> Move
+moveRequestToMove (MoveRequest "RevealAllNonFlagged" _ _) timeStamp = RevealAllNonFlagged timeStamp
+moveRequestToMove (MoveRequest "Flag" (Just x) (Just y)) timeStamp  = Flag (x,y) timeStamp
+moveRequestToMove (MoveRequest "Reveal"(Just x) (Just y)) timeStamp = Reveal (x,y) timeStamp
+moveRequestToMove _ _ = undefined
+
 moveToMoveEntity :: Move -> MoveEntity
 moveToMoveEntity (Flag (x,y) timeStamp)           = MoveEntity "Flag" (Just x) (Just y) timeStamp
 moveToMoveEntity (Reveal (x,y) timeStamp)         = MoveEntity "Reveal" (Just x) (Just y) timeStamp
@@ -75,4 +88,4 @@ moveEntityToMove :: MoveEntity -> Move
 moveEntityToMove (MoveEntity "Flag" (Just x) (Just y) timeStamp)    = Flag (x,y) timeStamp
 moveEntityToMove (MoveEntity "Reveal" (Just x) (Just y) timeStamp)  = Reveal (x,y) timeStamp
 moveEntityToMove (MoveEntity "RevealAllNonFlagged" _ _ timeStamp)   = RevealAllNonFlagged timeStamp
-moveEntityToMove _   = undefined -- todo maybe errorhande?
+moveEntityToMove _   = undefined 

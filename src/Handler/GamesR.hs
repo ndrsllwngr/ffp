@@ -6,6 +6,7 @@
 module Handler.GamesR where
 
 import           Game.Game
+import           Game.Sessions
 import           Marshalling
 import           Import
 import           Text.Julius           (RawJS (..))
@@ -27,8 +28,8 @@ postGamesR = do
     newGameRequest <- (requireCheckJsonBody :: Handler NewGameRequest)
     now <- liftIO getCurrentTime
     print newGameRequest
-    let newGameState = newGame (newGameRequestHeight newGameRequest, newGameRequestWidth newGameRequest) (newGameRequestBombCount newGameRequest) (newGameRequestSeed newGameRequest)
-    let newGameStateEntity = gameStateToGameStateEntity newGameState (newGameRequestGameId newGameRequest) now now now 0
+    newGame <- fmap $ addNewGame (newGameRequestGameId newGameRequest) (newGameRequestHeight newGameRequest, newGameRequestWidth newGameRequest) (newGameRequestBombCount newGameRequest) (newGameRequestSeed newGameRequest) now
+    let newGameStateEntity = gameStateToGameStateEntity newGame
     print newGameStateEntity
 
     insertedGameStateEntity <- runDB $ insertEntity newGameStateEntity
