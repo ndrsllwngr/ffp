@@ -1,5 +1,6 @@
 module Game.Board  (generateBoard,
                     revealCell,
+                    revealAllNonFlaggedCells,
                     flagCell,
                     checkLost,
                     checkWon,
@@ -7,7 +8,7 @@ module Game.Board  (generateBoard,
                     Coordinate,
                     Dimension,
                     Board,
-                    Cell(Cell, isRevealed, isFlagged, hasBomb, neighboringBombs)
+                    Cell (..)
                     ) where
 
 import           Data.List
@@ -22,7 +23,9 @@ type Coordinate = (Int,Int)
 data Cell = Cell { isFlagged        :: Bool,
                    isRevealed       :: Bool,
                    hasBomb          :: Bool,
-                   neighboringBombs :: Int} deriving (Show, Eq)
+                   neighboringBombs :: Int,
+                   coordinate       :: Coordinate
+                   } deriving (Show, Eq)
 
 type Board = Matrix Cell
 
@@ -35,7 +38,9 @@ generateBoard (h,w) bombCount seed = matrix h w (\(i,j) -> Cell {
                                                               hasBomb = coordinateToCellNumber (i,j) (h,w) `elem` bombPos,
                                                               -- the amount of neighboring bombs is equal to:
                                                               -- the length of the intersection between the neighbouring cell numbers & the bomb cell numbers
-                                                              neighboringBombs = length $ map toCellNumber (neighbourCells (i,j) (h,w)) `intersect` bombPos
+                                                              neighboringBombs = length $ map toCellNumber (neighbourCells (i,j) (h,w)) `intersect` bombPos,
+                                                              -- the cells coordinate
+                                                              coordinate = (i,j)
                                                             })
                                                             where
                                                                 -- initialize randomizer with seed
@@ -47,20 +52,22 @@ generateBoard (h,w) bombCount seed = matrix h w (\(i,j) -> Cell {
                                                                 -- helper function to slim down the neighboring Bomb calculation
                                                                 toCellNumber x = coordinateToCellNumber x (h,w)
 
+-- helper function to set a specific cells isRevealed flag to True
+setCellToRevealed :: Board -> Coordinate -> Board
+setCellToRevealed b (x,y) = setElem newCell (x,y) b where newCell = (getElem x y b) {isRevealed = True}
+
 -- Reveals a cell at a given coordinate for a given Board
 -- Rule explanation: will also reveal any direct neighbouring Cells which have no bomb and their neighbour cells if the have 0 neighboring bombs
 revealCell :: Board -> Coordinate -> Board
 revealCell board (i,j) = resultBoard where
                             -- dimension of the board
                             dim =  (nrows board, ncols board)
-                            -- helper function to set a specific cells isRevealed flag to True
-                            setCellToRevealed b (x,y) = setElem newCell (x,y) b where newCell = (getElem x y b) {isRevealed = True}
                             resultBoard = case getElem i j board of
                                             -- case of a unrevealed cell with no neighboring bombs and which also does not contain a bomb
                                             -- in this case we want to reveal the neighboring cells as well
-                                            (Cell _ True _ _ ) -> board
-                                            (Cell True _ _ _ ) -> board
-                                            (Cell False False False 0 ) -> neighboursBoard where
+                                            (Cell _ True _ _ _)           -> board
+                                            (Cell True _ _ _ _)           -> board
+                                            (Cell False False False 0 _)  -> neighboursBoard where
                                                                   -- the board with the cell (i,j) set to revealed
                                                                   cellBoard = setCellToRevealed board (i,j)
                                                                   -- all the direct neighbours of the cell (i,j)
@@ -69,6 +76,14 @@ revealCell board (i,j) = resultBoard where
                                                                   neighboursBoard = foldl revealCell cellBoard neighbours
                                             -- In any other case just reveal the cell at (i,j)
                                             _ -> setCellToRevealed board (i,j)
+
+-- Reveals all cells which have not been flagged
+revealAllNonFlaggedCells :: Board -> Board
+revealAllNonFlaggedCells board = resultBoard where 
+                                cellsToReveal   = filter (not . isFlagged)(toList board)
+                                cellCoordinates = map coordinate cellsToReveal
+                                resultBoard     = foldl setCellToRevealed board cellCoordinates
+                            
 
 -- Toggles the isFlagged state of a cell at a given coordinate for a given board
 flagCell :: Board -> Coordinate -> Board
@@ -82,9 +97,7 @@ checkLost board = any (\c -> isRevealed c && hasBomb c) (toList board)
 
 -- Checks if all non bomb fields are revealed OR if all bombs have been flagged
 checkWon :: Board -> Bool
-checkWon board = allRevealed || allFlagged where
-                                             allRevealed  = all isRevealed $ filter (not . hasBomb) (toList board)
-                                             allFlagged   = all isFlagged  $ filter hasBomb (toList board)
+checkWon board = all isRevealed $ filter (not . hasBomb) (toList board)
 
 -- Calculates the cell number of a given XY-Coordinate for a given Board size
 -- will also calculate out of bounds cells if out of bounds coordinates are provided
