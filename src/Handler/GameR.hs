@@ -16,12 +16,6 @@ import Data.Maybe
 import Data.Time.Clock (diffUTCTime)
 import Data.Fixed
 
--- Define our data that will be used for creating the form.
-data FileForm = FileForm { 
-                  fileInfo        :: FileInfo, 
-                  fileDescription :: Text
-                }
-
 -- GET GAME VIEW
 getGameR :: Text -> Handler Html
 getGameR gameIdText = do
@@ -31,17 +25,17 @@ getGameR gameIdText = do
     -- If gameState was Paused, continue game and set lastStartedAt
     let gameStateEntity = case gameStateEntityStatus gsEntity of "Paused" -> gsEntity {gameStateEntityStatus = "Ongoing", gameStateEntityLastStartedAt = now}
                                                                  _        -> gsEntity
-    let status = gameStateEntityStatus gameStateEntity
     -- Insert updated game back to db                                                             
     _ <- runDB $ repsert gsKey gameStateEntity
                                                  
     defaultLayout $ do
             let (gameTableId, cellId) = gameIds
+            aDomId <- newIdent
             setTitle "Game"
             $(widgetFile "game")
 
 -- MAKE MOVE
-putGameR :: Text -> Handler Value
+putGameR :: Text -> Handler Html
 putGameR gameIdText = do
     -- requireCheckJsonBody will parse the request body into the appropriate type, or return a 400 status code if the request JSON is invalid.
     -- (The ToJSON and FromJSON instances are derived in the config/models file).
@@ -62,20 +56,23 @@ putGameR gameIdText = do
                                                   _     -> gameStateEntityTimeElapsed gsEntity
                       where
                       finishGame = calculateTimeElapsed (gameStateEntityLastStartedAt gsEntity) (gameStateEntityTimeElapsed gsEntity) now
-
-
     let createdAt = gameStateEntityCreatedAt gsEntity
     let lastStartedAt = gameStateEntityLastStartedAt gsEntity
-
     let updatedGameStateEntity = gameStateToGameStateEntity newGameState gameId createdAt now lastStartedAt timeElapsed
 
-    insertedGameStateEntity <- runDB $ upsertBy (UniqueGameStateEntity gameId) updatedGameStateEntity [GameStateEntityMoves =. gameStateEntityMoves updatedGameStateEntity,
+    _ <- runDB $ upsertBy (UniqueGameStateEntity gameId) updatedGameStateEntity [GameStateEntityMoves =. gameStateEntityMoves updatedGameStateEntity,
                                                                                                        GameStateEntityBoard =. gameStateEntityBoard updatedGameStateEntity,
                                                                                                        GameStateEntityStatus =. gameStateEntityStatus updatedGameStateEntity,
                                                                                                        GameStateEntityTimeElapsed =. gameStateEntityTimeElapsed updatedGameStateEntity,
                                                                                                        GameStateEntityUpdatedAt =. now
                                                                                                       ]
-    returnJson insertedGameStateEntity
+    
+    let gameStateEntity = updatedGameStateEntity
+    defaultLayout $ do
+            let (gameTableId, cellId) = gameIds
+            aDomId <- newIdent
+            setTitle "Game"
+            $(widgetFile "game")
 
 
 getGameStateEntityAndKey :: [Entity GameStateEntity] -> (GameStateEntity, Key GameStateEntity)

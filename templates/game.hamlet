@@ -12,7 +12,7 @@
                         then updates the page with your submission.
                         (see <tt>Handler/Comment.hs</tt>, <tt>templates/homepage.julius</tt>,
                         and <tt>Handler/Home.hs</tt> for the implementation).
-        <div .row><div class="flex flex-row items-start"><div id="flags"></div><div id="face" status="#{status}" onclick="resetGame('#{gameStateEntityGameId gameStateEntity}','#{status}')"></div><div id="seconds" init="False" prevTime="#{getTimeElapsed(gameStateEntityLastStartedAt gameStateEntity) (gameStateEntityTimeElapsed gameStateEntity) now (gameStateEntityStatus gameStateEntity)}"></div></div></div>
+        <div .row ##{aDomId}><div class="flex flex-row items-start"><div id="flags"></div><div id="face" status="#{gameStateEntityStatus gameStateEntity}" onclick="resetGame('#{gameStateEntityGameId gameStateEntity}','#{gameStateEntityStatus gameStateEntity}')"></div><div id="seconds" init="False" prevTime="#{getTimeElapsed(gameStateEntityLastStartedAt gameStateEntity) (gameStateEntityTimeElapsed gameStateEntity) now (gameStateEntityStatus gameStateEntity)}"></div></div></div>
         <div .row>
             <div .col-lg-6>
                 <div .bs-callout.bs-callout-info.well>
