@@ -48,8 +48,8 @@ import           System.Log.FastLogger                (defaultBufSize,
 -- Don't forget to add new modules to your cabal file!
 import           Handler.Comment
 import           Handler.Common
-import           Handler.Game
-import           Handler.Games
+import           Handler.GameR
+import           Handler.GamesR
 import           Handler.Home
 import           Handler.Profile
 

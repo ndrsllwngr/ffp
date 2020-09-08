@@ -4,7 +4,7 @@
 {-# LANGUAGE TypeFamilies          #-}
 module Marshalling where
 
-import           Handler.Game
+import           Handler.GameR
 import           Import
 --import Game.Board (Cell(Cell))
 

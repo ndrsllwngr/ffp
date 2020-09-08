@@ -4,7 +4,7 @@
 {-# LANGUAGE OverloadedStrings     #-}
 {-# LANGUAGE TemplateHaskell       #-}
 {-# LANGUAGE TypeFamilies          #-}
-module Handler.Game where
+module Handler.GameR where
 
 import           Game.Game
 import           Import
@@ -18,16 +18,12 @@ data FileForm = FileForm
     , fileDescription :: Text
     }
 
--- GET LATEST GAME
+-- GET GAME VIEW
 getGameR :: Text -> Handler Html
-getGameR gameId = do
-    -- print $ unpack gameId
-    gameStateDBEntity <- runDB $ selectList [GameStateEntityGameId ==. unpack gameId] [Desc GameStateEntityUpdatedAt, LimitTo 1]
-    -- print gameStateDBEntity
-    let maybeGameStateEntity = getGameStateEntity gameStateDBEntity
-    let gameStateEntity = case maybeGameStateEntity of
-                  Just entity -> entity -- ERROR maybe here?
-                  Nothing -> error "HELP ME!"
+getGameR gameIdText = do
+    let gameId = unpack gameIdText
+    gameStateDBEntities <- runDB $ selectList [GameStateEntityGameId ==. gameId] [Desc GameStateEntityUpdatedAt, LimitTo 1]
+    let gameStateEntity = getGameStateEntity gameStateDBEntities
     defaultLayout $ do
             let (gameTableId, cellId) = gameIds
             setTitle "Game"
@@ -35,33 +31,26 @@ getGameR gameId = do
 
 -- MAKE MOVE
 putGameR :: Text -> Handler Value
-putGameR gameId = do
-    timeStamp <- liftIO getCurrentTime
+putGameR gameIdText = do
     -- requireCheckJsonBody will parse the request body into the appropriate type, or return a 400 status code if the request JSON is invalid.
     -- (The ToJSON and FromJSON instances are derived in the config/models file).
     moveRequest <- (requireCheckJsonBody :: Handler MoveRequest)
-    -- print moveEntity
-    state <- runDB $ selectList [GameStateEntityGameId ==. unpack gameId] [Desc GameStateEntityUpdatedAt, LimitTo 1]
-    -- print state
-    let gameStateEntity = getGameStateEntity state
-    let gameState = case gameStateEntity of
-              Just entity -> makeMove (gameStateEntityToGameState entity) $ moveEntityToMove MoveEntity {moveEntityAction=moveRequestAction moveRequest, moveEntityCoordX=moveRequestCoordX moveRequest, moveEntityCoordY=moveRequestCoordY moveRequest,moveEntityTimeStamp=timeStamp} -- ERROR maybe here?
-              Nothing -> error "HELP ME!"
-    let createdAt = case gameStateEntity of
-              Just entity -> gameStateEntityCreatedAt entity
-              Nothing     -> error "HELP ME!"
-    -- print gameState
-    let gameStateEntityKey = getGameStateEntityKey state
-    let gameStateKey = case gameStateEntityKey of 
-              Just key -> key
-              Nothing -> error "HELP ME"
-    let updatedGameStateEntity = gameStateToGameStateEntity gameState (unpack gameId) createdAt timeStamp
-    insertedGameState <- runDB $ repsert gameStateKey updatedGameStateEntity
-    -- print $ gameState
-    -- -- The YesodAuth instance in Foundation.hs defines the UserId to be the type used for authentication.
-    -- maybeCurrentUserId <- maybeAuthId
-    -- --let newGameEntity' = newGameEntity { newGameUserId = maybeCurrentUserId }
-    -- insertedGameState <- runDB $ insertEntity gameState
+    let gameId = unpack gameIdText
+    now <- liftIO getCurrentTime
+
+    gameStateDBEntities <- runDB $ selectList [GameStateEntityGameId ==. gameId] [Desc GameStateEntityUpdatedAt, LimitTo 1]
+    let gameStateEntity = getGameStateEntity gameStateDBEntities
+    let newGameState = makeMove (gameStateEntityToGameState gameStateEntity) $ moveEntityToMove 
+                          MoveEntity {moveEntityAction    = moveRequestAction moveRequest, 
+                                      moveEntityCoordX    = moveRequestCoordX moveRequest, 
+                                      moveEntityCoordY    = moveRequestCoordY moveRequest,
+                                      moveEntityTimeStamp = now}-- TODO ERROR maybe here?
+
+    let createdAt = gameStateEntityCreatedAt gameStateEntity
+    let gameStateEntityKey = getGameStateEntityKey gameStateDBEntities
+
+    let updatedGameStateEntity = gameStateToGameStateEntity newGameState gameId createdAt now
+    insertedGameState <- runDB $ repsert gameStateEntityKey updatedGameStateEntity
     returnJson insertedGameState
 
 -- postGameR :: Handler Value
@@ -76,22 +65,21 @@ putGameR gameId = do
 --     insertedCell <- runDB $ insertEntity cell'
 --     returnJson insertedCell
 
-getGameStateEntity :: [Entity GameStateEntity] -> Maybe GameStateEntity
-getGameStateEntity (x:_) = Just $ entityVal x
-getGameStateEntity _     = Nothing
+getGameStateEntity :: [Entity GameStateEntity] -> GameStateEntity
+getGameStateEntity (x:_) = entityVal x
+getGameStateEntity _     = error "HELP ME!"
 
-getGameStateEntityKey :: [Entity GameStateEntity] -> Maybe (Key GameStateEntity)
-getGameStateEntityKey (x:_) = Just $ entityKey x
-getGameStateEntityKey _     = Nothing
+getGameStateEntityKey :: [Entity GameStateEntity] -> Key GameStateEntity
+getGameStateEntityKey (x:_) = entityKey x
+getGameStateEntityKey _     = error "HELP ME!"
 
 gameIds :: (Text, Text)
 gameIds = ("js-gameTableId", "js-cellId")
 
-   -- isFlagged Bool
-   -- isRevealed Bool
-   -- hasBomb Bool
-   -- neighboringBombs Int
-
+-- isFlagged Bool
+-- isRevealed Bool
+-- hasBomb Bool
+-- neighboringBombs Int
 getCellTile :: Bool -> Bool -> Bool -> Int -> String
 getCellTile False True False 0 = "/static/assets/type0.svg"
 getCellTile False True False 1 = "/static/assets/type1.svg"

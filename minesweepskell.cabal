@@ -27,8 +27,8 @@ library
       Game.Util
       Handler.Comment
       Handler.Common
-      Handler.Game
-      Handler.Games
+      Handler.GameR
+      Handler.GamesR
       Handler.Home
       Handler.Profile
       Import
