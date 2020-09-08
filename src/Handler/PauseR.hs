@@ -2,8 +2,6 @@
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE NoImplicitPrelude     #-}
 {-# LANGUAGE OverloadedStrings     #-}
-{-# LANGUAGE TemplateHaskell       #-}
-{-# LANGUAGE TypeFamilies          #-}
 module Handler.PauseR where
 
 
@@ -11,31 +9,23 @@ module Handler.PauseR where
 import           Game.Game
 import           Handler.GameR
 import           Import
-import           Text.Julius           (RawJS (..))
-import           Yesod.Form.Bootstrap3 (BootstrapFormLayout (..),
-                                        renderBootstrap3)
-import Data.Maybe
-import Data.Time.Clock (diffUTCTime)
-import Data.Fixed
 
--- Define our data that will be used for creating the form.
-data FileForm = FileForm
-    { fileInfo        :: FileInfo
-    , fileDescription :: Text
-    }
-
--- GET GAME VIEW
+-- PAUSE GAME
 postPauseR :: Text -> Handler Value
 postPauseR gameIdText = do
+    -- Prepare required variables
     let gameId = unpack gameIdText
     now <- liftIO getCurrentTime
+    -- Read GameState from DB
     gameStateDBEntities <- runDB $ selectList [GameStateEntityGameId ==. gameId] [Desc GameStateEntityUpdatedAt, LimitTo 1]
     let (gsEntity, gsKey) = getGameStateEntityAndKey gameStateDBEntities
+    -- Set GameState to "Paused" and and set timeElapsed as the time that elapsed playing the game until now
     let updatedGameStateEntity = gsEntity {
                                     gameStateEntityStatus = "Paused",
                                     gameStateEntityUpdatedAt = now,
                                     gameStateEntityTimeElapsed = calculateTimeElapsed (gameStateEntityLastStartedAt gsEntity) (gameStateEntityTimeElapsed gsEntity) now
                                     }
+    -- Insert GameState to DB, return GameState                       
     insertedGameStateEntity <- runDB $ repsert gsKey updatedGameStateEntity
     returnJson insertedGameStateEntity -- TODO check if return is working                                   
 

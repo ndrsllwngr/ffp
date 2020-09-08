@@ -1,3 +1,21 @@
+const resetGame = (gameId) => {
+   console.log("RESET GAME");
+   $.ajax({
+        url: '/game/' + gameId + '/reset',
+        type: 'POST',
+        contentType: "application/json",
+        data: JSON.stringify({}),
+        success: function (data) {
+          console.log(data);
+          location.reload();
+        },
+        error: function (data) {
+          console.log({data});
+          console.log("Error pausing game: " + data);
+        },
+      });
+};
+
 const digits = [
   "/static/assets/d0.svg",
   "/static/assets/d1.svg",
