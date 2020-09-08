@@ -1,21 +1,3 @@
-const resetGame = (gameId) => {
-   console.log("RESET GAME");
-   $.ajax({
-        url: '/game/' + gameId + '/reset',
-        type: 'POST',
-        contentType: "application/json",
-        data: JSON.stringify({}),
-        success: function (data) {
-          console.log(data);
-          location.reload();
-        },
-        error: function (data) {
-          console.log({data});
-          console.log("Error pausing game: " + data);
-        },
-      });
-};
-
 const digits = [
   "/static/assets/d0.svg",
   "/static/assets/d1.svg",
@@ -26,98 +8,156 @@ const digits = [
   "/static/assets/d6.svg",
   "/static/assets/d7.svg",
   "/static/assets/d8.svg",
-  "/static/assets/d9.svg"
+  "/static/assets/d9.svg",
 ];
 
-const revealBomb = (x, y, gameId, event) => {
-   // Make an AJAX request to the server to create a new comment
-   console.log(x, y, gameId, event);
-   $.ajax({
-        url: '/game/' + gameId,
-        type: 'PUT',
-        contentType: "application/json",
-        data: JSON.stringify({
-          action: event.altKey ? "Flag" : "Reveal",
-          coordX: x,
-          coordY: y
-        }),
-        success: function (data) {
-          console.log(data);
-          location.reload();
-        },
-        error: function (data) {
-          console.log({data});
-          console.log("Error making move: " + data);
-        },
-      });
+// Toggle flag, or reveal cell
+const makeMove = (x, y, gameId, event) => {
+  event.preventDefault();
+
+  console.log("MAKE MOVE", { x, y, gameId, event });
+
+  $.ajax({
+    url: "/game/" + gameId,
+    type: "PUT",
+    contentType: "application/json",
+    data: JSON.stringify({
+      action: event.altKey ? "Flag" : "Reveal",
+      coordX: x,
+      coordY: y,
+    }),
+    success: function (data) {
+      console.info("[SUCCESS] MAKE MOVE", { data });
+      window.location.reload();
+    },
+    error: function (data) {
+      console.error("[ERROR] MAKE MOVE", { data });
+    },
+  });
 };
 
-
-const setTimer = () => {
-    let timer = document.getElementById("timerId");
-    let prevTime = parseInt(timer.textContent, 10);
-    let newTime = prevTime + 1;
-    console.log({prevTime, newTime, timer});
-    timer.textContent = newTime;
-    renderDigits(newTime, "seconds");
+// Reset game
+const resetGame = (gameId, status) => {
+  if (status === "Won" || status === "Lost") {
     return;
+  }
+
+  console.log("RESET GAME", { gameId, status });
+
+  $.ajax({
+    url: "/game/" + gameId + "/reset",
+    type: "POST",
+    contentType: "application/json",
+    data: JSON.stringify({}),
+    success: function (data) {
+      console.info("[SUCCESS] RESET GAME", { data });
+      window.location.reload();
+    },
+    error: function (data) {
+      console.error("[ERROR] RESET GAME", { data });
+    },
+  });
 };
 
+// Pause game
+const pauseGame = (gameId) => {
+  console.log("PAUSE GAME", { gameId });
 
+  $.ajax({
+    url: "/game/" + gameId + "/pause",
+    type: "POST",
+    contentType: "application/json",
+    data: JSON.stringify({}),
+    success: function (data) {
+      console.info("[SUCCESS] PAUSE GAME", { data });
+      // RE-ROUTE TO GAMES
+      const newUrl = "/games";
+      console.log({ newUrl });
+      window.location.assign(newUrl);
+    },
+    error: function (data) {
+      console.error("[ERROR] PAUSE GAME", { data });
+    },
+  });
+};
+
+// Update timer (seconds, flags)
+const setTimer = () => {
+  let el = document.getElementById("seconds");
+  let prevTime = parseInt(el.getAttribute("prevTime"), 10);
+  //console.log({ el, prevTime });
+
+  let newTime = prevTime + 1;
+  let elFace = document.getElementById("face");
+  let status = elFace.getAttribute("status");
+  if (status === "Ongoing") {
+    renderDigits(newTime, "seconds");
+    el.setAttribute("prevTime", newTime);
+  } else if (!el.getAttribute("init").match("True")) {
+    renderDigits(prevTime, "seconds");
+    el.setAttribute("init", "True");
+    myStopFunction();
+  }
+  return;
+};
+
+// Update face status
+const setFace = () => {
+  let el = document.getElementById("face");
+  let status = el.getAttribute("status");
+  //console.log({ el, status });
+  let asset;
+  if (status === "Lost") {
+    asset = "/static/assets/face_lose.svg";
+  } else if (status === "Won") {
+    asset = "/static/assets/face_active.svg";
+  } else {
+    asset = "/static/assets/face_unpressed.svg";
+  }
+  el.innerHTML = `<img src="${asset}" alt="face sad" class="h-12" />`;
+  return;
+};
+
+// Split digits and render each digit seperately
 const renderDigits = (number, id) => {
   let numberStr;
   let el = document.getElementById(id);
   if (number < 0) {
     const _number = -number % 100;
     if (_number === 0) {
-      numberStr = '00';
+      numberStr = "00";
     } else if (_number < 10) {
-      numberStr = '0' + _number;
+      numberStr = "0" + _number;
     } else {
       numberStr = String(_number);
     }
-    let resFlags = numberStr.split('').map((n, i) => (
-          `<img src=${digits[n]} key=${i} class="h-12" alt=${n} />`
-        ));
-    console.log(resFlags.join());
-    let inner = `<div class="flex flex-row"><img src=${digits[0]} class="h-12" alt="-" />
-        ${resFlags.join('')}</div>`;
-    el.innerHTML=inner;
+    let resFlags = numberStr
+      .split("")
+      .map((n, i) => `<img src=${digits[n]} key=${i} class="h-12" alt=${n} />`);
+    let inner = `<div class="flex flex-row"><img src=${
+      digits[0]
+    } class="h-12" alt="-" />
+        ${resFlags.join("")}</div>`;
+    el.innerHTML = inner;
     return;
   }
 
-  numberStr = number < 999 ? String(number) : '999';
-  if (number < 10) numberStr = '00' + numberStr;
-  else if (number < 100) numberStr = '0' + numberStr;
-  console.log("hi2");
+  numberStr = number < 999 ? String(number) : "999";
+  if (number < 10) numberStr = "00" + numberStr;
+  else if (number < 100) numberStr = "0" + numberStr;
   let resSeconds = numberStr
-    .split('')
+    .split("")
     .map((n, i) => `<img key=${i} src=${digits[n]} alt=${n} class="h-12" />`);
-  
-  let inner = `<div class="flex flex-row">${resSeconds.join('')}</div>`;
-  el.innerHTML=inner;
+
+  let inner = `<div class="flex flex-row">${resSeconds.join("")}</div>`;
+  el.innerHTML = inner;
   return;
 };
 
-const pauseGame = (gameId) => {
-   // Make an AJAX request to the server to create a new comment
-   console.log("PAUSE GAME");
-   $.ajax({
-        url: '/game/' + gameId + '/pause',
-        type: 'POST',
-        contentType: "application/json",
-        data: JSON.stringify({}),
-        success: function (data) {
-          console.log(data);
-          //location.reload(); TODO go to home
-        },
-        error: function (data) {
-          console.log({data});
-          console.log("Error pausing game: " + data);
-        },
-      });
-};
+var timer = setInterval(setTimer, 1000);
+renderDigits(-12, "flags");
+setFace();
 
-setInterval(setTimer, 1000);
-// renderDigits(90,"seconds");
-renderDigits(-12,"flags");
+const myStopFunction = () => {
+  clearInterval(timer);
+};
