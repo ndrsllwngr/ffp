@@ -51,6 +51,7 @@ import           Handler.Common
 import           Handler.GameR
 import           Handler.GamesR
 import           Handler.PauseR
+import           Handler.ResetR
 import           Handler.Home
 import           Handler.Profile
 
