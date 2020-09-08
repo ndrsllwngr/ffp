@@ -50,20 +50,9 @@ putGameR gameIdText = do
     let gameStateEntityKey = getGameStateEntityKey gameStateDBEntities
 
     let updatedGameStateEntity = gameStateToGameStateEntity newGameState gameId createdAt now
-    insertedGameState <- runDB $ repsert gameStateEntityKey updatedGameStateEntity
-    returnJson insertedGameState
+    insertedGameStateEntity <- runDB $ repsert gameStateEntityKey updatedGameStateEntity
+    returnJson insertedGameStateEntity
 
--- postGameR :: Handler Value
--- postGameR = do
---     -- requireCheckJsonBody will parse the request body into the appropriate type, or return a 400 status code if the request JSON is invalid.
---     -- (The ToJSON and FromJSON instances are derived in the config/models file).
---     cell <- (requireCheckJsonBody :: Handler Game)
---     print $ cell
---     -- The YesodAuth instance in Foundation.hs defines the UserId to be the type used for authentication.
---     maybeCurrentUserId <- maybeAuthId
---     let cell' = cell { gameUserId = maybeCurrentUserId }
---     insertedCell <- runDB $ insertEntity cell'
---     returnJson insertedCell
 
 getGameStateEntity :: [Entity GameStateEntity] -> GameStateEntity
 getGameStateEntity (x:_) = entityVal x

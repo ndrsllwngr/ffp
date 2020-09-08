@@ -26,33 +26,16 @@ Game json
     --UniqueGame userId seed status
     deriving Eq
     deriving Show
+
+-- Request Models
 MoveRequest json
     action String
     coordX Int
     coordY Int
     deriving Eq
     deriving Show
-MoveEntity json
-    action String
-    coordX Int
-    coordY Int
-    timeStamp UTCTime default=CURRENT_TIME
-    deriving Eq
-    deriving Show
-Row json
-    cells [CellEntity]
-    deriving Eq
-    deriving Show
-CellEntity json
-    coordX Int
-    coordY Int
-    isFlagged Bool
-    isRevealed Bool
-    hasBomb Bool
-    neighboringBombs Int
-    deriving Eq
-    deriving Show
-NewGameEntity json
+
+NewGameRequest json
     height Int
     width Int
     bombCount Int
@@ -60,6 +43,8 @@ NewGameEntity json
     gameId String
     deriving Eq
     deriving Show
+
+-- DB Models
 GameStateEntity json
     board [Row] -- tbd
     moves [MoveEntity]
@@ -71,6 +56,29 @@ GameStateEntity json
     createdAt UTCTime
     updatedAt UTCTime
     UniqueGameStateEntity gameId
+    deriving Eq
+    deriving Show
+
+MoveEntity json
+    action String
+    coordX Int
+    coordY Int
+    timeStamp UTCTime default=CURRENT_TIME
+    deriving Eq
+    deriving Show
+
+Row json
+    cells [CellEntity]
+    deriving Eq
+    deriving Show
+
+CellEntity json
+    coordX Int
+    coordY Int
+    isFlagged Bool
+    isRevealed Bool
+    hasBomb Bool
+    neighboringBombs Int
     deriving Eq
     deriving Show
 

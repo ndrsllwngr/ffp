@@ -23,13 +23,13 @@ postGamesR :: Handler Value
 postGamesR = do
     -- requireCheckJsonBody will parse the request body into the appropriate type, or return a 400 status code if the request JSON is invalid.
     -- (The ToJSON and FromJSON instances are derived in the config/models file).
-    newGameEntity <- (requireCheckJsonBody :: Handler NewGameEntity)
+    newGameRequest <- (requireCheckJsonBody :: Handler NewGameRequest)
     now <- liftIO getCurrentTime
-    print newGameEntity
-    let newGameState = newGame (newGameEntityHeight newGameEntity, newGameEntityWidth newGameEntity) (newGameEntityBombCount newGameEntity) (newGameEntitySeed newGameEntity)
-    let newGameStateEntity = gameStateToGameStateEntity newGameState (newGameEntityGameId newGameEntity) now now
+    print newGameRequest
+    let newGameState = newGame (newGameRequestHeight newGameRequest, newGameRequestWidth newGameRequest) (newGameRequestBombCount newGameRequest) (newGameRequestSeed newGameRequest)
+    let newGameStateEntity = gameStateToGameStateEntity newGameState (newGameRequestGameId newGameRequest) now now
     print newGameStateEntity
-  
+
     insertedGameStateEntity <- runDB $ insertEntity newGameStateEntity
     returnJson insertedGameStateEntity
 
