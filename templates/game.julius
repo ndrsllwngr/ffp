@@ -120,42 +120,21 @@ const setFace = () => {
 
 // Split digits and render each digit seperately
 const renderDigits = (number, id) => {
-  let numberStr;
   let el = document.getElementById(id);
-  if (number < 0) {
-    const _number = -number % 100;
-    if (_number === 0) {
-      numberStr = "00";
-    } else if (_number < 10) {
-      numberStr = "0" + _number;
-    } else {
-      numberStr = String(_number);
-    }
-    let resFlags = numberStr
-      .split("")
-      .map((n, i) => `<img src=${digits[n]} key=${i} class="h-12" alt=${n} />`);
-    let inner = `<div class="flex flex-row"><img src=${
-      digits[0]
-    } class="h-12" alt="-" />
-        ${resFlags.join("")}</div>`;
-    el.innerHTML = inner;
-    return;
-  }
-
+  let numberStr;
   numberStr = number < 999 ? String(number) : "999";
   if (number < 10) numberStr = "00" + numberStr;
   else if (number < 100) numberStr = "0" + numberStr;
   let resSeconds = numberStr
     .split("")
     .map((n, i) => `<img key=${i} src=${digits[n]} alt=${n} class="h-12" />`);
-
   let inner = `<div class="flex flex-row">${resSeconds.join("")}</div>`;
   el.innerHTML = inner;
   return;
 };
 
 var timer = setInterval(setTimer, 1000);
-renderDigits(-12, "flags");
+renderDigits(12, "flags"); // TODO atm only fixed value, should be flags count
 setFace();
 
 const myStopFunction = () => {
