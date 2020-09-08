@@ -30,8 +30,8 @@ Game json
 -- Request Models
 MoveRequest json
     action String
-    coordX Int
-    coordY Int
+    coordX Int Maybe
+    coordY Int Maybe
     deriving Eq
     deriving Show
 
@@ -61,8 +61,8 @@ GameStateEntity json
 
 MoveEntity json
     action String
-    coordX Int
-    coordY Int
+    coordX Int Maybe
+    coordY Int Maybe
     timeStamp UTCTime default=CURRENT_TIME
     deriving Eq
     deriving Show
