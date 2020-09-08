@@ -14,8 +14,8 @@ module Marshalling (
 
 import           Data.Matrix
 import           Import 
-import           Game.Board --(Cell)
-import           Game.Game --(GameState, Move, GameStatus)
+import           Game.Board
+import           Game.Game
 
 gameStateToGameStateEntity :: GameState -> [Char] -> UTCTime -> UTCTime -> GameStateEntity
 gameStateToGameStateEntity state gameId createdAt updatedAt = GameStateEntity {
