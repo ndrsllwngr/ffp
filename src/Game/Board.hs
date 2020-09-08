@@ -13,7 +13,6 @@ module Game.Board  (generateBoard,
 
 import           Data.List
 import           Data.Matrix
-import           Model
 import           System.Random
 import           System.Random.Shuffle
 

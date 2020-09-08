@@ -8,6 +8,7 @@ module Handler.GameR where
 
 import           Game.Game
 import           Import
+import           Marshalling
 import           Text.Julius           (RawJS (..))
 import           Yesod.Form.Bootstrap3 (BootstrapFormLayout (..),
                                         renderBootstrap3)
