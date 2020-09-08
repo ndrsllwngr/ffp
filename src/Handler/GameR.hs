@@ -31,7 +31,7 @@ getGameR gameIdText = do
     -- If gameState was Paused, continue game and set lastStartedAt
     let gameStateEntity = case gameStateEntityStatus gsEntity of "Paused" -> gsEntity {gameStateEntityStatus = "Ongoing", gameStateEntityLastStartedAt = now}
                                                                  _        -> gsEntity
-    -- Insert updated game back to db                                                             
+    -- Insert updated game back to db
     _ <- runDB $ repsert gsKey gameStateEntity
                                                  
     defaultLayout $ do
@@ -55,19 +55,25 @@ putGameR gameIdText = do
                                       moveEntityCoordX    = moveRequestCoordX moveRequest,
                                       moveEntityCoordY    = moveRequestCoordY moveRequest,
                                       moveEntityTimeStamp = now}-- TODO ERROR maybe here?
-                                     
+
     let timeElapsed = case status newGameState of Won   -> finishGame
                                                   Lost  -> finishGame
                                                   _     -> gameStateEntityTimeElapsed gsEntity
                       where
-                      finishGame = calculateTimeElapsed (gameStateEntityLastStartedAt gsEntity) (gameStateEntityTimeElapsed gsEntity) now                           
+                      finishGame = calculateTimeElapsed (gameStateEntityLastStartedAt gsEntity) (gameStateEntityTimeElapsed gsEntity) now
 
 
     let createdAt = gameStateEntityCreatedAt gsEntity
     let lastStartedAt = gameStateEntityLastStartedAt gsEntity
 
     let updatedGameStateEntity = gameStateToGameStateEntity newGameState gameId createdAt now lastStartedAt timeElapsed
-    insertedGameStateEntity <- runDB $ repsert gsKey updatedGameStateEntity
+
+    insertedGameStateEntity <- runDB $ upsertBy (UniqueGameStateEntity gameId) updatedGameStateEntity [GameStateEntityMoves =. gameStateEntityMoves updatedGameStateEntity,
+                                                                                                       GameStateEntityBoard =. gameStateEntityBoard updatedGameStateEntity,
+                                                                                                       GameStateEntityStatus =. gameStateEntityStatus updatedGameStateEntity,
+                                                                                                       GameStateEntityTimeElapsed =. gameStateEntityTimeElapsed updatedGameStateEntity,
+                                                                                                       GameStateEntityUpdatedAt =. now
+                                                                                                      ]
     returnJson insertedGameStateEntity
 
 
@@ -126,12 +132,14 @@ getCellTileLost False True True _  = "/static/assets/mine_red.svg"
 getCellTileLost _ False True _     = "/static/assets/mine.svg"
 getCellTileLost _ _ _ _            = "/static/assets/closed.svg"
 
+-- getRemainingFlags :: []
+
 getTimeElapsed :: UTCTime -> Int -> UTCTime -> String -> Int
 getTimeElapsed lastStartedAt timeElapsed now status = case status of
                                                       "Won"   -> timeElapsed
                                                       "Lost"  -> timeElapsed
                                                       _       -> calculateTimeElapsed lastStartedAt timeElapsed now
-                                                      
+
 calculateTimeElapsed :: UTCTime -> Int -> UTCTime -> Int
 calculateTimeElapsed lastStartedAt timePrevElapsed now = do
   let (timeElapsed, _) = properFraction $ diffUTCTime now lastStartedAt
