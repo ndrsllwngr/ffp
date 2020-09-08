@@ -6,6 +6,7 @@
 module Handler.GamesR where
 
 import           Game.Game
+import           Marshalling
 import           Import
 import           Text.Julius           (RawJS (..))
 import           Yesod.Form.Bootstrap3 (BootstrapFormLayout (..),

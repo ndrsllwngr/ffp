@@ -8,6 +8,7 @@ module Handler.GameR where
 
 import           Game.Game
 import           Import
+import           Marshalling
 import           Text.Julius           (RawJS (..))
 import           Yesod.Form.Bootstrap3 (BootstrapFormLayout (..),
                                         renderBootstrap3)
@@ -16,10 +17,10 @@ import Data.Time.Clock (diffUTCTime)
 import Data.Fixed
 
 -- Define our data that will be used for creating the form.
-data FileForm = FileForm
-    { fileInfo        :: FileInfo
-    , fileDescription :: Text
-    }
+data FileForm = FileForm { 
+                  fileInfo        :: FileInfo, 
+                  fileDescription :: Text
+                }
 
 -- GET GAME VIEW
 getGameR :: Text -> Handler Html
