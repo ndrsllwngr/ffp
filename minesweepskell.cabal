@@ -61,6 +61,7 @@ library
     , hjsmin >=0.1 && <0.3
     , http-client-tls >=0.3 && <0.4
     , http-conduit >=2.3 && <2.4
+    , lens
     , matrix
     , monad-control >=0.3 && <1.1
     , monad-logger >=0.3 && <0.4
@@ -120,6 +121,7 @@ executable minesweepskell
     , hjsmin >=0.1 && <0.3
     , http-client-tls >=0.3 && <0.4
     , http-conduit >=2.3 && <2.4
+    , lens
     , matrix
     , minesweepskell
     , monad-control >=0.3 && <1.1
@@ -183,6 +185,7 @@ test-suite minesweepskell-test
     , hspec >=2.0.0
     , http-client-tls >=0.3 && <0.4
     , http-conduit >=2.3 && <2.4
+    , lens
     , matrix
     , minesweepskell
     , monad-control >=0.3 && <1.1

@@ -20,9 +20,9 @@ postPauseR gameIdText = do
     let (gsEntity, gsKey) = getGameStateEntityAndKey gameStateDBEntities
     -- Set GameState to "Paused" and and set timeElapsed as the time that elapsed playing the game until now
     let updatedGameStateEntity = gsEntity {
-                                    gameStateEntityStatus = "Paused",
-                                    gameStateEntityUpdatedAt = now,
-                                    gameStateEntityTimeElapsed = calculateTimeElapsed (gameStateEntityLastStartedAt gsEntity) (gameStateEntityTimeElapsed gsEntity) now
+                                    _gameStateEntityStatus = "Paused",
+                                    _gameStateEntityUpdatedAt = now,
+                                    _gameStateEntityTimeElapsed = calculateTimeElapsed (_gameStateEntityLastStartedAt gsEntity) (_gameStateEntityTimeElapsed gsEntity) now
                                   }
     -- Insert GameState to DB, return GameState                       
     insertedGameStateEntity <- runDB $ repsert gsKey updatedGameStateEntity

@@ -19,31 +19,31 @@ import           Game.Game
 
 gameStateToGameStateEntity :: GameState -> GameStateEntity
 gameStateToGameStateEntity state = GameStateEntity {
-                                       gameStateEntityBoard = boardToRows $ board state,
-                                       gameStateEntityMoves = map moveToMoveEntity $ moves state,
-                                       gameStateEntityBombCount = bombCount state,
-                                       gameStateEntitySeed = seed state,
-                                       gameStateEntityGameId = gameId state,
-                                       gameStateEntityCreatedAt = createdAt state,
-                                       gameStateEntityUpdatedAt = updatedAt state,
-                                       gameStateEntityStatus = show (status state),
-                                       gameStateEntityLastStartedAt = lastStartedAt state,
-                                       gameStateEntityTimeElapsed = timeElapsed state
+                                       _gameStateEntityBoard = boardToRows $ board state,
+                                       _gameStateEntityMoves = map moveToMoveEntity $ moves state,
+                                       _gameStateEntityBombCount = bombCount state,
+                                       _gameStateEntitySeed = seed state,
+                                       _gameStateEntityGameId = gameId state,
+                                       _gameStateEntityCreatedAt = createdAt state,
+                                       _gameStateEntityUpdatedAt = updatedAt state,
+                                       _gameStateEntityStatus = show (status state),
+                                       _gameStateEntityLastStartedAt = lastStartedAt state,
+                                       _gameStateEntityTimeElapsed = timeElapsed state
                                    } where boardToRows board = map (Row . map cellToCellEntity) (Data.Matrix.toLists board)
 
 gameStateEntityToGameState :: GameStateEntity -> GameState
 gameStateEntityToGameState entity = GameState {
-                                      board = rowsToBoard $ gameStateEntityBoard entity,
-                                      moves = map moveEntityToMove $ gameStateEntityMoves entity,
-                                      bombCount = gameStateEntityBombCount entity,
-                                      seed = gameStateEntitySeed entity,
-                                      status = statusEntityToStatus $ gameStateEntityStatus entity,
-                                      gameId = gameStateEntityGameId entity,
-                                      createdAt = gameStateEntityCreatedAt entity,
-                                      updatedAt = gameStateEntityUpdatedAt entity,
-                                      lastStartedAt = gameStateEntityLastStartedAt entity,
-                                      timeElapsed = gameStateEntityTimeElapsed entity
-                                    } where rowsToBoard rows = Data.Matrix.fromLists $ map (map cellEntityToCell . rowCells) rows
+                                      board = rowsToBoard $ _gameStateEntityBoard entity,
+                                      moves = map moveEntityToMove $ _gameStateEntityMoves entity,
+                                      bombCount = _gameStateEntityBombCount entity,
+                                      seed = _gameStateEntitySeed entity,
+                                      status = statusEntityToStatus $ _gameStateEntityStatus entity,
+                                      gameId = _gameStateEntityGameId entity,
+                                      createdAt = _gameStateEntityCreatedAt entity,
+                                      updatedAt = _gameStateEntityUpdatedAt entity,
+                                      lastStartedAt = _gameStateEntityLastStartedAt entity,
+                                      timeElapsed = _gameStateEntityTimeElapsed entity
+                                    } where rowsToBoard rows = Data.Matrix.fromLists $ map (map cellEntityToCell . _rowCells) rows
 
 statusEntityToStatus :: [Char] -> GameStatus
 statusEntityToStatus "Ongoing" = Ongoing
@@ -54,21 +54,21 @@ statusEntityToStatus _         = undefined
 
 cellToCellEntity :: Cell -> CellEntity
 cellToCellEntity (Cell flagged revealed hasBomb neighbors (x,y)) = CellEntity {
-                                                                     cellEntityCoordX = x,
-                                                                     cellEntityCoordY = y,
-                                                                     cellEntityIsFlagged = flagged,
-                                                                     cellEntityIsRevealed = revealed,
-                                                                     cellEntityHasBomb = hasBomb,
-                                                                     cellEntityNeighboringBombs = neighbors
+                                                                     _cellEntityCoordX = x,
+                                                                     _cellEntityCoordY = y,
+                                                                     _cellEntityIsFlagged = flagged,
+                                                                     _cellEntityIsRevealed = revealed,
+                                                                     _cellEntityHasBomb = hasBomb,
+                                                                     _cellEntityNeighboringBombs = neighbors
                                                                    }
 
 cellEntityToCell :: CellEntity -> Cell
 cellEntityToCell cellEntity = Cell {
-                                isFlagged         = cellEntityIsFlagged cellEntity,
-                                isRevealed        = cellEntityIsRevealed cellEntity,
-                                hasBomb           = cellEntityHasBomb cellEntity,
-                                neighboringBombs  = cellEntityNeighboringBombs cellEntity,
-                                coordinate        = (cellEntityCoordX cellEntity, cellEntityCoordY cellEntity)
+                                isFlagged         = _cellEntityIsFlagged cellEntity,
+                                isRevealed        = _cellEntityIsRevealed cellEntity,
+                                hasBomb           = _cellEntityHasBomb cellEntity,
+                                neighboringBombs  = _cellEntityNeighboringBombs cellEntity,
+                                coordinate        = (_cellEntityCoordX cellEntity, _cellEntityCoordY cellEntity)
                               }
 
 moveToMoveEntity :: Move -> MoveEntity

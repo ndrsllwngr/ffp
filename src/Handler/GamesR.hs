@@ -16,8 +16,8 @@ getGamesR = do
 
     gameStateDBEntities <- runDB $ selectList [] [Desc GameStateEntityUpdatedAt]
     let gameStateEntities = map entityVal gameStateDBEntities
-    let gameStateEntitiesOngoingOrPaused = filter (\x -> gameStateEntityStatus x == "Ongoing" || gameStateEntityStatus x == "Paused") gameStateEntities
-    let gameStateEntitiesWonOrLost = filter (\x -> gameStateEntityStatus x == "Lost" || gameStateEntityStatus x == "Won") gameStateEntities
+    let gameStateEntitiesOngoingOrPaused = filter (\x -> _gameStateEntityStatus x == "Ongoing" || _gameStateEntityStatus x == "Paused") gameStateEntities
+    let gameStateEntitiesWonOrLost = filter (\x -> _gameStateEntityStatus x == "Lost" || _gameStateEntityStatus x == "Won") gameStateEntities
     defaultLayout $ do
             let (newGameFormId, gameIdField, bombCountField, widthField, heightField) = variables
             setTitle "Create New Game"
@@ -31,7 +31,7 @@ postGamesR = do
     newGameRequest <- (requireCheckJsonBody :: Handler NewGameRequest)
     now <- liftIO getCurrentTime
     print newGameRequest
-    let newGameState = newGame (newGameRequestHeight newGameRequest, newGameRequestWidth newGameRequest) (newGameRequestBombCount newGameRequest) (newGameRequestSeed newGameRequest) (newGameRequestGameId newGameRequest) now
+    let newGameState = newGame (_newGameRequestHeight newGameRequest, _newGameRequestWidth newGameRequest) (_newGameRequestBombCount newGameRequest) (_newGameRequestSeed newGameRequest) (_newGameRequestGameId newGameRequest) now
     let newGameStateEntity = gameStateToGameStateEntity newGameState 
     print newGameStateEntity
 

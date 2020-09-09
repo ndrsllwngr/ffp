@@ -8,7 +8,7 @@ import Data.Time (UTCTime, diffUTCTime)
 
 
 getHeightAndWidthFromBoard :: [Row] -> (Int, Int)
-getHeightAndWidthFromBoard rows = (length rows, length $ rowCells $ headEx rows )
+getHeightAndWidthFromBoard rows = (length rows, length $ _rowCells $ headEx rows )
 
 calculateTimeElapsed :: UTCTime -> Int -> UTCTime -> Int
 calculateTimeElapsed lastStartedAt timePrevElapsed now = do

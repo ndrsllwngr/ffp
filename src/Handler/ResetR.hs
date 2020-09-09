@@ -20,7 +20,7 @@ postResetR gameIdText = do
     gameStateDBEntities <- runDB $ selectList [GameStateEntityGameId ==. gameId] [Desc GameStateEntityUpdatedAt, LimitTo 1]
     let (gsEntity, gsKey) = getGameStateEntityAndKey gameStateDBEntities
     -- Create new game with current properties
-    let resetGameState = newGame (getHeightAndWidthFromBoard $ gameStateEntityBoard gsEntity) (gameStateEntityBombCount gsEntity) (gameStateEntitySeed gsEntity) (gameStateEntityGameId gsEntity) now
+    let resetGameState = newGame (getHeightAndWidthFromBoard $ _gameStateEntityBoard gsEntity) (_gameStateEntityBombCount gsEntity) (_gameStateEntitySeed gsEntity) (_gameStateEntityGameId gsEntity) now
     -- Keep old game id and createdAt
     let newGameStateEntity = gameStateToGameStateEntity resetGameState
     -- Insert GameState to DB, return GameState

@@ -122,7 +122,7 @@
                        console log to see the raw response from the server.
                    <ul ##{commentListId}>
                        $forall comment <- allComments
-                           <li>#{commentMessage $ entityVal comment}
+                           <li>#{_commentMessage $ entityVal comment}
 
     <hr>
 

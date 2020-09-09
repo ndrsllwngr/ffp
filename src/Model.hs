@@ -24,7 +24,7 @@ import           Language.Haskell.TH.Syntax
 -- share [mkPersist sqlSettings, mkMigrate "migrateAll"]
 --    $(persistFileWith lowerCaseSettings "config/models.persistentmodels")
 let mongoSettings = mkPersistSettings (ConT ''MongoContext)
-  in share [mkPersist mongoSettings]
+  in share [mkPersist mongoSettings { mpsGenerateLenses = True }] -- TODO this could be used to not prefix fields: mpsPrefixFields = False
     $(persistFileWith upperCaseSettings "config/models.persistentmodels")
 -- in share [mkPersist mongoSettings] -- mkMigrate "migrateAll"
 --    $(persistFileWith lowerCaseSettings "config/models.persistentmodels")
