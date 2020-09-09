@@ -1,8 +1,4 @@
 {-# LANGUAGE TemplateHaskell #-}
-{-# LANGUAGE MultiParamTypeClasses #-} 
-{-# LANGUAGE FunctionalDependencies #-}
-{-# LANGUAGE TypeSynonymInstances #-}
-{-# LANGUAGE FlexibleInstances #-}
 
 
 
@@ -29,28 +25,28 @@ import           Control.Lens
 type Dimension = (Int,Int)
 type Coordinate = (Int,Int)
 
-data Cell = Cell { _cellIsFlagged        :: Bool,
-                   _cellIsRevealed       :: Bool,
-                   _cellHasBomb          :: Bool,
-                   _cellNeighboringBombs :: Int,
-                   _cellCoordinate       :: Coordinate
+data Cell = Cell { _isFlagged        :: Bool,
+                   _isRevealed       :: Bool,
+                   _hasBomb          :: Bool,
+                   _neighboringBombs :: Int,
+                   _coordinate       :: Coordinate
                    } deriving (Show, Eq)
-makeFields ''Cell                   
+makeLenses ''Cell                   
 
 type Board = Matrix Cell
 
 -- Generates a Minesweeper Board with a given dimension, number of bombs and random seed
 generateBoard :: Dimension -> Int -> Int -> Board
 generateBoard (h,w) bombCount seed = matrix h w (\(i,j) -> Cell {
-                                                              _cellIsRevealed = False,
-                                                              _cellIsFlagged = False,
+                                                              _isRevealed = False,
+                                                              _isFlagged = False,
                                                               -- the cell has a bomb on it if the cell number is part of the bomb cells
-                                                              _cellHasBomb = coordinateToCellNumber (i,j) (h,w) `elem` bombPos,
+                                                              _hasBomb = coordinateToCellNumber (i,j) (h,w) `elem` bombPos,
                                                               -- the amount of neighboring bombs is equal to:
                                                               -- the length of the intersection between the neighbouring cell numbers & the bomb cell numbers
-                                                              _cellNeighboringBombs = length $ map toCellNumber (neighbourCells (i,j) (h,w)) `intersect` bombPos,
+                                                              _neighboringBombs = length $ map toCellNumber (neighbourCells (i,j) (h,w)) `intersect` bombPos,
                                                               -- the cells coordinate
-                                                              _cellCoordinate = (i,j)
+                                                              _coordinate = (i,j)
                                                             })
                                                             where
                                                                 -- initialize randomizer with seed
@@ -90,8 +86,8 @@ revealCell board (i,j) = resultBoard where
 -- Reveals all cells which have not been flagged
 revealAllNonFlaggedCells :: Board -> Board
 revealAllNonFlaggedCells board = resultBoard where 
-                                cellsToReveal   = filter (not . _cellIsFlagged)(toList board)
-                                cellCoordinates = map _cellCoordinate cellsToReveal
+                                cellsToReveal   = filter (not . _isFlagged)(toList board)
+                                cellCoordinates = map _coordinate cellsToReveal
                                 resultBoard     = foldl setCellToRevealed board cellCoordinates
                             
 
@@ -108,7 +104,7 @@ checkLost board = any (\c -> c ^. isRevealed && c ^. hasBomb) (toList board)
 
 -- Checks if all non bomb fields are revealed OR if all bombs have been flagged
 checkWon :: Board -> Bool
-checkWon board = all _cellIsRevealed $ filter (not . _cellHasBomb) (toList board)
+checkWon board = all _isRevealed $ filter (not . _hasBomb) (toList board) --TODO not sure how to use lens notation here and in the other funky map cases ^_
 
 -- Calculates the cell number of a given XY-Coordinate for a given Board size
 -- will also calculate out of bounds cells if out of bounds coordinates are provided

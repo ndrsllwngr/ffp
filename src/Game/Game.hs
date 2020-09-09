@@ -1,9 +1,5 @@
 {-# LANGUAGE BlockArguments #-}
 {-# LANGUAGE TemplateHaskell #-}
-{-# LANGUAGE MultiParamTypeClasses #-} 
-{-# LANGUAGE FunctionalDependencies #-}
-{-# LANGUAGE TypeSynonymInstances #-}
-{-# LANGUAGE FlexibleInstances #-}
 
 module Game.Game (newGame,
                   makeMove,
@@ -30,18 +26,18 @@ data Move = Reveal Coordinate UTCTime | RevealAllNonFlagged UTCTime | Flag Coord
 data GameStatus = Ongoing | Won | Lost | Paused deriving (Show, Eq, Read)
 --derivePersistField "Status"
 
-data GameState = GameState { _gameStateBoard          :: Board,
-                             _gameStateMoves          :: [Move],
-                             _gameStateBombCount      :: Int,
-                             _gameStateSeed           :: Int,
-                             _gameStateStatus         :: GameStatus,
-                             _gameStateGameId         :: String,
-                             _gameStateCreatedAt      :: UTCTime,
-                             _gameStateUpdatedAt      :: UTCTime,
-                             _gameStateLastStartedAt  :: UTCTime,
-                             _gameStateTimeElapsed    :: Int
+data GameState = GameState { _board          :: Board,
+                             _moves          :: [Move],
+                             _bombCount      :: Int,
+                             _seed           :: Int,
+                             _status         :: GameStatus,
+                             _gameId         :: String,
+                             _createdAt      :: UTCTime,
+                             _updatedAt      :: UTCTime,
+                             _lastStartedAt  :: UTCTime,
+                             _timeElapsed    :: Int
                             }
-makeFields ''GameState                                     
+makeLenses ''GameState                                     
 
 instance Show GameState where
     show (GameState b m bombs s st _ _ _ _ _) = "Bombcount: " ++ show bombs ++ " Seed: " ++ show s ++ " Status: " ++ show st ++ "\n" ++ show m ++ "\n" ++ show b
@@ -50,16 +46,16 @@ instance Show GameState where
 -- Creates a new game for a given Dimension, bombCount & seed
 newGame :: Dimension -> Int -> Int -> String -> UTCTime -> GameState
 newGame (h,w) b s gId now = GameState { 
-                                _gameStateBoard         = generateBoard (h,w) b s,
-                                _gameStateMoves         = [],
-                                _gameStateBombCount     = b,
-                                _gameStateSeed          = s,
-                                _gameStateStatus        = Ongoing,
-                                _gameStateGameId        = gId,       
-                                _gameStateCreatedAt     = now,    
-                                _gameStateUpdatedAt     = now,    
-                                _gameStateLastStartedAt = now, 
-                                _gameStateTimeElapsed   = 0
+                                _board         = generateBoard (h,w) b s,
+                                _moves         = [],
+                                _bombCount     = b,
+                                _seed          = s,
+                                _status        = Ongoing,
+                                _gameId        = gId,       
+                                _createdAt     = now,    
+                                _updatedAt     = now,    
+                                _lastStartedAt = now, 
+                                _timeElapsed   = 0
                                }
 
 -- Executes a move on a given GameState

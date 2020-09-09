@@ -3,7 +3,6 @@
 {-# LANGUAGE NoImplicitPrelude     #-}
 {-# LANGUAGE TypeFamilies          #-}
 {-# LANGUAGE BlockArguments #-}
-{-# LANGUAGE TemplateHaskell #-}
 
 module Marshalling (
                     gameStateToGameStateEntity,
@@ -37,16 +36,16 @@ gameStateToGameStateEntity state = GameStateEntity {
 
 gameStateEntityToGameState :: GameStateEntity -> GameState
 gameStateEntityToGameState entity = GameState {
-                                       _gameStateBoard         = rowsToBoard $ entity ^. gameStateEntityBoard,
-                                       _gameStateMoves         = map moveEntityToMove $ entity ^. gameStateEntityMoves,
-                                       _gameStateBombCount     = entity ^. gameStateEntityBombCount,
-                                       _gameStateSeed          = entity ^. gameStateEntitySeed,
-                                       _gameStateStatus        = statusEntityToStatus $ entity ^. gameStateEntityStatus,
-                                       _gameStateGameId        = entity ^. gameStateEntityGameId,
-                                       _gameStateCreatedAt     = entity ^. gameStateEntityCreatedAt,
-                                       _gameStateUpdatedAt     = entity ^. gameStateEntityUpdatedAt,
-                                       _gameStateLastStartedAt = entity ^. gameStateEntityLastStartedAt,
-                                       _gameStateTimeElapsed   = entity ^. gameStateEntityTimeElapsed
+                                       _board         = rowsToBoard $ entity ^. gameStateEntityBoard,
+                                       _moves         = map moveEntityToMove $ entity ^. gameStateEntityMoves,
+                                       _bombCount     = entity ^. gameStateEntityBombCount,
+                                       _seed          = entity ^. gameStateEntitySeed,
+                                       _status        = statusEntityToStatus $ entity ^. gameStateEntityStatus,
+                                       _gameId        = entity ^. gameStateEntityGameId,
+                                       _createdAt     = entity ^. gameStateEntityCreatedAt,
+                                       _updatedAt     = entity ^. gameStateEntityUpdatedAt,
+                                       _lastStartedAt = entity ^. gameStateEntityLastStartedAt,
+                                       _timeElapsed   = entity ^. gameStateEntityTimeElapsed
                                     } where rowsToBoard rows = Data.Matrix.fromLists $ map (map cellEntityToCell . _rowCells) rows --TODO how to use lense here?
 
 statusEntityToStatus :: [Char] -> GameStatus
@@ -68,11 +67,11 @@ cellToCellEntity (Cell flagged revealed hasBomb neighbors (x,y)) = CellEntity {
 
 cellEntityToCell :: CellEntity -> Cell
 cellEntityToCell cellEntity = Cell {
-                                _cellIsFlagged         = cellEntity ^. cellEntityIsFlagged ,
-                                _cellIsRevealed        = cellEntity ^. cellEntityIsRevealed,
-                                _cellHasBomb           = cellEntity ^. cellEntityHasBomb ,
-                                _cellNeighboringBombs  = cellEntity ^. cellEntityNeighboringBombs ,
-                                _cellCoordinate        = (cellEntity ^. cellEntityCoordX, cellEntity ^. cellEntityCoordY)
+                                _isFlagged         = cellEntity ^. cellEntityIsFlagged ,
+                                _isRevealed        = cellEntity ^. cellEntityIsRevealed,
+                                _hasBomb           = cellEntity ^. cellEntityHasBomb ,
+                                _neighboringBombs  = cellEntity ^. cellEntityNeighboringBombs ,
+                                _coordinate        = (cellEntity ^. cellEntityCoordX, cellEntity ^. cellEntityCoordY)
                               }
 
 moveToMoveEntity :: Move -> MoveEntity
