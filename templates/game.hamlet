@@ -18,6 +18,8 @@
                 <div .bs-callout.bs-callout-info.well>
                      <button onclick="pauseGame('#{gameStateEntityGameId gameStateEntity}')">
                         Spiel pausieren
+                     <button onclick="revealAll('#{gameStateEntityGameId gameStateEntity}')">
+                        Alles aufdecken
                      <table ##{gameTableId}style="width:40%">
                         $forall row <- gameStateEntityBoard gameStateEntity
                             <tr>

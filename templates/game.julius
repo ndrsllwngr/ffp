@@ -36,11 +36,32 @@ const makeMove = (x, y, gameId, event) => {
   });
 };
 
+// Reveal all
+const revealAll = (gameId) => {
+
+    console.log("revealAll");
+
+    $.ajax({
+        url: "/game/" + gameId,
+        type: "PUT",
+        contentType: "application/json",
+        data: JSON.stringify({
+          action: "RevealAllNonFlagged"
+        }),
+        success: function (data) {
+          console.info("[SUCCESS] REVEAL ALL", { data });
+          window.location.reload();
+        },
+        error: function (data) {
+          console.error("[ERROR] REVEAL ALL", { data });
+        },
+      });
+};
 // Reset game
 const resetGame = (gameId, status) => {
-  if (status === "Won" || status === "Lost") {
-    return;
-  }
+  //if (status === "Won" || status === "Lost") {
+  //  return;
+  //}
 
   console.log("RESET GAME", { gameId, status });
 
