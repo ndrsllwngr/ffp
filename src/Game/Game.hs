@@ -11,7 +11,7 @@ import           ClassyPrelude.Conduit (UTCTime)
 import           Game.Board
 
 data Move = Reveal Coordinate UTCTime | RevealAllNonFlagged UTCTime | Flag Coordinate UTCTime deriving (Show, Eq, Read) -- TODO maybe add unflag
-data GameStatus = Ongoing | Won | Lost deriving (Show, Eq, Read)
+data GameStatus = Ongoing | Won | Lost | Paused deriving (Show, Eq, Read)
 --derivePersistField "Status"
 
 data GameState = GameState { board     :: Board,
@@ -22,6 +22,7 @@ data GameState = GameState { board     :: Board,
                              }
 
 instance Show GameState where
+
    show (GameState b m bombs s st) = "Bombcount: " ++ show bombs ++ " Seed: " ++ show s ++ " Status: " ++ show st ++ "\n" ++ show m ++ "\n" ++ show b
 
 -- Creates a new game for a given Dimension, bombCount & seed

@@ -12,26 +12,30 @@ import           Marshalling
 import           Text.Julius           (RawJS (..))
 import           Yesod.Form.Bootstrap3 (BootstrapFormLayout (..),
                                         renderBootstrap3)
-
--- Define our data that will be used for creating the form.
-data FileForm = FileForm { 
-                  fileInfo        :: FileInfo, 
-                  fileDescription :: Text
-                }
+import Data.Maybe
+import Data.Time.Clock (diffUTCTime)
+import Data.Fixed
 
 -- GET GAME VIEW
 getGameR :: Text -> Handler Html
 getGameR gameIdText = do
-    let gameId = unpack gameIdText
-    gameStateDBEntities <- runDB $ selectList [GameStateEntityGameId ==. gameId] [Desc GameStateEntityUpdatedAt, LimitTo 1]
-    let gameStateEntity = getGameStateEntity gameStateDBEntities
+    now <- liftIO getCurrentTime
+    gameStateDBEntities <- runDB $ selectList [GameStateEntityGameId ==. unpack gameIdText] [Desc GameStateEntityUpdatedAt, LimitTo 1]
+    let (gsEntity, gsKey) = getGameStateEntityAndKey gameStateDBEntities
+    -- If gameState was Paused, continue game and set lastStartedAt
+    let gameStateEntity = case gameStateEntityStatus gsEntity of "Paused" -> gsEntity {gameStateEntityStatus = "Ongoing", gameStateEntityLastStartedAt = now}
+                                                                 _        -> gsEntity
+    -- Insert updated game back to db                                                             
+    _ <- runDB $ repsert gsKey gameStateEntity
+                                                 
     defaultLayout $ do
             let (gameTableId, cellId) = gameIds
+            aDomId <- newIdent
             setTitle "Game"
             $(widgetFile "game")
 
 -- MAKE MOVE
-putGameR :: Text -> Handler Value
+putGameR :: Text -> Handler Html
 putGameR gameIdText = do
     -- requireCheckJsonBody will parse the request body into the appropriate type, or return a 400 status code if the request JSON is invalid.
     -- (The ToJSON and FromJSON instances are derived in the config/models file).
@@ -40,28 +44,40 @@ putGameR gameIdText = do
     now <- liftIO getCurrentTime
 
     gameStateDBEntities <- runDB $ selectList [GameStateEntityGameId ==. gameId] [Desc GameStateEntityUpdatedAt, LimitTo 1]
-    let gameStateEntity = getGameStateEntity gameStateDBEntities
-    let newGameState = makeMove (gameStateEntityToGameState gameStateEntity) $ moveEntityToMove 
-                          MoveEntity {moveEntityAction    = moveRequestAction moveRequest, 
-                                      moveEntityCoordX    = moveRequestCoordX moveRequest, 
+    let (gsEntity, gsKey) = getGameStateEntityAndKey gameStateDBEntities
+    let newGameState = makeMove (gameStateEntityToGameState gsEntity) $ moveEntityToMove
+                          MoveEntity {moveEntityAction    = moveRequestAction moveRequest,
+                                      moveEntityCoordX    = moveRequestCoordX moveRequest,
                                       moveEntityCoordY    = moveRequestCoordY moveRequest,
                                       moveEntityTimeStamp = now}-- TODO ERROR maybe here?
 
-    let createdAt = gameStateEntityCreatedAt gameStateEntity
-    let gameStateEntityKey = getGameStateEntityKey gameStateDBEntities
+    let timeElapsed = case status newGameState of Won   -> finishGame
+                                                  Lost  -> finishGame
+                                                  _     -> gameStateEntityTimeElapsed gsEntity
+                      where
+                      finishGame = calculateTimeElapsed (gameStateEntityLastStartedAt gsEntity) (gameStateEntityTimeElapsed gsEntity) now
+    let createdAt = gameStateEntityCreatedAt gsEntity
+    let lastStartedAt = gameStateEntityLastStartedAt gsEntity
+    let updatedGameStateEntity = gameStateToGameStateEntity newGameState gameId createdAt now lastStartedAt timeElapsed
 
-    let updatedGameStateEntity = gameStateToGameStateEntity newGameState gameId createdAt now
-    insertedGameStateEntity <- runDB $ repsert gameStateEntityKey updatedGameStateEntity
-    returnJson insertedGameStateEntity
+    _ <- runDB $ upsertBy (UniqueGameStateEntity gameId) updatedGameStateEntity [GameStateEntityMoves =. gameStateEntityMoves updatedGameStateEntity,
+                                                                                                       GameStateEntityBoard =. gameStateEntityBoard updatedGameStateEntity,
+                                                                                                       GameStateEntityStatus =. gameStateEntityStatus updatedGameStateEntity,
+                                                                                                       GameStateEntityTimeElapsed =. gameStateEntityTimeElapsed updatedGameStateEntity,
+                                                                                                       GameStateEntityUpdatedAt =. now
+                                                                                                      ]
+    
+    let gameStateEntity = updatedGameStateEntity
+    defaultLayout $ do
+            let (gameTableId, cellId) = gameIds
+            aDomId <- newIdent
+            setTitle "Game"
+            $(widgetFile "game")
 
 
-getGameStateEntity :: [Entity GameStateEntity] -> GameStateEntity
-getGameStateEntity (x:_) = entityVal x
-getGameStateEntity _     = error "HELP ME!"
-
-getGameStateEntityKey :: [Entity GameStateEntity] -> Key GameStateEntity
-getGameStateEntityKey (x:_) = entityKey x
-getGameStateEntityKey _     = error "HELP ME!"
+getGameStateEntityAndKey :: [Entity GameStateEntity] -> (GameStateEntity, Key GameStateEntity)
+getGameStateEntityAndKey (x:_) = (entityVal x, entityKey x)
+getGameStateEntityAndKey _     = error "HELP ME!"
 
 gameIds :: (Text, Text)
 gameIds = ("js-gameTableId", "js-cellId")
@@ -113,3 +129,20 @@ getCellTileLost True False False _ = "/static/assets/mine_wrong.svg"
 getCellTileLost False True True _  = "/static/assets/mine_red.svg"
 getCellTileLost _ False True _     = "/static/assets/mine.svg"
 getCellTileLost _ _ _ _            = "/static/assets/closed.svg"
+
+getRemainingFlags :: [Row] -> Int -> Int
+getRemainingFlags rows bombCount = bombCount - sum (concatMap mapCells rows) 
+                                   where mapCells row = map cellToInt $ rowCells row 
+                                                        where cellToInt cell = fromEnum $ cellEntityIsFlagged cell
+
+
+getTimeElapsed :: UTCTime -> Int -> UTCTime -> String -> Int
+getTimeElapsed lastStartedAt timeElapsed now status = case status of
+                                                      "Won"   -> timeElapsed
+                                                      "Lost"  -> timeElapsed
+                                                      _       -> calculateTimeElapsed lastStartedAt timeElapsed now
+
+calculateTimeElapsed :: UTCTime -> Int -> UTCTime -> Int
+calculateTimeElapsed lastStartedAt timePrevElapsed now = do
+  let (timeElapsed, _) = properFraction $ diffUTCTime now lastStartedAt
+  timePrevElapsed + timeElapsed

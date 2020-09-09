@@ -1,22 +1,170 @@
-function revealBomb(x, y, gameId, event) {
-   // Make an AJAX request to the server to create a new comment
-   console.log(x, y, gameId, event);
-   $.ajax({
-        url: '/game/' + gameId,
-        type: 'PUT',
+const digits = [
+  "/static/assets/d0.svg",
+  "/static/assets/d1.svg",
+  "/static/assets/d2.svg",
+  "/static/assets/d3.svg",
+  "/static/assets/d4.svg",
+  "/static/assets/d5.svg",
+  "/static/assets/d6.svg",
+  "/static/assets/d7.svg",
+  "/static/assets/d8.svg",
+  "/static/assets/d9.svg",
+];
+
+// Toggle flag, or reveal cell
+const makeMove = (x, y, gameId, event) => {
+  event.preventDefault();
+
+  console.log("MAKE MOVE", { x, y, gameId, event });
+
+  $.ajax({
+    url: "/game/" + gameId,
+    type: "PUT",
+    contentType: "application/json",
+    data: JSON.stringify({
+      action: event.altKey ? "Flag" : "Reveal",
+      coordX: x,
+      coordY: y,
+    }),
+    success: function (data) {
+      console.info("[SUCCESS] MAKE MOVE", { data });
+      window.location.reload();
+    },
+    error: function (data) {
+      console.error("[ERROR] MAKE MOVE", { data });
+    },
+  });
+};
+
+// Reveal all
+const revealAll = (gameId) => {
+
+    console.log("revealAll");
+
+    $.ajax({
+        url: "/game/" + gameId,
+        type: "PUT",
         contentType: "application/json",
         data: JSON.stringify({
-          action: event.altKey ? "Flag" : "Reveal",
-          coordX: x,
-          coordY: y
+          action: "RevealAllNonFlagged"
         }),
         success: function (data) {
-          console.log(data);
-          location.reload();
+          console.info("[SUCCESS] REVEAL ALL", { data });
+          window.location.reload();
         },
         error: function (data) {
-          console.log({data});
-          console.log("Error making move: " + data);
+          console.error("[ERROR] REVEAL ALL", { data });
         },
       });
+};
+// Reset game
+const resetGame = (gameId, status) => {
+  //if (status === "Won" || status === "Lost") {
+  //  return;
+  //}
+
+  console.log("RESET GAME", { gameId, status });
+
+  $.ajax({
+    url: "/game/" + gameId + "/reset",
+    type: "POST",
+    contentType: "application/json",
+    data: JSON.stringify({}),
+    success: function (data) {
+      console.info("[SUCCESS] RESET GAME", { data });
+      window.location.reload();
+    },
+    error: function (data) {
+      console.error("[ERROR] RESET GAME", { data });
+    },
+  });
+};
+
+// Pause game
+const pauseGame = (gameId) => {
+  console.log("PAUSE GAME", { gameId });
+
+  $.ajax({
+    url: "/game/" + gameId + "/pause",
+    type: "POST",
+    contentType: "application/json",
+    data: JSON.stringify({}),
+    success: function (data) {
+      console.info("[SUCCESS] PAUSE GAME", { data });
+      // RE-ROUTE TO GAMES
+      const newUrl = "/games";
+      console.log({ newUrl });
+      window.location.assign(newUrl);
+    },
+    error: function (data) {
+      console.error("[ERROR] PAUSE GAME", { data });
+    },
+  });
+};
+
+// Update timer (seconds, flags)
+const setTimer = () => {
+  let el = document.getElementById("seconds");
+  let prevTime = parseInt(el.getAttribute("prevTime"), 10);
+  //console.log({ el, prevTime });
+
+  let newTime = prevTime + 1;
+  let elFace = document.getElementById("face");
+  let status = elFace.getAttribute("status");
+  if (status === "Ongoing") {
+    renderDigits(newTime, "seconds");
+    el.setAttribute("prevTime", newTime);
+  } else if (!el.getAttribute("init").match("True")) {
+    renderDigits(prevTime, "seconds");
+    el.setAttribute("init", "True");
+    myStopFunction();
+  }
+  return;
+};
+
+// Update face status
+const setFace = () => {
+  let el = document.getElementById("face");
+  let status = el.getAttribute("status");
+  //console.log({ el, status });
+  let asset;
+  if (status === "Lost") {
+    asset = "/static/assets/face_lose.svg";
+  } else if (status === "Won") {
+    asset = "/static/assets/face_active.svg";
+  } else {
+    asset = "/static/assets/face_unpressed.svg";
+  }
+  el.innerHTML = `<img src="${asset}" alt="face sad" class="h-12" />`;
+  return;
+};
+
+const setFlags = () => {
+  let el = document.getElementById("flags");
+  let remainingFlags = parseInt(el.getAttribute("remainingFlags"), 10);
+  //console.log(remainingFlags);
+  renderDigits(remainingFlags, "flags");
+
+};
+// Split digits and render each digit seperately
+const renderDigits = (number, id) => {
+  let el = document.getElementById(id);
+  let numberStr;
+  numberStr = number < 999 ? String(number) : "999";
+  if (number < 10) numberStr = "00" + numberStr;
+  else if (number < 100) numberStr = "0" + numberStr;
+  let resSeconds = numberStr
+    .split("")
+    .map((n, i) => `<img key=${i} src=${digits[n]} alt=${n} class="h-12" />`);
+  let inner = `<div class="flex flex-row">${resSeconds.join("")}</div>`;
+  el.innerHTML = inner;
+  return;
+};
+
+var timer = setInterval(setTimer, 1000);
+setFlags();
+setFace();
+
+const myStopFunction = () => {
+  clearInterval(timer);
 };

@@ -1,40 +1,42 @@
-$(function() {
-  $("##{rawJS newGameFormId}").submit(function(event) {
+$(function () {
+  $("##{rawJS newGameFormId}").submit(function (event) {
     event.preventDefault();
 
     var gameId = $("##{rawJS gameIdField}").val();
     var bombCount = $("##{rawJS bombCountField}").val();
     var width = $("##{rawJS widthField}").val();
     var height = $("##{rawJS heightField}").val();
+
     // (Browsers that enforce the "required" attribute on the textarea won't see this alert)
     if (!gameId || !bombCount || !width || !height) {
-      console.log({gameId,bombCount,width,height});
+      console.warn({ gameId, bombCount, width, height });
       alert("Please fill out the create new game form first.");
       return;
     }
 
-    // Make an AJAX request to the server to create a new comment
+    console.log("CREATE GAME", { gameId, bombCount, width, height, event });
+
     $.ajax({
-      url: '@{GamesR}',
-      type: 'POST',
+      url: "@{GamesR}",
+      type: "POST",
       contentType: "application/json",
       data: JSON.stringify({
         height: parseInt(height, 10),
         width: parseInt(width, 10),
         bombCount: parseInt(bombCount, 10),
         seed: 42,
-        gameId: gameId
+        gameId: gameId,
       }),
       success: function (data) {
-        console.log(data);
-        const newUrl = "http://localhost:3000/game/"+gameId
-        console.log(newUrl);
-        window.location.replace(newUrl);
+        console.info("[SUCCESS] CREATE GAME", { data });
+        // RE-ROUTE TO NEW GAME
+        const newUrl = "/game/" + gameId;
+        console.log({ newUrl });
+        window.location.assign(newUrl);
       },
       error: function (data) {
-        console.log("Error creating game: " + data);
+        console.error("[ERROR] CREATE GAME", { data });
       },
     });
-
   });
 });

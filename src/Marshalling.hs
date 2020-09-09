@@ -17,8 +17,8 @@ import           Import
 import           Game.Board
 import           Game.Game
 
-gameStateToGameStateEntity :: GameState -> [Char] -> UTCTime -> UTCTime -> GameStateEntity
-gameStateToGameStateEntity state gameId createdAt updatedAt = GameStateEntity {
+gameStateToGameStateEntity :: GameState -> [Char] -> UTCTime -> UTCTime -> UTCTime -> Int -> GameStateEntity
+gameStateToGameStateEntity state gameId createdAt updatedAt lastStartedAt timeElapsed  = GameStateEntity {
                                                                 gameStateEntityBoard = boardToRows $ board state,
                                                                 gameStateEntityMoves = map moveToMoveEntity $ moves state,
                                                                 gameStateEntityBombCount = bombCount state,
@@ -26,7 +26,9 @@ gameStateToGameStateEntity state gameId createdAt updatedAt = GameStateEntity {
                                                                 gameStateEntityGameId = gameId,
                                                                 gameStateEntityCreatedAt = createdAt,
                                                                 gameStateEntityUpdatedAt = updatedAt,
-                                                                gameStateEntityStatus = show (status state)
+                                                                gameStateEntityStatus = show (status state),
+                                                                gameStateEntityLastStartedAt = lastStartedAt,
+                                                                gameStateEntityTimeElapsed = timeElapsed
                                                               } where boardToRows board = map (Row . map cellToCellEntity) (Data.Matrix.toLists board)
 
 gameStateEntityToGameState :: GameStateEntity -> GameState
@@ -41,7 +43,9 @@ gameStateEntityToGameState entity = GameState {
 statusEntityToStatus :: [Char] -> GameStatus
 statusEntityToStatus "Ongoing" = Ongoing
 statusEntityToStatus "Won"     = Won
-statusEntityToStatus _         = Lost
+statusEntityToStatus "Lost"    = Lost
+statusEntityToStatus "Paused"  = Paused
+statusEntityToStatus _         = undefined
 
 cellToCellEntity :: Cell -> CellEntity
 cellToCellEntity (Cell flagged revealed hasBomb neighbors (x,y)) = CellEntity {

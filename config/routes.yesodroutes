@@ -15,3 +15,5 @@
 
 /games GamesR GET POST
 /game/#Text GameR GET PUT
+/game/#Text/pause PauseR POST
+/game/#Text/reset ResetR POST

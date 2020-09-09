@@ -30,7 +30,9 @@ library
       Handler.GameR
       Handler.GamesR
       Handler.Home
+      Handler.PauseR
       Handler.Profile
+      Handler.ResetR
       Import
       Import.NoFoundation
       Marshalling

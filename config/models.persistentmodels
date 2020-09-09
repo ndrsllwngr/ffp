@@ -55,6 +55,8 @@ GameStateEntity json
     gameId String
     createdAt UTCTime
     updatedAt UTCTime
+    lastStartedAt UTCTime
+    timeElapsed Int
     UniqueGameStateEntity gameId
     deriving Eq
     deriving Show
