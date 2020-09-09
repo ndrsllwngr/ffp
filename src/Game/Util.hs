@@ -1,18 +1,22 @@
-module Game.Util (generateMatrixWithCellNumbers,
-                  generateMatrixWithCellIndices,
+module Game.Util (calculateTimeElapsed,
+                  getGameStateEntityAndKey,
                   getHeightAndWidthFromBoard) where
 
 import           Data.Matrix
 import           Model
 import           Game.Board  (Dimension, coordinateToCellNumber)
-import           Import (headEx)
+import           Import (headEx, Entity, entityKey, entityVal)
+import Data.Time (UTCTime, diffUTCTime)
 
-
-generateMatrixWithCellNumbers :: Dimension -> Matrix Int
-generateMatrixWithCellNumbers (w,h) = matrix w h (\(i,j) -> coordinateToCellNumber (i,j) (w,h))
-
-generateMatrixWithCellIndices :: Dimension -> Matrix String
-generateMatrixWithCellIndices (w,h) = matrix w h (\(i,j) -> (show i) ++ "/" ++ (show j))
 
 getHeightAndWidthFromBoard :: [Row] -> (Int, Int)
 getHeightAndWidthFromBoard rows = (length rows, length $ rowCells $ headEx rows )
+
+calculateTimeElapsed :: UTCTime -> Int -> UTCTime -> Int
+calculateTimeElapsed lastStartedAt timePrevElapsed now = do
+  let (timeElapsed, _) = properFraction $ diffUTCTime now lastStartedAt
+  timePrevElapsed + timeElapsed
+  
+getGameStateEntityAndKey :: [Entity GameStateEntity] -> (GameStateEntity, Key GameStateEntity)
+getGameStateEntityAndKey (x:_) = (entityVal x, entityKey x)
+getGameStateEntityAndKey _     = error "HELP ME!"

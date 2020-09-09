@@ -7,6 +7,7 @@
 module Handler.GameR where
 
 import           Game.Game
+import           Game.Util
 import           Import
 import           Marshalling
 import           Text.Julius           (RawJS (..))
@@ -46,14 +47,7 @@ putGameR gameIdText = do
     gameStateDBEntities <- runDB $ selectList [GameStateEntityGameId ==. gameId] [Desc GameStateEntityUpdatedAt, LimitTo 1]
     let (gsEntity, gsKey) = getGameStateEntityAndKey gameStateDBEntities
     let newGameState = makeMove (gameStateEntityToGameState gsEntity) $ moveRequestToMove moveRequest now
-                         
-    let timeElapsed = case status newGameState of Won   -> finishGame
-                                                  Lost  -> finishGame
-                                                  _     -> gameStateEntityTimeElapsed gsEntity
-                      where
-                      finishGame = calculateTimeElapsed (gameStateEntityLastStartedAt gsEntity) (gameStateEntityTimeElapsed gsEntity) now
-    let createdAt = gameStateEntityCreatedAt gsEntity
-    let lastStartedAt = gameStateEntityLastStartedAt gsEntity
+
     let updatedGameStateEntity = gameStateToGameStateEntity newGameState
 
     _ <- runDB $ upsertBy (UniqueGameStateEntity gameId) updatedGameStateEntity [GameStateEntityMoves =. gameStateEntityMoves updatedGameStateEntity,
@@ -68,11 +62,6 @@ putGameR gameIdText = do
             aDomId <- newIdent
             setTitle "Game"
             $(widgetFile "game")
-
-
-getGameStateEntityAndKey :: [Entity GameStateEntity] -> (GameStateEntity, Key GameStateEntity)
-getGameStateEntityAndKey (x:_) = (entityVal x, entityKey x)
-getGameStateEntityAndKey _     = error "HELP ME!"
 
 gameIds :: (Text, Text)
 gameIds = ("js-gameTableId", "js-cellId")
@@ -136,8 +125,3 @@ getTimeElapsed lastStartedAt timeElapsed now status = case status of
                                                       "Won"   -> timeElapsed
                                                       "Lost"  -> timeElapsed
                                                       _       -> calculateTimeElapsed lastStartedAt timeElapsed now
-
-calculateTimeElapsed :: UTCTime -> Int -> UTCTime -> Int
-calculateTimeElapsed lastStartedAt timePrevElapsed now = do
-  let (timeElapsed, _) = properFraction $ diffUTCTime now lastStartedAt
-  timePrevElapsed + timeElapsed

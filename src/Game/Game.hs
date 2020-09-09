@@ -9,6 +9,7 @@ module Game.Game (newGame,
 
 import           ClassyPrelude.Conduit (UTCTime)
 import           Game.Board
+import           Game.Util
 
 data Move = Reveal Coordinate UTCTime | RevealAllNonFlagged UTCTime | Flag Coordinate UTCTime deriving (Show, Eq, Read) -- TODO maybe add unflag
 data GameStatus = Ongoing | Won | Lost | Paused deriving (Show, Eq, Read)
@@ -49,12 +50,17 @@ newGame (h,w) b s gId now = GameState { board = generateBoard (h,w) b s,
 makeMove :: GameState -> Move -> GameState
 makeMove state m  = state { board   = boardAfterMove,
                             moves   = moves state ++ [m],
-                            status  = checkStatus boardAfterMove
-                          } where boardAfterMove = case m of (Flag c _) -> flagCell (board state) c
-                                                             (Reveal c _) -> revealCell (board state) c
-                                                             (RevealAllNonFlagged _) -> revealAllNonFlaggedCells (board state)
-
-
+                            status  = st,
+                            updatedAt = time,
+                            timeElapsed = elapsed
+                          } where (boardAfterMove, time)  = case m of (Flag c t) -> (flagCell (board state) c,t)
+                                                                      (Reveal c t) -> (revealCell (board state) c,t)
+                                                                      (RevealAllNonFlagged t) -> (revealAllNonFlaggedCells (board state),t) 
+                                  finishGame              = calculateTimeElapsed (lastStartedAt state) (timeElapsed state) time
+                                  st                      = checkStatus boardAfterMove
+                                  elapsed                 = case st of Won   -> finishGame
+                                                                       Lost  -> finishGame
+                                                                       _     -> timeElapsed state
 checkStatus :: Board -> GameStatus
 checkStatus b = case (checkWon b, checkLost b) of  (_,True)      -> Lost
                                                    (True,False)  -> Won
