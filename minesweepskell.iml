@@ -231,8 +231,9 @@
     <orderEntry type="library" name="hspec-discover-2.7.2" level="project" />
     <orderEntry type="library" name="cryptohash-md5-0.11.100.1" level="project" />
     <orderEntry type="library" name="data-binary-ieee754-0.4.4" level="project" />
-    <orderEntry type="library" name="uuid-1.3.13" level="project" />
-    <orderEntry type="library" name="cryptohash-sha1-0.11.100.1" level="project" />
-    <orderEntry type="library" name="network-info-0.2.0.10" level="project" />
+    <orderEntry type="library" name="lens-4.18.1" level="project" />
+    <orderEntry type="library" name="parallel-3.2.2.0" level="project" />
+    <orderEntry type="library" name="reflection-2.1.6" level="project" />
+    <orderEntry type="library" name="type-equality-1" level="project" />
   </component>
 </module>

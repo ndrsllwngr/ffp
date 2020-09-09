@@ -5,10 +5,11 @@ module Game.Util (calculateTimeElapsed,
 import           Model
 import           Import (headEx, Entity, entityKey, entityVal)
 import Data.Time (UTCTime, diffUTCTime)
+import           Control.Lens
 
 
 getHeightAndWidthFromBoard :: [Row] -> (Int, Int)
-getHeightAndWidthFromBoard rows = (length rows, length $ _rowCells $ headEx rows )
+getHeightAndWidthFromBoard rows = (length rows, length $ headEx rows ^. rowCells)
 
 calculateTimeElapsed :: UTCTime -> Int -> UTCTime -> Int
 calculateTimeElapsed lastStartedAt timePrevElapsed now = do

@@ -16,6 +16,7 @@ import           Data.Matrix
 import           Import 
 import           Game.Board
 import           Game.Game
+import           Control.Lens
 
 gameStateToGameStateEntity :: GameState -> GameStateEntity
 gameStateToGameStateEntity state = GameStateEntity {
@@ -33,17 +34,17 @@ gameStateToGameStateEntity state = GameStateEntity {
 
 gameStateEntityToGameState :: GameStateEntity -> GameState
 gameStateEntityToGameState entity = GameState {
-                                      board = rowsToBoard $ _gameStateEntityBoard entity,
-                                      moves = map moveEntityToMove $ _gameStateEntityMoves entity,
-                                      bombCount = _gameStateEntityBombCount entity,
-                                      seed = _gameStateEntitySeed entity,
-                                      status = statusEntityToStatus $ _gameStateEntityStatus entity,
-                                      gameId = _gameStateEntityGameId entity,
-                                      createdAt = _gameStateEntityCreatedAt entity,
-                                      updatedAt = _gameStateEntityUpdatedAt entity,
-                                      lastStartedAt = _gameStateEntityLastStartedAt entity,
-                                      timeElapsed = _gameStateEntityTimeElapsed entity
-                                    } where rowsToBoard rows = Data.Matrix.fromLists $ map (map cellEntityToCell . _rowCells) rows
+                                      board = rowsToBoard $ entity ^. gameStateEntityBoard,
+                                      moves = map moveEntityToMove $ entity ^. gameStateEntityMoves,
+                                      bombCount = entity ^. gameStateEntityBombCount,
+                                      seed = entity ^. gameStateEntitySeed,
+                                      status = statusEntityToStatus $ entity ^. gameStateEntityStatus,
+                                      gameId = entity ^. gameStateEntityGameId,
+                                      createdAt = entity ^. gameStateEntityCreatedAt,
+                                      updatedAt = entity ^. gameStateEntityUpdatedAt,
+                                      lastStartedAt = entity ^. gameStateEntityLastStartedAt,
+                                      timeElapsed = entity ^. gameStateEntityTimeElapsed
+                                    } where rowsToBoard rows = Data.Matrix.fromLists $ map (map cellEntityToCell . _rowCells) rows --TODO how to use lense here?
 
 statusEntityToStatus :: [Char] -> GameStatus
 statusEntityToStatus "Ongoing" = Ongoing
@@ -64,11 +65,11 @@ cellToCellEntity (Cell flagged revealed hasBomb neighbors (x,y)) = CellEntity {
 
 cellEntityToCell :: CellEntity -> Cell
 cellEntityToCell cellEntity = Cell {
-                                isFlagged         = _cellEntityIsFlagged cellEntity,
-                                isRevealed        = _cellEntityIsRevealed cellEntity,
-                                hasBomb           = _cellEntityHasBomb cellEntity,
-                                neighboringBombs  = _cellEntityNeighboringBombs cellEntity,
-                                coordinate        = (_cellEntityCoordX cellEntity, _cellEntityCoordY cellEntity)
+                                isFlagged         = cellEntity ^. cellEntityIsFlagged ,
+                                isRevealed        = cellEntity ^. cellEntityIsRevealed,
+                                hasBomb           = cellEntity ^. cellEntityHasBomb ,
+                                neighboringBombs  = cellEntity ^. cellEntityNeighboringBombs ,
+                                coordinate        = (cellEntity ^. cellEntityCoordX, cellEntity ^. cellEntityCoordY)
                               }
 
 moveToMoveEntity :: Move -> MoveEntity

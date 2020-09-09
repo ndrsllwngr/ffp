@@ -8,6 +8,7 @@ import           Game.Game (newGame)
 import           Marshalling
 import           Game.Util
 import           Import
+import           Control.Lens
 
 
 -- RESET GAME
@@ -20,7 +21,7 @@ postResetR gameIdText = do
     gameStateDBEntities <- runDB $ selectList [GameStateEntityGameId ==. gameId] [Desc GameStateEntityUpdatedAt, LimitTo 1]
     let (gsEntity, gsKey) = getGameStateEntityAndKey gameStateDBEntities
     -- Create new game with current properties
-    let resetGameState = newGame (getHeightAndWidthFromBoard $ _gameStateEntityBoard gsEntity) (_gameStateEntityBombCount gsEntity) (_gameStateEntitySeed gsEntity) (_gameStateEntityGameId gsEntity) now
+    let resetGameState = newGame (getHeightAndWidthFromBoard $ gsEntity ^. gameStateEntityBoard) (gsEntity ^. gameStateEntityBombCount) (gsEntity ^. gameStateEntitySeed) (gsEntity ^.gameStateEntityGameId) now
     -- Keep old game id and createdAt
     let newGameStateEntity = gameStateToGameStateEntity resetGameState
     -- Insert GameState to DB, return GameState

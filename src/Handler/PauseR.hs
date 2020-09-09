@@ -8,6 +8,7 @@ module Handler.PauseR where
 
 import           Game.Util
 import           Import
+import           Control.Lens
 
 -- PAUSE GAME
 postPauseR :: Text -> Handler Value
@@ -19,11 +20,9 @@ postPauseR gameIdText = do
     gameStateDBEntities <- runDB $ selectList [GameStateEntityGameId ==. gameId] [Desc GameStateEntityUpdatedAt, LimitTo 1]
     let (gsEntity, gsKey) = getGameStateEntityAndKey gameStateDBEntities
     -- Set GameState to "Paused" and and set timeElapsed as the time that elapsed playing the game until now
-    let updatedGameStateEntity = gsEntity {
-                                    _gameStateEntityStatus = "Paused",
-                                    _gameStateEntityUpdatedAt = now,
-                                    _gameStateEntityTimeElapsed = calculateTimeElapsed (_gameStateEntityLastStartedAt gsEntity) (_gameStateEntityTimeElapsed gsEntity) now
-                                  }
+    let updatedGameStateEntity = gsEntity & gameStateEntityStatus .~ "Paused"
+                                          & gameStateEntityUpdatedAt .~ now
+                                          & gameStateEntityTimeElapsed .~ calculateTimeElapsed (gsEntity ^. gameStateEntityLastStartedAt) (gsEntity ^. gameStateEntityTimeElapsed) now
     -- Insert GameState to DB, return GameState                       
     insertedGameStateEntity <- runDB $ repsert gsKey updatedGameStateEntity
     returnJson insertedGameStateEntity -- TODO check if return is working                                   

@@ -35,12 +35,12 @@
             Open Games:
                 $forall game <- gameStateEntitiesOngoingOrPaused
                     <div .row>
-                        <a href="/game/#{_gameStateEntityGameId game}">
-                            GameID: #{_gameStateEntityGameId game}, Status: #{_gameStateEntityStatus game}, Creation date: #{show $ _gameStateEntityCreatedAt game}, Size: #{showSize $ _gameStateEntityBoard game}, Num of bombs: #{_gameStateEntityBombCount game}
+                        <a href="/game/#{game ^. gameStateEntityGameId}">
+                            GameID: #{game ^. gameStateEntityGameId}, Status: #{game ^. gameStateEntityStatus}, Creation date: #{show $ game ^. gameStateEntityCreatedAt}, Size: #{showSize $ game ^. gameStateEntityBoard}, Num of bombs: #{game ^. gameStateEntityBombCount}
         <div .row>
             Finished Games:
                 $forall game <- gameStateEntitiesWonOrLost
                     <div .row>
-                        <a href="/game/#{_gameStateEntityGameId game}">
-                            GameID: #{_gameStateEntityGameId game}, Status: #{_gameStateEntityStatus game}, Creation date: #{show $ _gameStateEntityCreatedAt game}, Size: #{showSize $ _gameStateEntityBoard game}, Num of bombs: #{_gameStateEntityBombCount game}
+                        <a href="/game/#{game ^. gameStateEntityGameId}">
+                            GameID: #{game ^. gameStateEntityGameId}, Status: #{game ^. gameStateEntityStatus}, Creation date: #{show $ game ^. gameStateEntityCreatedAt}, Size: #{showSize $ game ^. gameStateEntityBoard}, Num of bombs: #{game ^. gameStateEntityBombCount}
     <hr>

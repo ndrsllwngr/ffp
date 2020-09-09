@@ -10,6 +10,7 @@ import           Game.Game (makeMove)
 import           Game.Util
 import           Import
 import           Marshalling
+import           Control.Lens
 
 
 -- GET GAME VIEW
@@ -19,9 +20,10 @@ getGameR gameIdText = do
     gameStateDBEntities <- runDB $ selectList [GameStateEntityGameId ==. unpack gameIdText] [Desc GameStateEntityUpdatedAt, LimitTo 1]
     let (gsEntity, gsKey) = getGameStateEntityAndKey gameStateDBEntities
     -- If gameState was Paused, continue game and set lastStartedAt
-    let gameStateEntity = case _gameStateEntityStatus gsEntity of "Paused" -> gsEntity {_gameStateEntityStatus = "Ongoing", _gameStateEntityLastStartedAt = now}
-                                                                  _        -> gsEntity
-    -- Insert updated game back to db                                                             
+    let gameStateEntity = case gsEntity ^. gameStateEntityStatus of "Paused" -> gsEntity & gameStateEntityStatus .~ "Ongoing" 
+                                                                                         & gameStateEntityLastStartedAt .~ now
+                                                                    _        -> gsEntity
+    -- Insert updated game back to db                                                              
     _ <- runDB $ repsert gsKey gameStateEntity
                                                  
     defaultLayout $ do
@@ -45,10 +47,10 @@ putGameR gameIdText = do
 
     let updatedGameStateEntity = gameStateToGameStateEntity newGameState
 
-    _ <- runDB $ upsertBy (UniqueGameStateEntity gameId) updatedGameStateEntity [GameStateEntityMoves =. _gameStateEntityMoves updatedGameStateEntity,
-                                                                                 GameStateEntityBoard =. _gameStateEntityBoard updatedGameStateEntity,
-                                                                                 GameStateEntityStatus =. _gameStateEntityStatus updatedGameStateEntity,
-                                                                                 GameStateEntityTimeElapsed =. _gameStateEntityTimeElapsed updatedGameStateEntity,
+    _ <- runDB $ upsertBy (UniqueGameStateEntity gameId) updatedGameStateEntity [GameStateEntityMoves =. updatedGameStateEntity ^. gameStateEntityMoves ,
+                                                                                 GameStateEntityBoard =. updatedGameStateEntity ^. gameStateEntityBoard ,
+                                                                                 GameStateEntityStatus =. updatedGameStateEntity ^. gameStateEntityStatus ,
+                                                                                 GameStateEntityTimeElapsed =. updatedGameStateEntity ^. gameStateEntityTimeElapsed ,
                                                                                  GameStateEntityUpdatedAt =. now]
     
     let gameStateEntity = updatedGameStateEntity
@@ -112,8 +114,8 @@ getCellTileLost _ _ _ _            = "/static/assets/closed.svg"
 
 getRemainingFlags :: [Row] -> Int -> Int
 getRemainingFlags rows bombCount = bombCount - sum (concatMap mapCells rows) 
-                                   where mapCells row = map cellToInt $ _rowCells row 
-                                                        where cellToInt cell = fromEnum $ _cellEntityIsFlagged cell
+                                   where mapCells row = map cellToInt $ row ^. rowCells
+                                                        where cellToInt cell = fromEnum $ cell ^. cellEntityIsFlagged 
 
 
 getTimeElapsed :: UTCTime -> Int -> UTCTime -> String -> Int
