@@ -4,7 +4,7 @@ module Game.Board  (generateBoard,
                     flagCell,
                     checkLost,
                     checkWon,
-                    coordinateToCellNumber, -- todo Remove when util functions get removed
+                    coordinateToCellNumber, 
                     Coordinate,
                     Dimension,
                     Board,
@@ -88,7 +88,8 @@ revealAllNonFlaggedCells board = resultBoard where
 flagCell :: Board -> Coordinate -> Board
 flagCell b (i,j) = setElem newCell (i,j) b where
                                             oldCell = getElem i j b
-                                            newCell = oldCell {isFlagged = not $ isFlagged oldCell }
+                                            flag = if isRevealed oldCell then isFlagged oldCell else not $ isFlagged oldCell
+                                            newCell = oldCell {isFlagged = flag }
 
 -- Checks if any bomb has been revealed
 checkLost :: Board -> Bool
@@ -102,14 +103,6 @@ checkWon board = all isRevealed $ filter (not . hasBomb) (toList board)
 -- will also calculate out of bounds cells if out of bounds coordinates are provided
 coordinateToCellNumber :: Coordinate -> Dimension -> Int
 coordinateToCellNumber (i,j) (_,w) = (i-1) * w + j
-
-
--- Calculates the XY-Coordinate of a given cell number for a given Board size
--- will also calculate out of bounds cells if out of bounds cell numbers are provided
-cellNumberToCoordinate :: Int -> Dimension -> Coordinate
-cellNumberToCoordinate n (_,w) = (i, j) where
-                                    i = ((n - 1) `div` w) + 1
-                                    j = ((n - 1) `mod` w) + 1
 
 -- Checks if a coordinate is inBounds of a given Board size
 inBounds :: Coordinate -> Dimension -> Bool
