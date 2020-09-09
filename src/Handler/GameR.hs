@@ -45,12 +45,8 @@ putGameR gameIdText = do
 
     gameStateDBEntities <- runDB $ selectList [GameStateEntityGameId ==. gameId] [Desc GameStateEntityUpdatedAt, LimitTo 1]
     let (gsEntity, gsKey) = getGameStateEntityAndKey gameStateDBEntities
-    let newGameState = makeMove (gameStateEntityToGameState gsEntity) $ moveEntityToMove
-                          MoveEntity {moveEntityAction    = moveRequestAction moveRequest,
-                                      moveEntityCoordX    = moveRequestCoordX moveRequest,
-                                      moveEntityCoordY    = moveRequestCoordY moveRequest,
-                                      moveEntityTimeStamp = now}-- TODO ERROR maybe here?
-
+    let newGameState = makeMove (gameStateEntityToGameState gsEntity) $ moveRequestToMove moveRequest now
+                         
     let timeElapsed = case status newGameState of Won   -> finishGame
                                                   Lost  -> finishGame
                                                   _     -> gameStateEntityTimeElapsed gsEntity
@@ -61,11 +57,10 @@ putGameR gameIdText = do
     let updatedGameStateEntity = gameStateToGameStateEntity newGameState gameId createdAt now lastStartedAt timeElapsed
 
     _ <- runDB $ upsertBy (UniqueGameStateEntity gameId) updatedGameStateEntity [GameStateEntityMoves =. gameStateEntityMoves updatedGameStateEntity,
-                                                                                                       GameStateEntityBoard =. gameStateEntityBoard updatedGameStateEntity,
-                                                                                                       GameStateEntityStatus =. gameStateEntityStatus updatedGameStateEntity,
-                                                                                                       GameStateEntityTimeElapsed =. gameStateEntityTimeElapsed updatedGameStateEntity,
-                                                                                                       GameStateEntityUpdatedAt =. now
-                                                                                                      ]
+                                                                                 GameStateEntityBoard =. gameStateEntityBoard updatedGameStateEntity,
+                                                                                 GameStateEntityStatus =. gameStateEntityStatus updatedGameStateEntity,
+                                                                                 GameStateEntityTimeElapsed =. gameStateEntityTimeElapsed updatedGameStateEntity,
+                                                                                 GameStateEntityUpdatedAt =. now]
     
     let gameStateEntity = updatedGameStateEntity
     defaultLayout $ do

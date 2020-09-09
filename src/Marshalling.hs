@@ -9,7 +9,7 @@ module Marshalling (
                     cellToCellEntity,
                     cellEntityToCell,
                     moveToMoveEntity,
-                    moveEntityToMove
+                    moveRequestToMove
                     ) where
 
 import           Data.Matrix
@@ -76,3 +76,9 @@ moveEntityToMove (MoveEntity "Flag" (Just x) (Just y) timeStamp)    = Flag (x,y)
 moveEntityToMove (MoveEntity "Reveal" (Just x) (Just y) timeStamp)  = Reveal (x,y) timeStamp
 moveEntityToMove (MoveEntity "RevealAllNonFlagged" _ _ timeStamp)   = RevealAllNonFlagged timeStamp
 moveEntityToMove _   = undefined -- todo maybe errorhande?
+
+moveRequestToMove :: MoveRequest -> UTCTime -> Move
+moveRequestToMove (MoveRequest "RevealAllNonFlagged" _ _) timeStamp = RevealAllNonFlagged timeStamp
+moveRequestToMove (MoveRequest "Flag" (Just x) (Just y)) timeStamp  = Flag (x,y) timeStamp
+moveRequestToMove (MoveRequest "Reveal"(Just x) (Just y)) timeStamp = Reveal (x,y) timeStamp
+moveRequestToMove _ _ = undefined
