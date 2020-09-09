@@ -7,6 +7,7 @@ module Handler.GamesR where
 
 import           Game.Game
 import           Marshalling
+import           Game.Util
 import           Import
 import           Text.Julius           (RawJS (..))
 import           Yesod.Form.Bootstrap3 (BootstrapFormLayout (..),
@@ -14,6 +15,11 @@ import           Yesod.Form.Bootstrap3 (BootstrapFormLayout (..),
 
 getGamesR :: Handler Html
 getGamesR = do
+
+    gameStateDBEntities <- runDB $ selectList [] [Desc GameStateEntityUpdatedAt]
+    let gameStateEntities = map entityVal gameStateDBEntities
+    let gameStateEntitiesOngoingOrPaused = filter (\x -> gameStateEntityStatus x == "Ongoing" || gameStateEntityStatus x == "Paused") gameStateEntities
+    let gameStateEntitiesWonOrLost = filter (\x -> gameStateEntityStatus x == "Lost" || gameStateEntityStatus x == "Won") gameStateEntities
     defaultLayout $ do
             let (newGameFormId, gameIdField, bombCountField, widthField, heightField) = variables
             setTitle "Create New Game"
@@ -36,3 +42,6 @@ postGamesR = do
 
 variables :: (Text, Text, Text, Text, Text)
 variables = ("js-newGameFormId", "js-gameIdField", "js-bombCountField", "js-widthField", "js-heightField")
+
+showSize :: [Row] -> String
+showSize b = showS (getHeightAndWidthFromBoard b) where showS (h,w) = "width: " ++ show w ++ ", height: " ++ show h

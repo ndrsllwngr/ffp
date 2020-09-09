@@ -8,6 +8,7 @@ module Handler.ResetR where
 
 import           Game.Game
 import           Marshalling
+import           Game.Util
 import           Handler.GameR
 import           Import
 
@@ -28,7 +29,3 @@ postResetR gameIdText = do
     -- Insert GameState to DB, return GameState
     insertedGameStateEntity <- runDB $ repsert gsKey newGameStateEntity
     returnJson insertedGameStateEntity
-
-
-getHeightAndWidthFromBoard :: [Row] -> (Int, Int)
-getHeightAndWidthFromBoard rows = (length rows, length $ rowCells $ headEx rows )
