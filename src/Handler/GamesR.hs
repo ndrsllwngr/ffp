@@ -10,8 +10,6 @@ import           Marshalling
 import           Game.Util
 import           Import
 import           Text.Julius           (RawJS (..))
-import           Yesod.Form.Bootstrap3 (BootstrapFormLayout (..),
-                                        renderBootstrap3)
 
 getGamesR :: Handler Html
 getGamesR = do
@@ -33,8 +31,8 @@ postGamesR = do
     newGameRequest <- (requireCheckJsonBody :: Handler NewGameRequest)
     now <- liftIO getCurrentTime
     print newGameRequest
-    let newGameState = newGame (newGameRequestHeight newGameRequest, newGameRequestWidth newGameRequest) (newGameRequestBombCount newGameRequest) (newGameRequestSeed newGameRequest)
-    let newGameStateEntity = gameStateToGameStateEntity newGameState (newGameRequestGameId newGameRequest) now now now 0
+    let newGameState = newGame (newGameRequestHeight newGameRequest, newGameRequestWidth newGameRequest) (newGameRequestBombCount newGameRequest) (newGameRequestSeed newGameRequest) (newGameRequestGameId newGameRequest) now
+    let newGameStateEntity = gameStateToGameStateEntity newGameState 
     print newGameStateEntity
 
     insertedGameStateEntity <- runDB $ insertEntity newGameStateEntity

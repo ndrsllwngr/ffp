@@ -6,8 +6,7 @@ module Handler.PauseR where
 
 
 
-import           Game.Game
-import           Handler.GameR
+import           Game.Util
 import           Import
 
 -- PAUSE GAME
@@ -24,7 +23,7 @@ postPauseR gameIdText = do
                                     gameStateEntityStatus = "Paused",
                                     gameStateEntityUpdatedAt = now,
                                     gameStateEntityTimeElapsed = calculateTimeElapsed (gameStateEntityLastStartedAt gsEntity) (gameStateEntityTimeElapsed gsEntity) now
-                                    }
+                                  }
     -- Insert GameState to DB, return GameState                       
     insertedGameStateEntity <- runDB $ repsert gsKey updatedGameStateEntity
     returnJson insertedGameStateEntity -- TODO check if return is working                                   
