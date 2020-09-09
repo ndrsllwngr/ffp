@@ -65,11 +65,11 @@ cellToCellEntity (Cell flagged revealed hasBomb neighbors (x,y)) = CellEntity {
 
 cellEntityToCell :: CellEntity -> Cell
 cellEntityToCell cellEntity = Cell {
-                                isFlagged         = cellEntity ^. cellEntityIsFlagged ,
-                                isRevealed        = cellEntity ^. cellEntityIsRevealed,
-                                hasBomb           = cellEntity ^. cellEntityHasBomb ,
-                                neighboringBombs  = cellEntity ^. cellEntityNeighboringBombs ,
-                                coordinate        = (cellEntity ^. cellEntityCoordX, cellEntity ^. cellEntityCoordY)
+                                _cellIsFlagged         = cellEntity ^. cellEntityIsFlagged ,
+                                _cellIsRevealed        = cellEntity ^. cellEntityIsRevealed,
+                                _cellHasBomb           = cellEntity ^. cellEntityHasBomb ,
+                                _cellNeighboringBombs  = cellEntity ^. cellEntityNeighboringBombs ,
+                                _cellCoordinate        = (cellEntity ^. cellEntityCoordX, cellEntity ^. cellEntityCoordY)
                               }
 
 moveToMoveEntity :: Move -> MoveEntity

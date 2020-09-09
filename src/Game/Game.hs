@@ -1,4 +1,5 @@
 {-# LANGUAGE BlockArguments #-}
+{-# LANGUAGE TemplateHaskell #-}
 
 module Game.Game (newGame,
                   makeMove,
@@ -10,6 +11,7 @@ module Game.Game (newGame,
 import           ClassyPrelude.Conduit (UTCTime)
 import           Game.Board
 import           Game.Util
+import           Control.Lens
 
 data Move = Reveal Coordinate UTCTime | RevealAllNonFlagged UTCTime | Flag Coordinate UTCTime deriving (Show, Eq, Read) -- TODO maybe add unflag
 data GameStatus = Ongoing | Won | Lost | Paused deriving (Show, Eq, Read)
