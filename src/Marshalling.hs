@@ -2,6 +2,9 @@
 {-# LANGUAGE NamedFieldPuns        #-}
 {-# LANGUAGE NoImplicitPrelude     #-}
 {-# LANGUAGE TypeFamilies          #-}
+{-# LANGUAGE BlockArguments #-}
+{-# LANGUAGE TemplateHaskell #-}
+
 module Marshalling (
                     gameStateToGameStateEntity,
                     gameStateEntityToGameState,
@@ -20,30 +23,30 @@ import           Control.Lens
 
 gameStateToGameStateEntity :: GameState -> GameStateEntity
 gameStateToGameStateEntity state = GameStateEntity {
-                                       _gameStateEntityBoard = boardToRows $ board state,
-                                       _gameStateEntityMoves = map moveToMoveEntity $ moves state,
-                                       _gameStateEntityBombCount = bombCount state,
-                                       _gameStateEntitySeed = seed state,
-                                       _gameStateEntityGameId = gameId state,
-                                       _gameStateEntityCreatedAt = createdAt state,
-                                       _gameStateEntityUpdatedAt = updatedAt state,
-                                       _gameStateEntityStatus = show (status state),
-                                       _gameStateEntityLastStartedAt = lastStartedAt state,
-                                       _gameStateEntityTimeElapsed = timeElapsed state
+                                       _gameStateEntityBoard         = boardToRows $ state ^. board,
+                                       _gameStateEntityMoves         = map moveToMoveEntity $ state ^. moves,
+                                       _gameStateEntityBombCount     = state ^. bombCount,
+                                       _gameStateEntitySeed          = state ^. seed,
+                                       _gameStateEntityGameId        = state ^. gameId,
+                                       _gameStateEntityCreatedAt     = state ^. createdAt,
+                                       _gameStateEntityUpdatedAt     = state ^. updatedAt,
+                                       _gameStateEntityStatus        = show (state ^. status),
+                                       _gameStateEntityLastStartedAt = state ^. lastStartedAt,
+                                       _gameStateEntityTimeElapsed   = state ^. timeElapsed
                                    } where boardToRows board = map (Row . map cellToCellEntity) (Data.Matrix.toLists board)
 
 gameStateEntityToGameState :: GameStateEntity -> GameState
 gameStateEntityToGameState entity = GameState {
-                                      board = rowsToBoard $ entity ^. gameStateEntityBoard,
-                                      moves = map moveEntityToMove $ entity ^. gameStateEntityMoves,
-                                      bombCount = entity ^. gameStateEntityBombCount,
-                                      seed = entity ^. gameStateEntitySeed,
-                                      status = statusEntityToStatus $ entity ^. gameStateEntityStatus,
-                                      gameId = entity ^. gameStateEntityGameId,
-                                      createdAt = entity ^. gameStateEntityCreatedAt,
-                                      updatedAt = entity ^. gameStateEntityUpdatedAt,
-                                      lastStartedAt = entity ^. gameStateEntityLastStartedAt,
-                                      timeElapsed = entity ^. gameStateEntityTimeElapsed
+                                       _gameStateBoard         = rowsToBoard $ entity ^. gameStateEntityBoard,
+                                       _gameStateMoves         = map moveEntityToMove $ entity ^. gameStateEntityMoves,
+                                       _gameStateBombCount     = entity ^. gameStateEntityBombCount,
+                                       _gameStateSeed          = entity ^. gameStateEntitySeed,
+                                       _gameStateStatus        = statusEntityToStatus $ entity ^. gameStateEntityStatus,
+                                       _gameStateGameId        = entity ^. gameStateEntityGameId,
+                                       _gameStateCreatedAt     = entity ^. gameStateEntityCreatedAt,
+                                       _gameStateUpdatedAt     = entity ^. gameStateEntityUpdatedAt,
+                                       _gameStateLastStartedAt = entity ^. gameStateEntityLastStartedAt,
+                                       _gameStateTimeElapsed   = entity ^. gameStateEntityTimeElapsed
                                     } where rowsToBoard rows = Data.Matrix.fromLists $ map (map cellEntityToCell . _rowCells) rows --TODO how to use lense here?
 
 statusEntityToStatus :: [Char] -> GameStatus
