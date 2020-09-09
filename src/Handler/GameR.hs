@@ -6,16 +6,11 @@
 {-# LANGUAGE TypeFamilies          #-}
 module Handler.GameR where
 
-import           Game.Game
+import           Game.Game (makeMove)
 import           Game.Util
 import           Import
 import           Marshalling
-import           Text.Julius           (RawJS (..))
-import           Yesod.Form.Bootstrap3 (BootstrapFormLayout (..),
-                                        renderBootstrap3)
-import Data.Maybe
-import Data.Time.Clock (diffUTCTime)
-import Data.Fixed
+
 
 -- GET GAME VIEW
 getGameR :: Text -> Handler Html
@@ -45,7 +40,7 @@ putGameR gameIdText = do
     now <- liftIO getCurrentTime
 
     gameStateDBEntities <- runDB $ selectList [GameStateEntityGameId ==. gameId] [Desc GameStateEntityUpdatedAt, LimitTo 1]
-    let (gsEntity, gsKey) = getGameStateEntityAndKey gameStateDBEntities
+    let (gsEntity, _) = getGameStateEntityAndKey gameStateDBEntities
     let newGameState = makeMove (gameStateEntityToGameState gsEntity) $ moveRequestToMove moveRequest now
 
     let updatedGameStateEntity = gameStateToGameStateEntity newGameState
@@ -85,6 +80,7 @@ getCellTile True True False _  = "/static/assets/mine_wrong.svg"
 getCellTile False True True _  = "/static/assets/mine_red.svg"
 getCellTile True False _ _     = "/static/assets/flag.svg"
 getCellTile _ False _ _        = "/static/assets/closed.svg"
+getCellTile _ _ _ _            = undefined
 
 getCellTileWon :: Bool -> Bool -> Bool -> Int -> String
 getCellTileWon False _ False 0    = "/static/assets/type0.svg"
@@ -97,7 +93,7 @@ getCellTileWon False _ False 6    = "/static/assets/type6.svg"
 getCellTileWon False _ False 7    = "/static/assets/type7.svg"
 getCellTileWon False _ False 8    = "/static/assets/type8.svg"
 getCellTileWon True _ True _      = "/static/assets/flag.svg"
-getCellTileWon _ _ _ _           = "/static/assets/closed.svg"
+getCellTileWon _ _ _ _            = "/static/assets/closed.svg"
 
 getCellTileLost :: Bool -> Bool -> Bool -> Int -> String
 getCellTileLost False True False 0 = "/static/assets/type0.svg"

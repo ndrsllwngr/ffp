@@ -4,12 +4,9 @@
 {-# LANGUAGE OverloadedStrings     #-}
 module Handler.ResetR where
 
-
-
-import           Game.Game
+import           Game.Game (newGame)
 import           Marshalling
 import           Game.Util
-import           Handler.GameR
 import           Import
 
 

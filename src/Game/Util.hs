@@ -2,9 +2,7 @@ module Game.Util (calculateTimeElapsed,
                   getGameStateEntityAndKey,
                   getHeightAndWidthFromBoard) where
 
-import           Data.Matrix
 import           Model
-import           Game.Board  (Dimension, coordinateToCellNumber)
 import           Import (headEx, Entity, entityKey, entityVal)
 import Data.Time (UTCTime, diffUTCTime)
 

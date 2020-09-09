@@ -10,8 +10,6 @@ import           Marshalling
 import           Game.Util
 import           Import
 import           Text.Julius           (RawJS (..))
-import           Yesod.Form.Bootstrap3 (BootstrapFormLayout (..),
-                                        renderBootstrap3)
 
 getGamesR :: Handler Html
 getGamesR = do
