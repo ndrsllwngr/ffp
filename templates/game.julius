@@ -139,6 +139,13 @@ const setFace = () => {
   return;
 };
 
+const setFlags = () => {
+  let el = document.getElementById("flags");
+  let remainingFlags = parseInt(el.getAttribute("remainingFlags"), 10);
+  //console.log(remainingFlags);
+  renderDigits(remainingFlags, "flags");
+
+};
 // Split digits and render each digit seperately
 const renderDigits = (number, id) => {
   let el = document.getElementById(id);
@@ -155,7 +162,7 @@ const renderDigits = (number, id) => {
 };
 
 var timer = setInterval(setTimer, 1000);
-renderDigits(12, "flags"); // TODO atm only fixed value, should be flags count
+setFlags();
 setFace();
 
 const myStopFunction = () => {

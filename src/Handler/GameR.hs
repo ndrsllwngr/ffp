@@ -130,7 +130,11 @@ getCellTileLost False True True _  = "/static/assets/mine_red.svg"
 getCellTileLost _ False True _     = "/static/assets/mine.svg"
 getCellTileLost _ _ _ _            = "/static/assets/closed.svg"
 
--- getRemainingFlags :: []
+getRemainingFlags :: [Row] -> Int -> Int
+getRemainingFlags rows bombCount = bombCount - sum (concatMap mapCells rows) 
+                                   where mapCells row = map cellToInt $ rowCells row 
+                                                        where cellToInt cell = fromEnum $ cellEntityIsFlagged cell
+
 
 getTimeElapsed :: UTCTime -> Int -> UTCTime -> String -> Int
 getTimeElapsed lastStartedAt timeElapsed now status = case status of
