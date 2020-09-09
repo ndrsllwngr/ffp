@@ -54,7 +54,7 @@ putGameR gameIdText = do
                       finishGame = calculateTimeElapsed (gameStateEntityLastStartedAt gsEntity) (gameStateEntityTimeElapsed gsEntity) now
     let createdAt = gameStateEntityCreatedAt gsEntity
     let lastStartedAt = gameStateEntityLastStartedAt gsEntity
-    let updatedGameStateEntity = gameStateToGameStateEntity newGameState gameId createdAt now lastStartedAt timeElapsed
+    let updatedGameStateEntity = gameStateToGameStateEntity newGameState
 
     _ <- runDB $ upsertBy (UniqueGameStateEntity gameId) updatedGameStateEntity [GameStateEntityMoves =. gameStateEntityMoves updatedGameStateEntity,
                                                                                  GameStateEntityBoard =. gameStateEntityBoard updatedGameStateEntity,

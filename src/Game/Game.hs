@@ -14,24 +14,34 @@ data Move = Reveal Coordinate UTCTime | RevealAllNonFlagged UTCTime | Flag Coord
 data GameStatus = Ongoing | Won | Lost | Paused deriving (Show, Eq, Read)
 --derivePersistField "Status"
 
-data GameState = GameState { board     :: Board,
-                             moves     :: [Move],
-                             bombCount :: Int,
-                             seed      :: Int,
-                             status    :: GameStatus
-                             }
+data GameState = GameState { board          :: Board,
+                             moves          :: [Move],
+                             bombCount      :: Int,
+                             seed           :: Int,
+                             status         :: GameStatus,
+                             gameId         :: String,
+                             createdAt      :: UTCTime,
+                             updatedAt      :: UTCTime,
+                             lastStartedAt  :: UTCTime,
+                             timeElapsed    :: Int
+                            }
 
 instance Show GameState where
+    show (GameState b m bombs s st _ _ _ _ _) = "Bombcount: " ++ show bombs ++ " Seed: " ++ show s ++ " Status: " ++ show st ++ "\n" ++ show m ++ "\n" ++ show b
 
-   show (GameState b m bombs s st) = "Bombcount: " ++ show bombs ++ " Seed: " ++ show s ++ " Status: " ++ show st ++ "\n" ++ show m ++ "\n" ++ show b
 
 -- Creates a new game for a given Dimension, bombCount & seed
-newGame :: Dimension -> Int -> Int -> GameState
-newGame (h,w) b s = GameState { board = generateBoard (h,w) b s,
+newGame :: Dimension -> Int -> Int -> String -> UTCTime -> GameState
+newGame (h,w) b s gId now = GameState { board = generateBoard (h,w) b s,
                                 moves = [],
                                 bombCount = b,
                                 seed = s,
-                                status = Ongoing
+                                status = Ongoing,
+                                gameId = gId,       
+                                createdAt = now,    
+                                updatedAt = now,    
+                                lastStartedAt = now, 
+                                timeElapsed = 0
                                }
 
 -- Executes a move on a given GameState
