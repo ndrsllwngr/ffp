@@ -8,10 +8,10 @@ Fortgeschrittene Funktionale Programmierung - Group project (2020)
 ## Description
 
 - Minesweepskell - a fun(ctional) Web-Minesweeper Client
-- Usage of monads (incl. monad-transformer, lifting, advanced usage of state monads)
+- ~Usage of monads (incl. monad-transformer, lifting, advanced usage of state monads)~
 - Server with REST-Api, manages game state and provides game logic (YESOD)
 - database connection to persist data of scores as well as game states to resume the game at a later time
-- Add simple KI which assists the gamer (Automated Problem Solving)
+- ~Add simple KI which assists the gamer (Automated Problem Solving)~
 - (Unit) test logic (Testing)
 
 ## Installation
@@ -25,7 +25,22 @@ Version 2.3.3 x86_64
 $ yesod version
 yesod-bin version: 1.6.0.6
 ```
-### Install MongoDB
+
+#### Install Haskell and Yesod
+1. Install [haskell-stack](http://haskellstack.org/) and [yesod](https://www.yesodweb.com/)
+```bash
+# - if it fails run `xcode-select --install before`
+brew install haskell-stack
+stack install yesod-bin --install-ghc
+```
+2. Add yesod installation path to your shell
+```
+# ~/.zshrc
+export PATH=$HOME/.local/bin:$PATH
+```
+If you have trouble, refer to the [Yesod Quickstart guide](https://www.yesodweb.com/page/quickstart) for additional detail.
+
+#### Install MongoDB
 1. Install MongoDB
 ```sh
 brew tap mongodb/brew
@@ -40,27 +55,13 @@ brew services stop mongodb-community@4.4
 
 For more information take a look at https://docs.mongodb.com/manual/tutorial/install-mongodb-on-os-x/
 
-#### Use MongoDB Compass as GUI
+##### Use MongoDB Compass as GUI
 - https://www.mongodb.com/products/compass
 
-#### Use DataGrip as GUI
+##### Use DataGrip as GUI
 - https://www.jetbrains.com/de-de/datagrip/ 
 - 
 ![Screenshot 2020-08-30 at 16 33 59](https://user-images.githubusercontent.com/10077258/91661825-aa5bbe80-eade-11ea-98ce-4a0572999590.png)
-
-### Install Haskell and Yesod
-1. Install [haskell-stack](http://haskellstack.org/) and [yesod](https://www.yesodweb.com/)
-```bash
-# - if it fails run `xcode-select --install before`
-brew install haskell-stack
-stack install yesod-bin --install-ghc
-```
-2. Add yesod installation path to your shell
-```
-# ~/.zshrc
-export PATH=$HOME/.local/bin:$PATH
-```
-If you have trouble, refer to the [Yesod Quickstart guide](https://www.yesodweb.com/page/quickstart) for additional detail.
 
 ## Usage
 ### Development
@@ -86,8 +87,11 @@ stack test --flag minesweepskell:library-only --flag minesweepskell:dev
 
 ## Dependencies
 ```
-mongodb
 yesod
+mongodb
+persistent
+lens
+...
 ```
 
 For more details take a look at the [package.yaml](package.yaml).
