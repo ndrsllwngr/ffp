@@ -20,7 +20,7 @@ module Application
     , db
     ) where
 
-import           Control.Monad.Logger                 (liftLoc, runLoggingT)
+import           Control.Monad.Logger                 (liftLoc) -- runLoggingT
 -- import Database.Persist.Postgresql          (createPostgresqlPool, pgConnStr,
 --                                              pgPoolSize, runSqlPool)
 import           Database.Persist.MongoDB             (MongoContext)
@@ -83,8 +83,8 @@ makeFoundation appSettings = do
         -- The App {..} syntax is an example of record wild cards. For more
         -- information, see:
         -- https://ocharles.org.uk/blog/posts/2014-12-04-record-wildcards.html
-        tempFoundation = mkFoundation $ error "connPool forced in tempFoundation"
-        logFunc = messageLoggerSource tempFoundation appLogger
+        -- tempFoundation = mkFoundation $ error "connPool forced in tempFoundation" TODO check if applicable, else remove
+        -- logFunc = messageLoggerSource tempFoundation appLogger TODO check if applicable, else remove
 
     -- Create the database connection pool
     -- pool <- flip runLoggingT logFunc $ createPoolConfig $ appDatabaseConf appSettings

@@ -82,7 +82,7 @@ getCellTile True True False _  = "/static/assets/mine_wrong.svg"
 getCellTile False True True _  = "/static/assets/mine_red.svg"
 getCellTile True False _ _     = "/static/assets/flag.svg"
 getCellTile _ False _ _        = "/static/assets/closed.svg"
-getCellTile _ _ _ _            = undefined
+getCellTile _ _ _ _            = error "Invalid CellState"
 
 getCellTileWon :: Bool -> Bool -> Bool -> Int -> String
 getCellTileWon False _ False 0    = "/static/assets/type0.svg"

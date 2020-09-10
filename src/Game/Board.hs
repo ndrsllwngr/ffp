@@ -31,7 +31,7 @@ data Cell = Cell { _isFlagged        :: Bool,
                    _neighboringBombs :: Int,
                    _coordinate       :: Coordinate
                    } deriving (Show, Eq)
-makeLenses ''Cell                   
+makeLenses ''Cell
 
 type Board = Matrix Cell
 
