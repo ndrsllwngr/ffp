@@ -25,6 +25,7 @@ import           Control.Monad.Logger                 (liftLoc) -- runLoggingT
 --                                              pgPoolSize, runSqlPool)
 import           Database.Persist.MongoDB             (MongoContext)
 import           Import
+import           Data.Map as Map
 import           Language.Haskell.TH.Syntax           (qLocation)
 import           Network.HTTP.Client.TLS              (getGlobalManager)
 import           Network.Wai                          (Middleware)
@@ -73,6 +74,7 @@ makeFoundation appSettings = do
     appStatic <-
         (if appMutableStatic appSettings then staticDevel else static)
         (appStaticDir appSettings)
+    games <- atomically $ newTVar Map.empty
 
     -- We need a log function to create a connection pool. We need a connection
     -- pool to create our foundation. And we need our foundation to get a

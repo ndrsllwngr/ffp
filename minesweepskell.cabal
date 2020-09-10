@@ -24,6 +24,7 @@ library
       Foundation
       Game.Board
       Game.Game
+      Game.StateUtil
       Game.Util
       Handler.Comment
       Handler.Common
