@@ -33,10 +33,17 @@
                            Create game
         <div .row>
             Open Games:
-                $forall game <- gameStateEntitiesOngoingOrPaused
+                $forall game <- gameStateEntitiesOngoing
                     <div .row>
                         <a href="/game/#{game ^. gameStateEntityGameId}">
                             GameID: #{game ^. gameStateEntityGameId}, Status: #{game ^. gameStateEntityStatus}, Creation date: #{show $ game ^. gameStateEntityCreatedAt}, Size: #{showSize $ game ^. gameStateEntityBoard}, Num of bombs: #{game ^. gameStateEntityBombCount}
+        <div .row>
+             Paused Games:
+                 $forall game <- gameStateEntitiesPaused
+                     <div .row>
+                         <a href="/game/#{game ^. gameStateEntityGameId}">
+                             GameID: #{game ^. gameStateEntityGameId}, Status: #{game ^. gameStateEntityStatus}, Creation date: #{show $ game ^. gameStateEntityCreatedAt}, Size: #{showSize $ game ^. gameStateEntityBoard}, Num of bombs: #{game ^. gameStateEntityBombCount}
+
         <div .row>
             Finished Games:
                 $forall game <- gameStateEntitiesWonOrLost

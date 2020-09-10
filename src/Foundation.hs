@@ -15,6 +15,7 @@ import           Database.Persist.MongoDB hiding (master)
 import           Import.NoFoundation
 import           Text.Hamlet              (hamletFile)
 import           Text.Jasmine             (minifym)
+import           Game.Game                (GameState)
 
 -- Used only when in "auth-dummy-login" setting is enabled.
 import           Yesod.Auth.Dummy
@@ -36,6 +37,7 @@ data App = App
     , appConnPool    :: ConnectionPool -- ^ Database connection pool.
     , appHttpManager :: Manager
     , appLogger      :: Logger
+    , games          :: TVar (Map String GameState)
     }
 
 data MenuItem = MenuItem

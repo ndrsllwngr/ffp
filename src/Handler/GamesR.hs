@@ -6,6 +6,7 @@
 module Handler.GamesR where
 
 import           Game.Game
+import           Game.StateUtil
 import           Marshalling
 import           Game.Util
 import           Import
@@ -15,11 +16,20 @@ import           Control.Lens
 
 getGamesR :: Handler Html
 getGamesR = do
-
+    app <- getYesod
+    -- Get the in-memory state of ongoing games
+    let tGames = games app
+    -- Get games from database
     gameStateDBEntities <- runDB $ selectList [] [Desc GameStateEntityUpdatedAt]
     let gameStateEntities = map entityVal gameStateDBEntities
-    let gameStateEntitiesOngoingOrPaused = filter (\gs -> gs ^. gameStateEntityStatus == "Ongoing" || gs ^. gameStateEntityStatus == "Paused") gameStateEntities
+    -- List of paused games
+    let gameStateEntitiesPaused = filter (\gs -> gs ^. gameStateEntityStatus == "Paused") gameStateEntities
+    -- List of finished games
     let gameStateEntitiesWonOrLost = filter (\gs -> gs ^. gameStateEntityStatus == "Lost" || gs ^. gameStateEntityStatus == "Won") gameStateEntities
+    -- Get ongoing games from in-memory State
+    gamesOngoing <- liftIO $ getAllGames tGames
+    -- Parse List of GameStates to a List of GameStateEntities
+    let gameStateEntitiesOngoing = map gameStateToGameStateEntity gamesOngoing
     defaultLayout $ do
             let (newGameFormId, gameIdField, bombCountField, widthField, heightField) = variables
             setTitle "Create New Game"
@@ -28,17 +38,21 @@ getGamesR = do
 -- INIT NEW GAME
 postGamesR :: Handler Value
 postGamesR = do
-    -- requireCheckJsonBody will parse the request body into the appropriate type, or return a 400 status code if the request JSON is invalid.
-    -- (The ToJSON and FromJSON instances are derived in the config/models file).
-    newGameRequest <- (requireCheckJsonBody :: Handler NewGameRequest)
+    app <- getYesod
     now <- liftIO getCurrentTime
+    -- Get the in-memory state of ongoing games
+    let tGames = games app
+    
+    -- Parse the newGameRequest
+    newGameRequest <- (requireCheckJsonBody :: Handler NewGameRequest)
+    let newGameId = newGameRequest ^. newGameRequestGameId
+    
     print newGameRequest
-    let newGameState = newGame (newGameRequest ^. newGameRequestHeight, newGameRequest ^. newGameRequestWidth) (newGameRequest ^. newGameRequestBombCount) (newGameRequest ^. newGameRequestSeed) (newGameRequest ^. newGameRequestGameId) now
-    let newGameStateEntity = gameStateToGameStateEntity newGameState 
-    print newGameStateEntity
-
-    insertedGameStateEntity <- runDB $ insertEntity newGameStateEntity
-    returnJson insertedGameStateEntity
+    -- create new game
+    let newGameState = newGame (newGameRequest ^. newGameRequestHeight, newGameRequest ^. newGameRequestWidth) (newGameRequest ^. newGameRequestBombCount) (newGameRequest ^. newGameRequestSeed) newGameId now
+    -- write the new game into the in-memory state
+    _ <- liftIO $ setGameStateForGameId tGames newGameId newGameState
+    returnJson $ gameStateToGameStateEntity newGameState 
 
 variables :: (Text, Text, Text, Text, Text)
 variables = ("js-newGameFormId", "js-gameIdField", "js-bombCountField", "js-widthField", "js-heightField")

@@ -10,6 +10,7 @@ module Game.Board  (generateBoard,
                     checkLost,
                     checkWon,
                     coordinateToCellNumber, 
+                    getDimensionsForBoard,
                     Coordinate,
                     Dimension,
                     Board,
@@ -67,7 +68,7 @@ setCellToRevealed b (x,y) = setElem newCell (x,y) b where newCell = (getElem x y
 revealCell :: Board -> Coordinate -> Board
 revealCell board (i,j) = resultBoard where
                             -- dimension of the board
-                            dim =  (nrows board, ncols board)
+                            dim = getDimensionsForBoard board
                             resultBoard = case getElem i j board of
                                             -- case of a unrevealed cell with no neighboring bombs and which also does not contain a bomb
                                             -- in this case we want to reveal the neighboring cells as well
@@ -137,3 +138,7 @@ neighbourCells (i,j) (h,w) = filter (\x -> inBounds x (h,w)) theoreticalNeighbor
                                                               (i+1,j-1),  -- bottom-left
                                                               (i+1,j),    -- bottom
                                                               (i+1,j+1)]  -- bottom-right
+
+-- Returns the Dimension of a given board
+getDimensionsForBoard :: Board -> Dimension
+getDimensionsForBoard board = (nrows board, ncols board)

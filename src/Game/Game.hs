@@ -15,7 +15,8 @@ module Game.Game (newGame,
                   createdAt,    
                   updatedAt,    
                   lastStartedAt,
-                  timeElapsed,  ) where
+                  timeElapsed,
+                  getDimensions) where
 
 import           ClassyPrelude.Conduit (UTCTime)
 import           Game.Board
@@ -74,7 +75,13 @@ makeMove state m  = state & board       .~ boardAfterMove
                                 elapsed                 = case st of Won   -> finishGame
                                                                      Lost  -> finishGame
                                                                      _     -> state ^. timeElapsed
+
+-- Returns the Status of a given board
 checkStatus :: Board -> GameStatus
 checkStatus b = case (checkWon b, checkLost b) of  (_,True)      -> Lost
                                                    (True,False)  -> Won
                                                    (False,False) -> Ongoing
+
+-- Returns the Dimension of the board contained by a given GameState
+getDimensions :: GameState -> Dimension
+getDimensions state = getDimensionsForBoard $ state ^. board
