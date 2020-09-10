@@ -3,7 +3,7 @@ module Game.Util (calculateTimeElapsed,
                   getHeightAndWidthFromBoard) where
 
 import           Model
-import           Import.NoFoundation (headEx, Entity, entityKey, entityVal)
+import           Import.NoFoundation (headEx, Entity, entityVal)
 import           Data.Time (UTCTime, diffUTCTime)
 import           Control.Lens
 
