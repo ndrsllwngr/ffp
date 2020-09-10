@@ -7,24 +7,35 @@ module Handler.PauseR where
 
 
 import           Game.Util
+import           Game.StateUtil
+import           Marshalling
 import           Import
+import           Control.Lens
 
 -- PAUSE GAME
 postPauseR :: Text -> Handler Value
 postPauseR gameIdText = do
-    -- Prepare required variables
+    app <- getYesod
+    -- Get the in-memory state of ongoing games
+    let tGames = games app
     let gameId = unpack gameIdText
-    now <- liftIO getCurrentTime
-    -- Read GameState from DB
-    gameStateDBEntities <- runDB $ selectList [GameStateEntityGameId ==. gameId] [Desc GameStateEntityUpdatedAt, LimitTo 1]
-    let (gsEntity, gsKey) = getGameStateEntityAndKey gameStateDBEntities
-    -- Set GameState to "Paused" and and set timeElapsed as the time that elapsed playing the game until now
-    let updatedGameStateEntity = gsEntity {
-                                    gameStateEntityStatus = "Paused",
-                                    gameStateEntityUpdatedAt = now,
-                                    gameStateEntityTimeElapsed = calculateTimeElapsed (gameStateEntityLastStartedAt gsEntity) (gameStateEntityTimeElapsed gsEntity) now
-                                  }
-    -- Insert GameState to DB, return GameState                       
-    insertedGameStateEntity <- runDB $ repsert gsKey updatedGameStateEntity
-    returnJson insertedGameStateEntity -- TODO check if return is working                                   
+
+    -- Try to get the game from the in-memory state
+    gameStateMaybe <- liftIO $ getGameById tGames gameId 
+    
+    case gameStateMaybe of 
+      Just gameState -> do 
+          now <- liftIO getCurrentTime
+          let gsEntity = gameStateToGameStateEntity gameState
+          -- remove game from in memory state
+          _ <- liftIO $ removeGameById tGames gameId
+          -- Insert GameState to DB with status Paused & updated timestamps
+          insertedGameStateEntity <- runDB $ insert $ gsEntity & gameStateEntityStatus .~ "Paused"
+                                                               & gameStateEntityUpdatedAt .~ now
+                                                               & gameStateEntityTimeElapsed .~ calculateTimeElapsed (gsEntity ^. gameStateEntityLastStartedAt) (gsEntity ^. gameStateEntityTimeElapsed) now
+
+
+          -- return GameState
+          returnJson insertedGameStateEntity -- TODO check if return is working    
+      Nothing -> notFound                                 
 

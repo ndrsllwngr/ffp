@@ -14,27 +14,27 @@
                         and <tt>Handler/Home.hs</tt> for the implementation).
         <div .row ##{aDomId}>
             <div class="flex flex-row items-start">
-                <div id="flags" remainingFlags="#{getRemainingFlags (gameStateEntityBoard gameStateEntity) (gameStateEntityBombCount gameStateEntity)}">
-                <div id="face" status="#{gameStateEntityStatus gameStateEntity}" onclick="resetGame('#{gameStateEntityGameId gameStateEntity}','#{gameStateEntityStatus gameStateEntity}')">
-                <div id="seconds" init="False" prevTime="#{getTimeElapsed(gameStateEntityLastStartedAt gameStateEntity) (gameStateEntityTimeElapsed gameStateEntity) now (gameStateEntityStatus gameStateEntity)}">
+                <div id="flags" remainingFlags="#{getRemainingFlags (gameStateEntity ^. gameStateEntityBoard) (gameStateEntity ^. gameStateEntityBombCount)}">
+                <div id="face" status="#{gameStateEntity ^. gameStateEntityStatus}" onclick="resetGame('#{gameStateEntity ^. gameStateEntityGameId}','#{gameStateEntity ^. gameStateEntityStatus}')">
+                <div id="seconds" init="False" prevTime="#{getTimeElapsed(gameStateEntity ^. gameStateEntityLastStartedAt) (gameStateEntity ^. gameStateEntityTimeElapsed) now (gameStateEntity ^. gameStateEntityStatus)}">
         <div .row>
             <div .col-lg-6>
                 <div .bs-callout.bs-callout-info.well>
-                    $if gameStateEntityStatus gameStateEntity == "Ongoing"
-                        <button onclick="pauseGame('#{gameStateEntityGameId gameStateEntity}')">
+                    $if (gameStateEntity ^. gameStateEntityStatus) == "Ongoing"
+                        <button onclick="pauseGame('#{gameStateEntity ^. gameStateEntityGameId}')">
                             Pause game
-                        <button onclick="revealAll('#{gameStateEntityGameId gameStateEntity}')">
+                        <button onclick="revealAll('#{gameStateEntity ^. gameStateEntityGameId}')">
                             Reveal all non flagged fields
                     <table ##{gameTableId}style="width:40%">
-                        $forall row <- gameStateEntityBoard gameStateEntity
+                        $forall row <- gameStateEntity ^. gameStateEntityBoard
                             <tr>
-                                $forall cellEntity <- rowCells row
+                                $forall cellEntity <- row ^. rowCells
                                     <td ##{cellId}>
-                                        $if gameStateEntityStatus gameStateEntity == "Ongoing"
-                                            <div onclick="makeMove(#{cellEntityCoordX cellEntity}, #{cellEntityCoordY cellEntity}, '#{gameStateEntityGameId gameStateEntity}', event)">
-                                                <img src="#{getCellTile (cellEntityIsFlagged cellEntity) (cellEntityIsRevealed cellEntity) (cellEntityHasBomb cellEntity) (cellEntityNeighboringBombs cellEntity)}" width="24" height="24">
-                                        $elseif gameStateEntityStatus gameStateEntity == "Won"
-                                            <img src="#{getCellTileWon (cellEntityIsFlagged cellEntity) (cellEntityIsRevealed cellEntity) (cellEntityHasBomb cellEntity) (cellEntityNeighboringBombs cellEntity)}" width="24" height="24">
+                                        $if (gameStateEntity ^. gameStateEntityStatus) == "Ongoing"
+                                            <div onclick="makeMove(#{cellEntity ^. cellEntityCoordX}, #{cellEntity ^. cellEntityCoordY}, '#{gameStateEntity ^. gameStateEntityGameId}', event)">
+                                                <img src="#{getCellTile (cellEntity ^. cellEntityIsFlagged) (cellEntity ^. cellEntityIsRevealed) (cellEntity ^. cellEntityHasBomb) (cellEntity ^. cellEntityNeighboringBombs)}" width="24" height="24">
+                                        $elseif (gameStateEntity ^. gameStateEntityStatus) == "Won"
+                                            <img src="#{getCellTileWon (cellEntity ^. cellEntityIsFlagged) (cellEntity ^. cellEntityIsRevealed) (cellEntity ^. cellEntityHasBomb) (cellEntity ^. cellEntityNeighboringBombs)}" width="24" height="24">
                                         $else
-                                            <img src="#{getCellTileLost (cellEntityIsFlagged cellEntity) (cellEntityIsRevealed cellEntity) (cellEntityHasBomb cellEntity) (cellEntityNeighboringBombs cellEntity)}" width="24" height="24">
+                                            <img src="#{getCellTileLost (cellEntity ^. cellEntityIsFlagged) (cellEntity ^. cellEntityIsRevealed) (cellEntity ^. cellEntityHasBomb) (cellEntity ^. cellEntityNeighboringBombs)}" width="24" height="24">
     <hr>

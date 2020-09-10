@@ -1,20 +1,21 @@
 module Game.Util (calculateTimeElapsed,
-                  getGameStateEntityAndKey,
+                  getGameStateEntityMaybe,
                   getHeightAndWidthFromBoard) where
 
 import           Model
-import           Import (headEx, Entity, entityKey, entityVal)
-import Data.Time (UTCTime, diffUTCTime)
+import           Import.NoFoundation (headEx, Entity, entityVal)
+import           Data.Time (UTCTime, diffUTCTime)
+import           Control.Lens
 
 
 getHeightAndWidthFromBoard :: [Row] -> (Int, Int)
-getHeightAndWidthFromBoard rows = (length rows, length $ rowCells $ headEx rows )
+getHeightAndWidthFromBoard rows = (length rows, length $ headEx rows ^. rowCells)
 
 calculateTimeElapsed :: UTCTime -> Int -> UTCTime -> Int
 calculateTimeElapsed lastStartedAt timePrevElapsed now = do
   let (timeElapsed, _) = properFraction $ diffUTCTime now lastStartedAt
   timePrevElapsed + timeElapsed
   
-getGameStateEntityAndKey :: [Entity GameStateEntity] -> (GameStateEntity, Key GameStateEntity)
-getGameStateEntityAndKey (x:_) = (entityVal x, entityKey x)
-getGameStateEntityAndKey _     = error "HELP ME!"
+getGameStateEntityMaybe :: [Entity GameStateEntity] -> Maybe GameStateEntity
+getGameStateEntityMaybe (x:_) = Just $ entityVal x
+getGameStateEntityMaybe _     = Nothing

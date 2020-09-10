@@ -20,11 +20,12 @@ module Application
     , db
     ) where
 
-import           Control.Monad.Logger                 (liftLoc, runLoggingT)
+import           Control.Monad.Logger                 (liftLoc) -- runLoggingT
 -- import Database.Persist.Postgresql          (createPostgresqlPool, pgConnStr,
 --                                              pgPoolSize, runSqlPool)
 import           Database.Persist.MongoDB             (MongoContext)
 import           Import
+import           Data.Map as Map
 import           Language.Haskell.TH.Syntax           (qLocation)
 import           Network.HTTP.Client.TLS              (getGlobalManager)
 import           Network.Wai                          (Middleware)
@@ -73,6 +74,7 @@ makeFoundation appSettings = do
     appStatic <-
         (if appMutableStatic appSettings then staticDevel else static)
         (appStaticDir appSettings)
+    games <- atomically $ newTVar Map.empty
 
     -- We need a log function to create a connection pool. We need a connection
     -- pool to create our foundation. And we need our foundation to get a
@@ -83,8 +85,8 @@ makeFoundation appSettings = do
         -- The App {..} syntax is an example of record wild cards. For more
         -- information, see:
         -- https://ocharles.org.uk/blog/posts/2014-12-04-record-wildcards.html
-        tempFoundation = mkFoundation $ error "connPool forced in tempFoundation"
-        logFunc = messageLoggerSource tempFoundation appLogger
+        -- tempFoundation = mkFoundation $ error "connPool forced in tempFoundation" TODO check if applicable, else remove
+        -- logFunc = messageLoggerSource tempFoundation appLogger TODO check if applicable, else remove
 
     -- Create the database connection pool
     -- pool <- flip runLoggingT logFunc $ createPoolConfig $ appDatabaseConf appSettings
