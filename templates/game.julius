@@ -39,7 +39,7 @@ const makeMove = (x, y, gameId, event) => {
 // Reveal all
 const revealAll = (gameId) => {
 
-    console.log("revealAll");
+    console.log("REVEAL ALL", { gameId });
 
     $.ajax({
         url: "/game/" + gameId,

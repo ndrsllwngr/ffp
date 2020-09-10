@@ -32,7 +32,7 @@ gameStateToGameStateEntity state = GameStateEntity {
                                        _gameStateEntityStatus        = show (state ^. status),
                                        _gameStateEntityLastStartedAt = state ^. lastStartedAt,
                                        _gameStateEntityTimeElapsed   = state ^. timeElapsed
-                                   } where boardToRows board = map (Row . map cellToCellEntity) (Data.Matrix.toLists board)
+                                   } where boardToRows board_ = map (Row . map cellToCellEntity) (Data.Matrix.toLists board_)
 
 gameStateEntityToGameState :: GameStateEntity -> GameState
 gameStateEntityToGameState entity = GameState {
@@ -53,7 +53,7 @@ statusEntityToStatus "Ongoing" = Ongoing
 statusEntityToStatus "Won"     = Won
 statusEntityToStatus "Lost"    = Lost
 statusEntityToStatus "Paused"  = Paused
-statusEntityToStatus _         = undefined
+statusEntityToStatus _         = error "Invalid StatusEntity"
 
 cellToCellEntity :: Cell -> CellEntity
 cellToCellEntity (Cell flagged revealed hasBomb neighbors (x,y)) = CellEntity {
@@ -83,10 +83,10 @@ moveEntityToMove :: MoveEntity -> Move
 moveEntityToMove (MoveEntity "Flag" (Just x) (Just y) timeStamp)    = Flag (x,y) timeStamp
 moveEntityToMove (MoveEntity "Reveal" (Just x) (Just y) timeStamp)  = Reveal (x,y) timeStamp
 moveEntityToMove (MoveEntity "RevealAllNonFlagged" _ _ timeStamp)   = RevealAllNonFlagged timeStamp
-moveEntityToMove _ = undefined
+moveEntityToMove _ = error "Invalid MoveEntity"
 
 moveRequestToMove :: MoveRequest -> UTCTime -> Move
 moveRequestToMove (MoveRequest "RevealAllNonFlagged" _ _) timeStamp = RevealAllNonFlagged timeStamp
 moveRequestToMove (MoveRequest "Flag" (Just x) (Just y)) timeStamp  = Flag (x,y) timeStamp
 moveRequestToMove (MoveRequest "Reveal"(Just x) (Just y)) timeStamp = Reveal (x,y) timeStamp
-moveRequestToMove _ _ = undefined
+moveRequestToMove _ _ = error "Invalid MoveRequest"
