@@ -107,7 +107,7 @@ instance Yesod App where
         muser <- maybeAuthPair
         mcurrentRoute <- getCurrentRoute
 
-       -- Get the breadcrumbs, as defined in the YesodBreadcrumbs instance.
+        -- Get the breadcrumbs, as defined in the YesodBreadcrumbs instance.
         (title, parents) <- breadcrumbs
 
         -- Define the menu items of the header.
@@ -198,7 +198,7 @@ instance Yesod App where
             mime
             content
       where
-       -- Generate a unique filename based on the content itself
+        -- Generate a unique filename based on the content itself
         genFileName lbs = "autogen-" ++ base64md5 lbs
 
     -- What messages should be logged. The following includes all messages when
