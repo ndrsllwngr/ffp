@@ -12,7 +12,7 @@ import           Game.Util
 import           Import
 import           Text.Julius           (RawJS (..))
 import           Control.Lens
-import System.Random (random, randomIO)
+import System.Random (randomIO)
 
 
 getGamesR :: Handler Html
@@ -47,12 +47,13 @@ postGamesR = do
     -- Parse the newGameRequest
     newGameRequest <- (requireCheckJsonBody :: Handler NewGameRequest)
     let newGameId = newGameRequest ^. newGameRequestGameId
-    
+
     seed_ <- case newGameRequest ^. newGameRequestSeed of Just s -> return s
-                                                          Nothing -> liftIO $ (randomIO :: IO Int)
-    
+                                                          Nothing -> liftIO (randomIO :: IO Int)
+
     -- create new game
     let newGameState = newGame (newGameRequest ^. newGameRequestHeight, newGameRequest ^. newGameRequestWidth) (newGameRequest ^. newGameRequestBombCount) seed_ newGameId now
+
     -- write the new game into the in-memory state
     _ <- liftIO $ setGameStateForGameId tGames newGameId newGameState
     returnJson $ gameStateToGameStateEntity newGameState 
