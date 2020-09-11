@@ -22,6 +22,7 @@ import           Data.Matrix
 import           System.Random
 import           System.Random.Shuffle
 import           Control.Lens
+import           Data.Matrix.Lens (flattened, size, elemAt)
 
 type Dimension = (Int,Int)
 type Coordinate = (Int,Int)
@@ -61,51 +62,46 @@ generateBoard (h,w) bombCount seed = matrix h w (\(i,j) -> Cell {
 
 -- helper function to set a specific cells isRevealed flag to True
 setCellToRevealed :: Board -> Coordinate -> Board
-setCellToRevealed b (x,y) = setElem newCell (x,y) b where newCell = (getElem x y b) & isRevealed .~ True
+setCellToRevealed board c = board & elemAt c . isRevealed .~ True
 
 -- Reveals a cell at a given coordinate for a given Board
 -- Rule explanation: will also reveal any direct neighbouring Cells which have no bomb and their neighbour cells if the have 0 neighboring bombs
 revealCell :: Board -> Coordinate -> Board
-revealCell board (i,j) = resultBoard where
+revealCell board c = resultBoard where
                             -- dimension of the board
                             dim = getDimensionsForBoard board
-                            resultBoard = case getElem i j board of
+                            resultBoard = case board ^. elemAt c of
                                             -- case of a unrevealed cell with no neighboring bombs and which also does not contain a bomb
                                             -- in this case we want to reveal the neighboring cells as well
                                             (Cell _ True _ _ _)           -> board
                                             (Cell True _ _ _ _)           -> board
                                             (Cell False False False 0 _)  -> neighboursBoard where
                                                                   -- the board with the cell (i,j) set to revealed
-                                                                  cellBoard = setCellToRevealed board (i,j)
+                                                                  cellBoard = setCellToRevealed board c
                                                                   -- all the direct neighbours of the cell (i,j)
-                                                                  neighbours = directNeighbourCells (i,j) dim
+                                                                  neighbours = directNeighbourCells c dim
                                                                   -- fold over the list of neighbours and recursively call revealCell for each one
                                                                   neighboursBoard = foldl revealCell cellBoard neighbours
                                             -- In any other case just reveal the cell at (i,j)
-                                            _ -> setCellToRevealed board (i,j)
+                                            _ -> setCellToRevealed board c
 
 -- Reveals all cells which have not been flagged
 revealAllNonFlaggedCells :: Board -> Board
-revealAllNonFlaggedCells board = resultBoard where 
-                                cellsToReveal   = filter (not . _isFlagged)(toList board)
-                                cellCoordinates = map _coordinate cellsToReveal
-                                resultBoard     = foldl setCellToRevealed board cellCoordinates
+revealAllNonFlaggedCells board = board & flattened . filtered (not . _isFlagged) . isRevealed .~ True
                             
 
--- Toggles the isFlagged state of a cell at a given coordinate for a given board
+-- Toggles the isFlagged state of a cell at a given coordinate for a given board, will only flag cell if cell was not already revealed
 flagCell :: Board -> Coordinate -> Board
-flagCell b (i,j) = setElem newCell (i,j) b where
-                                            oldCell = getElem i j b
-                                            flag = if oldCell ^. isRevealed then oldCell ^. isFlagged else not $ oldCell ^. isFlagged
-                                            newCell = oldCell & isFlagged .~ flag
-
+flagCell board c = board & elemAt c . isFlagged .~ (revealed && flagged || not revealed && not flagged) where flagged   = board ^. (elemAt c . isFlagged)
+                                                                                                              revealed  = board ^. (elemAt c . isRevealed)
+                                                              
 -- Checks if any bomb has been revealed
 checkLost :: Board -> Bool
 checkLost board = any (\c -> c ^. isRevealed && c ^. hasBomb) (toList board)
 
 -- Checks if all non bomb fields are revealed OR if all bombs have been flagged
 checkWon :: Board -> Bool
-checkWon board = all _isRevealed $ filter (not . _hasBomb) (toList board) --TODO not sure how to use lens notation here and in the other funky map cases ^_
+checkWon board = all _isRevealed $ filter (not . _hasBomb) (toList board)
 
 -- Calculates the cell number of a given XY-Coordinate for a given Board size
 -- will also calculate out of bounds cells if out of bounds coordinates are provided
@@ -119,7 +115,7 @@ inBounds (i,j) (h,w) = (i > 0) && (i <= h) && (j > 0) && (j <= w)
 
 -- Calculates all inBounds direct (non diagonal) neighbour cells of a given cell
 directNeighbourCells :: Coordinate -> Dimension -> [Coordinate]
-directNeighbourCells (i,j) (h,w) = filter (\x -> inBounds x (h,w)) theoreticalNeighbors
+directNeighbourCells (i,j) d = filter (`inBounds` d) theoreticalNeighbors
                                     where
                                       theoreticalNeighbors = [(i-1,j),    -- top
                                                               (i,j-1),    -- left
@@ -128,7 +124,7 @@ directNeighbourCells (i,j) (h,w) = filter (\x -> inBounds x (h,w)) theoreticalNe
 
 -- Calculates all inBounds (including diagonal) neighbour cells of a given cell
 neighbourCells :: Coordinate -> Dimension -> [Coordinate]
-neighbourCells (i,j) (h,w) = filter (\x -> inBounds x (h,w)) theoreticalNeighbors
+neighbourCells (i,j) d = filter (`inBounds` d) theoreticalNeighbors
                                     where
                                       theoreticalNeighbors = [(i-1,j-1),  -- top-left
                                                               (i-1,j),    -- top
@@ -141,4 +137,4 @@ neighbourCells (i,j) (h,w) = filter (\x -> inBounds x (h,w)) theoreticalNeighbor
 
 -- Returns the Dimension of a given board
 getDimensionsForBoard :: Board -> Dimension
-getDimensionsForBoard board = (nrows board, ncols board)
+getDimensionsForBoard board = board ^. size
