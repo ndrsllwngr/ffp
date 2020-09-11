@@ -38,7 +38,7 @@ getGameR gameIdText = do
 
       -- If no game was found in the in-memory state check database if a Paused/Won/Lost game with the given ID is present
       Nothing -> do
-          gameStateDBEntities <- runDB $ selectList [GameStateEntityGameId ==. unpack gameIdText] [Desc GameStateEntityUpdatedAt, LimitTo 1]
+          gameStateDBEntities <- runDB $ selectList [GameStateEntityGameId ==. gameId_] [Desc GameStateEntityUpdatedAt, LimitTo 1]
           case getGameStateEntityMaybe gameStateDBEntities of 
               Just gsEntity -> do
                   let status_ = gsEntity ^. gameStateEntityStatus
