@@ -12,6 +12,7 @@ import           Game.Util
 import           Import
 import           Text.Julius           (RawJS (..))
 import           Control.Lens
+import System.Random (random, randomIO)
 
 
 getGamesR :: Handler Html
@@ -47,10 +48,11 @@ postGamesR = do
     newGameRequest <- (requireCheckJsonBody :: Handler NewGameRequest)
     let newGameId = newGameRequest ^. newGameRequestGameId
     
-    print newGameRequest
+    seed_ <- case newGameRequest ^. newGameRequestSeed of Just s -> return s
+                                                          Nothing -> liftIO $ (randomIO :: IO Int)
+    
     -- create new game
-    -- TODO parse seed if == null generate fallback random seed
-    let newGameState = newGame (newGameRequest ^. newGameRequestHeight, newGameRequest ^. newGameRequestWidth) (newGameRequest ^. newGameRequestBombCount) (newGameRequest ^. newGameRequestSeed) newGameId now
+    let newGameState = newGame (newGameRequest ^. newGameRequestHeight, newGameRequest ^. newGameRequestWidth) (newGameRequest ^. newGameRequestBombCount) seed_ newGameId now
     -- write the new game into the in-memory state
     _ <- liftIO $ setGameStateForGameId tGames newGameId newGameState
     returnJson $ gameStateToGameStateEntity newGameState 

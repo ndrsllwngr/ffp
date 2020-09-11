@@ -39,7 +39,7 @@ NewGameRequest json
     height Int
     width Int
     bombCount Int
-    seed Int
+    seed Int Maybe
     gameId String
     deriving Eq
     deriving Show
