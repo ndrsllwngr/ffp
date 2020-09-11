@@ -29,6 +29,9 @@
                         <div .field>
                             <label for="heightField">Height</label>
                             <input type="number" ##{heightField} required></input>
+                        <div .field>
+                             <label for="randomSeedField">Random seed</label>
+                             <input type="number" ##{randomSeedField}></input>
                         <button .btn.btn-primary type=submit>
                            Create game
         <div .row>

@@ -12,6 +12,7 @@ import           Game.Util
 import           Import
 import           Text.Julius           (RawJS (..))
 import           Control.Lens
+import System.Random (randomIO)
 
 
 getGamesR :: Handler Html
@@ -31,7 +32,7 @@ getGamesR = do
     -- Parse List of GameStates to a List of GameStateEntities
     let gameStateEntitiesOngoing = map gameStateToGameStateEntity gamesOngoing
     defaultLayout $ do
-            let (newGameFormId, gameIdField, bombCountField, widthField, heightField) = variables
+            let (newGameFormId, gameIdField, bombCountField, widthField, heightField, randomSeedField) = variables
             setTitle "Create New Game"
             $(widgetFile "games")
 
@@ -46,16 +47,19 @@ postGamesR = do
     -- Parse the newGameRequest
     newGameRequest <- (requireCheckJsonBody :: Handler NewGameRequest)
     let newGameId = newGameRequest ^. newGameRequestGameId
-    
-    print newGameRequest
+
+    seed_ <- case newGameRequest ^. newGameRequestSeed of Just s -> return s
+                                                          Nothing -> liftIO (randomIO :: IO Int)
+
     -- create new game
-    let newGameState = newGame (newGameRequest ^. newGameRequestHeight, newGameRequest ^. newGameRequestWidth) (newGameRequest ^. newGameRequestBombCount) (newGameRequest ^. newGameRequestSeed) newGameId now
+    let newGameState = newGame (newGameRequest ^. newGameRequestHeight, newGameRequest ^. newGameRequestWidth) (newGameRequest ^. newGameRequestBombCount) seed_ newGameId now
+
     -- write the new game into the in-memory state
     _ <- liftIO $ setGameStateForGameId tGames newGameId newGameState
     returnJson $ gameStateToGameStateEntity newGameState 
 
-variables :: (Text, Text, Text, Text, Text)
-variables = ("js-newGameFormId", "js-gameIdField", "js-bombCountField", "js-widthField", "js-heightField")
+variables :: (Text, Text, Text, Text, Text, Text)
+variables = ("js-newGameFormId", "js-gameIdField", "js-bombCountField", "js-widthField", "js-heightField", "js-randomSeedField")
 
 showSize :: [Row] -> String
 showSize b = showS (getHeightAndWidthFromBoard b) where showS (h,w) = "width: " ++ show w ++ ", height: " ++ show h
