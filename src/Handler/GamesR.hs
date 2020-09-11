@@ -31,7 +31,7 @@ getGamesR = do
     -- Parse List of GameStates to a List of GameStateEntities
     let gameStateEntitiesOngoing = map gameStateToGameStateEntity gamesOngoing
     defaultLayout $ do
-            let (newGameFormId, gameIdField, bombCountField, widthField, heightField) = variables
+            let (newGameFormId, gameIdField, bombCountField, widthField, heightField, randomSeedField) = variables
             setTitle "Create New Game"
             $(widgetFile "games")
 
@@ -49,13 +49,14 @@ postGamesR = do
     
     print newGameRequest
     -- create new game
+    -- TODO parse seed if == null generate fallback random seed
     let newGameState = newGame (newGameRequest ^. newGameRequestHeight, newGameRequest ^. newGameRequestWidth) (newGameRequest ^. newGameRequestBombCount) (newGameRequest ^. newGameRequestSeed) newGameId now
     -- write the new game into the in-memory state
     _ <- liftIO $ setGameStateForGameId tGames newGameId newGameState
     returnJson $ gameStateToGameStateEntity newGameState 
 
-variables :: (Text, Text, Text, Text, Text)
-variables = ("js-newGameFormId", "js-gameIdField", "js-bombCountField", "js-widthField", "js-heightField")
+variables :: (Text, Text, Text, Text, Text, Text)
+variables = ("js-newGameFormId", "js-gameIdField", "js-bombCountField", "js-widthField", "js-heightField", "js-randomSeedField")
 
 showSize :: [Row] -> String
 showSize b = showS (getHeightAndWidthFromBoard b) where showS (h,w) = "width: " ++ show w ++ ", height: " ++ show h

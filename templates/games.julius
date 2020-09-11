@@ -6,6 +6,7 @@ $(function () {
     var bombCount = $("##{rawJS bombCountField}").val();
     var width = $("##{rawJS widthField}").val();
     var height = $("##{rawJS heightField}").val();
+    var randomSeed = $("##{rawJS randomSeedField}").val();
 
     // (Browsers that enforce the "required" attribute on the textarea won't see this alert)
     if (!gameId || !bombCount || !width || !height) {
@@ -24,7 +25,7 @@ $(function () {
         height: parseInt(height, 10),
         width: parseInt(width, 10),
         bombCount: parseInt(bombCount, 10),
-        seed: 42,
+        seed: randomSeed ? parseInt(randomSeed, 10) : null,
         gameId: gameId,
       }),
       success: function (data) {
