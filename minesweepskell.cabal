@@ -64,6 +64,7 @@ library
     , http-conduit >=2.3 && <2.4
     , lens
     , matrix
+    , matrix-lens
     , monad-control >=0.3 && <1.1
     , monad-logger >=0.3 && <0.4
     , mongoDB
@@ -124,6 +125,7 @@ executable minesweepskell
     , http-conduit >=2.3 && <2.4
     , lens
     , matrix
+    , matrix-lens
     , minesweepskell
     , monad-control >=0.3 && <1.1
     , monad-logger >=0.3 && <0.4
@@ -188,6 +190,7 @@ test-suite minesweepskell-test
     , http-conduit >=2.3 && <2.4
     , lens
     , matrix
+    , matrix-lens
     , minesweepskell
     , monad-control >=0.3 && <1.1
     , monad-logger >=0.3 && <0.4

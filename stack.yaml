@@ -37,6 +37,8 @@ packages:
 extra-deps: # https://stackoverflow.com/a/52597788
   - persistent-mongoDB-2.10.0.0@sha256:c95f893e674ec1521e865cb1c7932b7055271fb3e248a086e3671ab5724fcbe4,2842
   - hindent-5.3.1@sha256:23dc3d423820a1de4a11f54eb87992f2c9fa1b686b2230bb06d1af46edc85c4b,3452
+  - matrix-lens-0.1.0.0@sha256:e0ee6990e24aea663c017c0b0f525dfdec6d6effc0b09a666b58ed72523fceff,2942
+
 # - acme-missiles-0.3
 # - git: https://github.com/commercialhaskell/stack.git
 #   commit: e7b331f14bcffb8367cd58fbfc8b40ec7642100a

@@ -46,6 +46,7 @@ dependencies:
   - random
   - random-shuffle
   - lens
+  - matrix-lens
 
 # The library contains all of our application code. The executable
 # defined below is just a thin wrapper.
