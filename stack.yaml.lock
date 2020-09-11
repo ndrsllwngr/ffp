@@ -18,6 +18,13 @@ packages:
       sha256: 29ea7cff1847793ca6249158ad919f4bb7095e59067f9750f4ce7051496e03d0
   original:
     hackage: hindent-5.3.1@sha256:23dc3d423820a1de4a11f54eb87992f2c9fa1b686b2230bb06d1af46edc85c4b,3452
+- completed:
+    hackage: matrix-lens-0.1.0.0@sha256:e0ee6990e24aea663c017c0b0f525dfdec6d6effc0b09a666b58ed72523fceff,2942
+    pantry-tree:
+      size: 590
+      sha256: eaea78535f35ec65aedcb8503c7e720a53ae483f2c08ebca28968216b0717c11
+  original:
+    hackage: matrix-lens-0.1.0.0@sha256:e0ee6990e24aea663c017c0b0f525dfdec6d6effc0b09a666b58ed72523fceff,2942
 snapshots:
 - completed:
     size: 532383
