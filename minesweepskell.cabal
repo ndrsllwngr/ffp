@@ -26,6 +26,7 @@ library
       Game.Game
       Game.StateUtil
       Game.Util
+      Handler.ChannelR
       Handler.Comment
       Handler.Common
       Handler.GameR

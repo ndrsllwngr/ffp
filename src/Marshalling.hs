@@ -34,19 +34,22 @@ gameStateToGameStateEntity state = GameStateEntity {
                                        _gameStateEntityTimeElapsed   = state ^. timeElapsed
                                    } where boardToRows board_ = map (Row . map cellToCellEntity) (Data.Matrix.toLists board_)
 
-gameStateEntityToGameState :: GameStateEntity -> GameState
-gameStateEntityToGameState entity = GameState {
-                                       _board         = rowsToBoard $ entity ^. gameStateEntityBoard,
-                                       _moves         = map moveEntityToMove $ entity ^. gameStateEntityMoves,
-                                       _bombCount     = entity ^. gameStateEntityBombCount,
-                                       _seed          = entity ^. gameStateEntitySeed,
-                                       _status        = statusEntityToStatus $ entity ^. gameStateEntityStatus,
-                                       _gameId        = entity ^. gameStateEntityGameId,
-                                       _createdAt     = entity ^. gameStateEntityCreatedAt,
-                                       _updatedAt     = entity ^. gameStateEntityUpdatedAt,
-                                       _lastStartedAt = entity ^. gameStateEntityLastStartedAt,
-                                       _timeElapsed   = entity ^. gameStateEntityTimeElapsed
-                                    } where rowsToBoard rows = Data.Matrix.fromLists $ map (map cellEntityToCell . _rowCells) rows --TODO how to use lense here?
+gameStateEntityToGameState :: GameStateEntity -> IO GameState
+gameStateEntityToGameState entity = do
+                                       channel_ <- newChan
+                                       return GameState {
+                                            _board         = rowsToBoard $ entity ^. gameStateEntityBoard,
+                                            _moves         = map moveEntityToMove $ entity ^. gameStateEntityMoves,
+                                            _bombCount     = entity ^. gameStateEntityBombCount,
+                                            _seed          = entity ^. gameStateEntitySeed,
+                                            _status        = statusEntityToStatus $ entity ^. gameStateEntityStatus,
+                                            _gameId        = entity ^. gameStateEntityGameId,
+                                            _createdAt     = entity ^. gameStateEntityCreatedAt,
+                                            _updatedAt     = entity ^. gameStateEntityUpdatedAt,
+                                            _lastStartedAt = entity ^. gameStateEntityLastStartedAt,
+                                            _timeElapsed   = entity ^. gameStateEntityTimeElapsed,
+                                            _channel       = channel_
+                                        } where rowsToBoard rows = Data.Matrix.fromLists $ map (map cellEntityToCell . _rowCells) rows --TODO how to use lense here?
 
 statusEntityToStatus :: [Char] -> GameStatus
 statusEntityToStatus "Ongoing" = Ongoing

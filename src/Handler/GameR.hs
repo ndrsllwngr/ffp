@@ -45,8 +45,9 @@ getGameR gameIdText = do
                   -- If the game was Paused before, move it from the database back into the in memory storage and set the state to Ongoing
                   gameStateEntity <- if status_ == "Paused" then do let updateEntity = gsEntity & gameStateEntityStatus .~ "Ongoing"
                                                                                                 & gameStateEntityLastStartedAt .~ now
+                                                                    gameState <- liftIO $ gameStateEntityToGameState updateEntity
                                                                     -- Load game back into in-memory state
-                                                                    _ <- liftIO $ setGameStateForGameId tGames gameId_ (gameStateEntityToGameState updateEntity)
+                                                                    _ <- liftIO $ setGameStateForGameId tGames gameId_ gameState
 
                                                                     -- Remove it from the database
                                                                     runDB $ deleteBy $ UniqueGameStateEntity gameId_

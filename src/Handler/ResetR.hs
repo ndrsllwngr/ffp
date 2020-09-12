@@ -33,14 +33,16 @@ postResetR gameIdText = do
                           gameStateDBEntities <- runDB $ selectList [GameStateEntityGameId ==. unpack gameIdText] [Desc GameStateEntityUpdatedAt, LimitTo 1]
                           -- Delete game with given id from Database (if present)
                           _ <- runDB $ deleteBy $ UniqueGameStateEntity gameId_ 
+                          case getGameStateEntityMaybe gameStateDBEntities of
+                              Just gameStateEntity -> do return liftIO $ gameStateEntityToGameState gameStateEntity
                           -- Map the Maybe GameStateEntity to a Maybe GameState and return it
-                          return $ gameStateEntityToGameState <$> getGameStateEntityMaybe gameStateDBEntities
+                          --return res
     
     case gameMaybe of
          Just gameState -> do
                 now <- liftIO getCurrentTime
                 -- create a new game with the same parameters
-                let resetGameState = newGame (getDimensions gameState) (gameState ^. bombCount) (gameState ^. seed) (gameState ^.gameId) now
+                resetGameState <- liftIO $ newGame (getDimensions gameState) (gameState ^. bombCount) (gameState ^. seed) (gameState ^.gameId) now
                 -- Store/Override the gamestate for the given ID in the in-memory state
                 _ <- liftIO $ setGameStateForGameId tGames gameId_ resetGameState
                 returnJson $ gameStateToGameStateEntity resetGameState
