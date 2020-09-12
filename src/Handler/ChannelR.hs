@@ -3,12 +3,10 @@ module Handler.ChannelR(getChannelR,broadcast) where
 import           Game.Game
 import           Game.StateUtil
 import           Import
-import           Marshalling
 import           Control.Lens
-import Data.Text
 import Control.Concurrent.Chan as Chan
 import Network.Wai.EventSource (ServerEvent (..), eventSourceAppChan)
-import Data.Aeson.Encode (encode)
+import Data.Aeson (encode)
 
 getChannelR :: Text -> Handler ()
 getChannelR gameIdText = do
