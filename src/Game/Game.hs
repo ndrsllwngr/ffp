@@ -23,7 +23,7 @@ module Game.Game (newGame,
 import           ClassyPrelude.Conduit (UTCTime)
 import           Game.Board
 import           Control.Lens
-import           Data.Time (UTCTime, diffUTCTime)
+import           Data.Time (diffUTCTime)
 import           Network.Wai.EventSource (ServerEvent (..))
 import           Control.Concurrent.Chan
 
@@ -93,6 +93,6 @@ getDimensions :: GameState -> Dimension
 getDimensions state = getDimensionsForBoard $ state ^. board
 
 calculateTimeElapsed :: UTCTime -> Int -> UTCTime -> Int
-calculateTimeElapsed lastStartedAt timePrevElapsed now = do
-  let (timeElapsed, _) = properFraction $ diffUTCTime now lastStartedAt
-  timePrevElapsed + timeElapsed
+calculateTimeElapsed lastStartedAt_ timePrevElapsed now = do
+  let (timeElapsed_, _) = properFraction $ diffUTCTime now lastStartedAt_
+  timePrevElapsed + timeElapsed_

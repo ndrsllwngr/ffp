@@ -46,8 +46,8 @@ getGameR gameIdText = do
                   -- If the game was Paused before, move it from the database back into the in memory storage and set the state to Ongoing
                   gameStateEntity <- if status_ == "Paused" then do let updateEntity = gsEntity & gameStateEntityStatus .~ "Ongoing"
                                                                                                 & gameStateEntityLastStartedAt .~ now
-                                                                    channel <- newChan
-                                                                    let gameState = gameStateEntityToGameState updateEntity channel
+                                                                    channel_ <- newChan
+                                                                    let gameState = gameStateEntityToGameState updateEntity channel_
                                                                     -- Load game back into in-memory state
                                                                     _ <- liftIO $ setGameStateForGameId tGames gameId_ gameState
 
@@ -57,7 +57,7 @@ getGameR gameIdText = do
                                                             -- In any other case (game was Won or Lost) just return the fetched entity
                                                             else do return gsEntity
                   defaultLayout $ do
-                          let (gameTableId) = gameIds
+                          let gameTableId = gameIds
                           aDomId <- newIdent
                           setTitle "Game"
                           $(widgetFile "game")

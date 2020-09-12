@@ -52,10 +52,10 @@ postGamesR = do
                                                           Nothing -> liftIO (randomIO :: IO Int)
 
     -- create new channel
-    channel <- newChan
+    channel_ <- newChan
     
     -- create new game
-    let newGameState = newGame (newGameRequest ^. newGameRequestHeight, newGameRequest ^. newGameRequestWidth) (newGameRequest ^. newGameRequestBombCount) seed_ newGameId now channel
+    let newGameState = newGame (newGameRequest ^. newGameRequestHeight, newGameRequest ^. newGameRequestWidth) (newGameRequest ^. newGameRequestBombCount) seed_ newGameId now channel_
 
     -- write the new game into the in-memory state
     _ <- liftIO $ setGameStateForGameId tGames newGameId newGameState
