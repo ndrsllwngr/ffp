@@ -42,7 +42,7 @@ postGamesR :: Handler Value
 postGamesR = do
     app <- getYesod
     now <- liftIO getCurrentTime
-    randomString <- liftIO $ stringRandomIO "^[A-Z 1-9]{5}$"
+    randomString <- liftIO $ stringRandomIO "^[A-Z1-9]{5}$"
     let gameId_ = unpack randomString
     print gameId_
     -- Get the in-memory state of ongoing games
