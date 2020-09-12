@@ -10,7 +10,7 @@ import           Marshalling
 import           Game.Util
 import           Import
 import           Control.Lens
-
+import           Handler.ChannelR(broadcast)
 
 -- RESET GAME
 postResetR :: Text -> Handler Value
@@ -42,12 +42,12 @@ postResetR gameIdText = do
     case gameMaybe of
          Just gameState -> do
                 now <- liftIO getCurrentTime
-                -- Create new channel
-                channel <- newChan
                 -- create a new game with the same parameters
-                let resetGameState = newGame (getDimensions gameState) (gameState ^. bombCount) (gameState ^. seed) (gameState ^.gameId) now channel
+                let resetGameState = newGame (getDimensions gameState) (gameState ^. bombCount) (gameState ^. seed) (gameState ^.gameId) now (gameState ^. channel)
                 -- Store/Override the gamestate for the given ID in the in-memory state
                 _ <- liftIO $ setGameStateForGameId tGames gameId_ resetGameState
-                returnJson $ gameStateToGameStateEntity resetGameState
+                let gameStateEntity = gameStateToGameStateEntity resetGameState
+                broadcast (resetGameState ^. channel) gameStateEntity
+                returnJson gameStateEntity
          -- If game was neither in Memory (Ongoing) nor in Database (Paused/Won/Lost) return 404             
          Nothing -> notFound

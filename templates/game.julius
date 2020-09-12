@@ -72,7 +72,9 @@ const resetGame = (gameId, status) => {
     data: JSON.stringify({}),
     success: function (data) {
       console.info("[SUCCESS] RESET GAME", { data });
-      //window.location.reload();
+      if (status === "Won" || status === "Lost") {
+        window.location.reload();
+      }
     },
     error: function (data) {
       console.error("[ERROR] RESET GAME", { data });
