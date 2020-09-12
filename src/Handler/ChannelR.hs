@@ -4,9 +4,10 @@ import           Game.Game
 import           Game.StateUtil
 import           Import
 import           Control.Lens
-import Control.Concurrent.Chan as Chan
-import Network.Wai.EventSource (ServerEvent (..), eventSourceAppChan)
-import Data.Aeson (encode)
+import           Control.Concurrent.Chan as Chan
+import           Network.Wai.EventSource (ServerEvent (..), eventSourceAppChan)
+import           Data.Aeson (encode)
+import           Data.ByteString.Lazy.Char8 as Char8
 
 getChannelR :: Text -> Handler ()
 getChannelR gameIdText = do
@@ -25,5 +26,5 @@ getChannelR gameIdText = do
 broadcast :: Chan ServerEvent -> GameStateEntity -> Handler ()
 broadcast chan gse = do
       liftIO $ Chan.writeChan chan $ serverEvent $ return $ fromString message
-                        where message = show $ encode gse
+                        where message = Char8.unpack $ encode gse
                               serverEvent = ServerEvent Nothing Nothing
