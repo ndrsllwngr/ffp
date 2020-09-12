@@ -8,6 +8,7 @@ module Handler.PauseR where
 
 import           Game.Util
 import           Game.StateUtil
+import           Game.Game
 import           Marshalling
 import           Import
 import           Control.Lens

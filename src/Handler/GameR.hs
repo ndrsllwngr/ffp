@@ -104,60 +104,6 @@ putGameR gameIdText = do
 gameIds :: (Text, Text)
 gameIds = ("js-gameTableId", "js-cellId")
 
--- isFlagged Bool
--- isRevealed Bool
--- hasBomb Bool
--- neighboringBombs Int
-getCellTile :: Bool -> Bool -> Bool -> Int -> String
-getCellTile False True False 0 = "/static/assets/type0.svg"
-getCellTile False True False 1 = "/static/assets/type1.svg"
-getCellTile False True False 2 = "/static/assets/type2.svg"
-getCellTile False True False 3 = "/static/assets/type3.svg"
-getCellTile False True False 4 = "/static/assets/type4.svg"
-getCellTile False True False 5 = "/static/assets/type5.svg"
-getCellTile False True False 6 = "/static/assets/type6.svg"
-getCellTile False True False 7 = "/static/assets/type7.svg"
-getCellTile False True False 8 = "/static/assets/type8.svg"
-getCellTile True True True _   = "/static/assets/mine.svg"
-getCellTile True True False _  = "/static/assets/mine_wrong.svg"
-getCellTile False True True _  = "/static/assets/mine_red.svg"
-getCellTile True False _ _     = "/static/assets/flag.svg"
-getCellTile _ False _ _        = "/static/assets/closed.svg"
-getCellTile _ _ _ _            = error "Invalid CellState"
-
-getCellTileWon :: Bool -> Bool -> Bool -> Int -> String
-getCellTileWon False _ False 0    = "/static/assets/type0.svg"
-getCellTileWon False _ False 1    = "/static/assets/type1.svg"
-getCellTileWon False _ False 2    = "/static/assets/type2.svg"
-getCellTileWon False _ False 3    = "/static/assets/type3.svg"
-getCellTileWon False _ False 4    = "/static/assets/type4.svg"
-getCellTileWon False _ False 5    = "/static/assets/type5.svg"
-getCellTileWon False _ False 6    = "/static/assets/type6.svg"
-getCellTileWon False _ False 7    = "/static/assets/type7.svg"
-getCellTileWon False _ False 8    = "/static/assets/type8.svg"
-getCellTileWon True _ True _      = "/static/assets/flag.svg"
-getCellTileWon _ _ _ _            = "/static/assets/closed.svg"
-
-getCellTileLost :: Bool -> Bool -> Bool -> Int -> String
-getCellTileLost False True False 0 = "/static/assets/type0.svg"
-getCellTileLost False True False 1 = "/static/assets/type1.svg"
-getCellTileLost False True False 2 = "/static/assets/type2.svg"
-getCellTileLost False True False 3 = "/static/assets/type3.svg"
-getCellTileLost False True False 4 = "/static/assets/type4.svg"
-getCellTileLost False True False 5 = "/static/assets/type5.svg"
-getCellTileLost False True False 6 = "/static/assets/type6.svg"
-getCellTileLost False True False 7 = "/static/assets/type7.svg"
-getCellTileLost False True False 8 = "/static/assets/type8.svg"
-getCellTileLost True False False _ = "/static/assets/mine_wrong.svg"
-getCellTileLost False True True _  = "/static/assets/mine_red.svg"
-getCellTileLost _ False True _     = "/static/assets/mine.svg"
-getCellTileLost _ _ _ _            = "/static/assets/closed.svg"
-
-getRemainingFlags :: [Row] -> Int -> Int
-getRemainingFlags rows bombCount_ = bombCount_ - sum (concatMap mapCells rows)
-                                    where mapCells row = map cellToInt $ row ^. rowCells
-                                                        where cellToInt cell = fromEnum $ cell ^. cellEntityIsFlagged 
-
 
 getTimeElapsed :: UTCTime -> Int -> UTCTime -> String -> Int
 getTimeElapsed lastStartedAt_ timeElapsed_ now status_ = case status_ of

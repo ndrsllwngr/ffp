@@ -16,6 +16,7 @@ module Marshalling (
 
 import           Data.Matrix
 import           Import 
+import           Game.Util
 import           Game.Board
 import           Game.Game
 import           Control.Lens
@@ -23,17 +24,18 @@ import Network.Wai.EventSource (ServerEvent)
 
 gameStateToGameStateEntity :: GameState -> GameStateEntity
 gameStateToGameStateEntity state = GameStateEntity {
-                                       _gameStateEntityBoard         = boardToRows $ state ^. board,
-                                       _gameStateEntityMoves         = map moveToMoveEntity $ state ^. moves,
-                                       _gameStateEntityBombCount     = state ^. bombCount,
-                                       _gameStateEntitySeed          = state ^. seed,
-                                       _gameStateEntityGameId        = state ^. gameId,
-                                       _gameStateEntityCreatedAt     = state ^. createdAt,
-                                       _gameStateEntityUpdatedAt     = state ^. updatedAt,
-                                       _gameStateEntityStatus        = show (state ^. status),
-                                       _gameStateEntityLastStartedAt = state ^. lastStartedAt,
-                                       _gameStateEntityTimeElapsed   = state ^. timeElapsed
-                                   } where boardToRows board_ = map (Row . map cellToCellEntity) (Data.Matrix.toLists board_)
+                                       _gameStateEntityBoard          = boardToRows $ state ^. board,
+                                       _gameStateEntityMoves          = map moveToMoveEntity $ state ^. moves,
+                                       _gameStateEntityBombCount      = state ^. bombCount,
+                                       _gameStateEntitySeed           = state ^. seed,
+                                       _gameStateEntityGameId         = state ^. gameId,
+                                       _gameStateEntityCreatedAt      = state ^. createdAt,
+                                       _gameStateEntityUpdatedAt      = state ^. updatedAt,
+                                       _gameStateEntityStatus         = show (state ^. status),
+                                       _gameStateEntityLastStartedAt  = state ^. lastStartedAt,
+                                       _gameStateEntityTimeElapsed    = state ^. timeElapsed,
+                                       _gameStateEntityFlagsRemaining = getRemainingFlags (state ^. board) (state ^. bombCount)
+                                   } where boardToRows board_ = map (Row . map (\c -> cellToCellEntity c (state ^.status))) (Data.Matrix.toLists board_)
 
 gameStateEntityToGameState :: GameStateEntity -> Chan ServerEvent -> GameState
 gameStateEntityToGameState entity channel_ =  GameState {
@@ -57,23 +59,24 @@ statusEntityToStatus "Lost"    = Lost
 statusEntityToStatus "Paused"  = Paused
 statusEntityToStatus _         = error "Invalid StatusEntity"
 
-cellToCellEntity :: Cell -> CellEntity
-cellToCellEntity (Cell flagged revealed hasBomb neighbors (x,y)) = CellEntity {
-                                                                     _cellEntityCoordX = x,
-                                                                     _cellEntityCoordY = y,
-                                                                     _cellEntityIsFlagged = flagged,
-                                                                     _cellEntityIsRevealed = revealed,
-                                                                     _cellEntityHasBomb = hasBomb,
-                                                                     _cellEntityNeighboringBombs = neighbors
-                                                                   }
+cellToCellEntity :: Cell -> GameStatus -> CellEntity
+cellToCellEntity cell gameStatus = CellEntity {
+                                               _cellEntityCoordX = fst $ cell ^. coordinate,
+                                               _cellEntityCoordY = snd $ cell ^. coordinate,
+                                               _cellEntityIsFlagged = cell ^. isFlagged,
+                                               _cellEntityIsRevealed = cell ^. isRevealed,
+                                               _cellEntityHasBomb = cell ^. hasBomb,
+                                               _cellEntityNeighboringBombs = cell ^. neighboringBombs,
+                                               _cellEntityAssetId = getCellAssetId gameStatus cell
+                                              }
 
 cellEntityToCell :: CellEntity -> Cell
 cellEntityToCell cellEntity = Cell {
                                 _isFlagged         = cellEntity ^. cellEntityIsFlagged ,
                                 _isRevealed        = cellEntity ^. cellEntityIsRevealed,
                                 _hasBomb           = cellEntity ^. cellEntityHasBomb ,
-                                neighboringBombs  = cellEntity ^. cellEntityNeighboringBombs ,
-                                coordinate        = (cellEntity ^. cellEntityCoordX, cellEntity ^. cellEntityCoordY)
+                                _neighboringBombs  = cellEntity ^. cellEntityNeighboringBombs ,
+                                _coordinate        = (cellEntity ^. cellEntityCoordX, cellEntity ^. cellEntityCoordY)
                               }
 
 moveToMoveEntity :: Move -> MoveEntity

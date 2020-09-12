@@ -17,12 +17,13 @@ module Game.Game (newGame,
                   lastStartedAt,
                   timeElapsed,
                   getDimensions,
-                  channel) where
+                  channel,
+                  calculateTimeElapsed) where
 
 import           ClassyPrelude.Conduit (UTCTime)
 import           Game.Board
-import           Game.Util
 import           Control.Lens
+import           Data.Time (UTCTime, diffUTCTime)
 import           Network.Wai.EventSource (ServerEvent (..))
 import           Control.Concurrent.Chan
 
@@ -90,3 +91,8 @@ checkStatus b = case (checkWon b, checkLost b) of  (_,True)      -> Lost
 -- Returns the Dimension of the board contained by a given GameState
 getDimensions :: GameState -> Dimension
 getDimensions state = getDimensionsForBoard $ state ^. board
+
+calculateTimeElapsed :: UTCTime -> Int -> UTCTime -> Int
+calculateTimeElapsed lastStartedAt timePrevElapsed now = do
+  let (timeElapsed, _) = properFraction $ diffUTCTime now lastStartedAt
+  timePrevElapsed + timeElapsed
