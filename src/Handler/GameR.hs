@@ -32,7 +32,7 @@ getGameR gameIdText = do
       Just gameState -> do
           let gameStateEntity = gameStateToGameStateEntity gameState
           defaultLayout $ do
-                  let (gameTableId, cellId) = gameIds
+                  let (gameTableId) = gameIds
                   aDomId <- newIdent
                   setTitle "Game"
                   $(widgetFile "game")
@@ -57,7 +57,7 @@ getGameR gameIdText = do
                                                             -- In any other case (game was Won or Lost) just return the fetched entity
                                                             else do return gsEntity
                   defaultLayout $ do
-                          let (gameTableId, cellId) = gameIds
+                          let (gameTableId) = gameIds
                           aDomId <- newIdent
                           setTitle "Game"
                           $(widgetFile "game")
@@ -93,7 +93,7 @@ putGameR gameIdText = do
           let gameStateEntity = gameStateToGameStateEntity gameStateAfterMove
           broadcast (gameStateAfterMove ^. channel) gameStateEntity
           defaultLayout $ do
-                  let (gameTableId, cellId) = gameIds
+                  let (gameTableId) = gameIds
                   aDomId <- newIdent
                   setTitle "Game"
                   $(widgetFile "game")
@@ -101,8 +101,8 @@ putGameR gameIdText = do
       Nothing -> notFound
 
 
-gameIds :: (Text, Text)
-gameIds = ("js-gameTableId", "js-cellId")
+gameIds :: (Text)
+gameIds = ("js-gameTableId")
 
 
 getTimeElapsed :: UTCTime -> Int -> UTCTime -> String -> Int

@@ -37,22 +37,22 @@ const makeMove = (x, y, gameId, event) => {
 
 // Reveal all
 const revealAll = (gameId) => {
-    console.log("REVEAL ALL", { gameId });
+  console.log("REVEAL ALL", { gameId });
 
-    $.ajax({
-        url: "/game/" + gameId,
-        type: "PUT",
-        contentType: "application/json",
-        data: JSON.stringify({
-          action: "RevealAllNonFlagged"
-        }),
-        success: function (data) {
-          console.info("[SUCCESS] REVEAL ALL", { data });
-        },
-        error: function (data) {
-          console.error("[ERROR] REVEAL ALL", { data });
-        },
-      });
+  $.ajax({
+    url: "/game/" + gameId,
+    type: "PUT",
+    contentType: "application/json",
+    data: JSON.stringify({
+      action: "RevealAllNonFlagged",
+    }),
+    success: function (data) {
+      console.info("[SUCCESS] REVEAL ALL", { data });
+    },
+    error: function (data) {
+      console.error("[ERROR] REVEAL ALL", { data });
+    },
+  });
 };
 // Reset game
 const resetGame = (gameId, status) => {
@@ -66,6 +66,7 @@ const resetGame = (gameId, status) => {
     success: function (data) {
       console.info("[SUCCESS] RESET GAME", { data });
       if (status === "Won" || status === "Lost") {
+        console.log("Reloading window...", { status });
         window.location.reload();
       }
     },
@@ -86,10 +87,8 @@ const pauseGame = (gameId) => {
     data: JSON.stringify({}),
     success: function (data) {
       console.info("[SUCCESS] PAUSE GAME", { data });
-      // RE-ROUTE TO GAMES
-      const newUrl = "/games";
-      console.log({ newUrl });
-      window.location.assign(newUrl);
+      console.log("Rerouting...", { newUrl });
+      window.location.assign("/games");
     },
     error: function (data) {
       console.error("[ERROR] PAUSE GAME", { data });
@@ -139,7 +138,6 @@ const setFlags = () => {
   let remainingFlags = parseInt(el.getAttribute("remainingFlags"), 10);
   //console.log(remainingFlags);
   renderDigits(remainingFlags, "flags");
-
 };
 
 // Split digits and render each digit seperately
@@ -157,20 +155,22 @@ const renderDigits = (number, id) => {
   return;
 };
 
-$(document).ready(function() {
-  //$('.wiggle').wiggle();
+$(document).ready(function () {
+  setFlags();
+  setFace();
   var src = new EventSource("@{ChannelR gameIdText}");
-  src.onmessage = function(input) {
-    console.log({input});
+  src.onmessage = function (input) {
+    console.log({ input });
     var message = JSON.parse(input.data);
     var obj = JSON.parse(message);
     console.log(obj);
     let elFlags = document.getElementById("flags");
-    let remainingFlags = elFlags.setAttribute("remainingFlags","0");
+    elFlags.setAttribute("remainingFlags", obj.flagsRemaining);
     let elFace = document.getElementById("face");
-    elFace.setAttribute("status",obj.status);
+    elFace.setAttribute("status", obj.status);
     console.log(elFace.getAttribute("status"));
     setFace();
+    updateBoard(obj.board);
     //let elTime = document.getElementById("seconds");
     //let timeElapsed = elTime.setAttribute("prevTime",elTime.getAttribute("prevTime"));
     // if (message.id == "player-new"){
@@ -188,9 +188,25 @@ $(document).ready(function() {
   };
 });
 
+const updateBoard = (newBoard) => {
+  var row;
+  for (row = 0; row < newBoard.length; row++) {
+    var column;
+    for (column = 0; column < newBoard[row].cells.length; column++) {
+      let oldCellTdEl = document.getElementById(`x${row + 1}y${column + 1}`);
+      let cellDivTag = oldCellTdEl.querySelector(".div");
+      let cellImgTag = cellDivTag
+        ? cellDivTag.querySelector(".img")
+        : oldCellTdEl.querySelector(".img");
+      let newCell = newBoard[row].cells[column];
+      if (cellImgTag.getAttribute("src") !== newCell.image) {
+        cellImgTag.setAttribute("src", `/static/assets/${newCell.assetId}.svg`);
+      }
+    }
+  }
+};
+
 var timer = setInterval(setTimer, 1000);
-setFlags();
-setFace();
 
 const myStopFunction = () => {
   clearInterval(timer);
