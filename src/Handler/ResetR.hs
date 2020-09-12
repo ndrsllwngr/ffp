@@ -34,7 +34,7 @@ postResetR gameIdText = do
                           _ <- runDB $ deleteBy $ UniqueGameStateEntity gameId_ 
                           -- Create new channel
                           channel <- newChan
-                          -- Map the Maybe GameStateEntity to a Maybe Gamestate and return it        
+                          -- Map the Maybe GameStateEntity to a Maybe Gamestate and return it
                           return $ (`gameStateEntityToGameState` channel) <$> getGameStateEntityMaybe gameStateDBEntities
                        
                          

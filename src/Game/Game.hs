@@ -16,7 +16,8 @@ module Game.Game (newGame,
                   updatedAt,
                   lastStartedAt,
                   timeElapsed,
-                  getDimensions) where
+                  getDimensions,
+                  channel) where
 
 import           ClassyPrelude.Conduit (UTCTime)
 import           Game.Board

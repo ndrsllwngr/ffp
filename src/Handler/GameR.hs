@@ -12,6 +12,7 @@ import           Game.Util
 import           Import
 import           Marshalling
 import           Control.Lens
+import           Handler.ChannelR(broadcast)
 
 
 -- GET GAME VIEW
@@ -89,8 +90,8 @@ putGameR gameIdText = do
                                               -- Paused is not a possible state after a move but would still have the same logic
                                               _       -> do _ <- runDB $ insert $ gameStateToGameStateEntity gameStateAfterMove
                                                             liftIO $ removeGameById tGames gameId_
-
           let gameStateEntity = gameStateToGameStateEntity gameStateAfterMove
+          broadcast (gameStateAfterMove ^. channel) gameStateEntity
           defaultLayout $ do
                   let (gameTableId, cellId) = gameIds
                   aDomId <- newIdent

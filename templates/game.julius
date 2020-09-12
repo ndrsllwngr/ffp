@@ -28,7 +28,7 @@ const makeMove = (x, y, gameId, event) => {
     }),
     success: function (data) {
       console.info("[SUCCESS] MAKE MOVE", { data });
-      window.location.reload();
+      //window.location.reload();
     },
     error: function (data) {
       console.error("[ERROR] MAKE MOVE", { data });
@@ -50,7 +50,7 @@ const revealAll = (gameId) => {
         }),
         success: function (data) {
           console.info("[SUCCESS] REVEAL ALL", { data });
-          window.location.reload();
+          //window.location.reload();
         },
         error: function (data) {
           console.error("[ERROR] REVEAL ALL", { data });
@@ -72,7 +72,7 @@ const resetGame = (gameId, status) => {
     data: JSON.stringify({}),
     success: function (data) {
       console.info("[SUCCESS] RESET GAME", { data });
-      window.location.reload();
+      //window.location.reload();
     },
     error: function (data) {
       console.error("[ERROR] RESET GAME", { data });
@@ -146,6 +146,7 @@ const setFlags = () => {
   renderDigits(remainingFlags, "flags");
 
 };
+
 // Split digits and render each digit seperately
 const renderDigits = (number, id) => {
   let el = document.getElementById(id);
@@ -160,6 +161,28 @@ const renderDigits = (number, id) => {
   el.innerHTML = inner;
   return;
 };
+
+$(document).ready(function() {
+  //$('.wiggle').wiggle();
+  var src = new EventSource("@{ChannelR gameIdText}");
+  src.onmessage = function(input) {
+    console.log({input});
+    var message = JSON.parse(input.data);
+    console.log({message});
+    // if (message.id == "player-new"){
+    //   $("#player_join_"+message.side).replaceWith("<div id='joined'>Joined</div>");
+    // } else if (message.id == "mark-new") {
+    //   var markId = "#cell_"+message.x+"_"+message.y;
+    //   $(markId).replaceWith(
+    //     "<div id='"+markId+"' class='mark-"+message.mark+"'></div>"
+    //   );
+    // } else if (message.id == "alert") {
+    //   $("#messages").prepend(
+    //     "<div class='message'>"+message.content+"</div>"
+    //   );
+    // }
+  };
+});
 
 var timer = setInterval(setTimer, 1000);
 setFlags();
