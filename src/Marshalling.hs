@@ -38,7 +38,7 @@ gameStateToGameStateEntity state = GameStateEntity {
                                    } where boardToRows board_ = map (Row . map (\c -> cellToCellEntity c (state ^.status))) (Data.Matrix.toLists board_)
 
 gameStateEntityToGameState :: GameStateEntity -> Chan ServerEvent -> GameState
-gameStateEntityToGameState entity channel_ =  GameState {
+gameStateEntityToGameState entity _channel =  GameState {
                                                         _board         = rowsToBoard $ entity ^. gameStateEntityBoard,
                                                         _moves         = map moveEntityToMove $ entity ^. gameStateEntityMoves,
                                                         _bombCount     = entity ^. gameStateEntityBombCount,
@@ -49,7 +49,7 @@ gameStateEntityToGameState entity channel_ =  GameState {
                                                         _updatedAt     = entity ^. gameStateEntityUpdatedAt,
                                                         _lastStartedAt = entity ^. gameStateEntityLastStartedAt,
                                                         _timeElapsed   = entity ^. gameStateEntityTimeElapsed,
-                                                        _channel       = channel_
+                                                        _channel       = _channel
                                               } where rowsToBoard rows = Data.Matrix.fromLists $ map (map cellEntityToCell . _rowCells) rows --TODO how to use lense here?
 
 statusEntityToStatus :: [Char] -> GameStatus
@@ -60,14 +60,14 @@ statusEntityToStatus "Paused"  = Paused
 statusEntityToStatus _         = error "Invalid StatusEntity"
 
 cellToCellEntity :: Cell -> GameStatus -> CellEntity
-cellToCellEntity cell gameStatus = CellEntity {
+cellToCellEntity cell _gameStatus = CellEntity {
                                                _cellEntityCoordX = fst $ cell ^. coordinate,
                                                _cellEntityCoordY = snd $ cell ^. coordinate,
                                                _cellEntityIsFlagged = cell ^. isFlagged,
                                                _cellEntityIsRevealed = cell ^. isRevealed,
                                                _cellEntityHasBomb = cell ^. hasBomb,
                                                _cellEntityNeighboringBombs = cell ^. neighboringBombs,
-                                               _cellEntityAssetId = getCellAssetId gameStatus cell
+                                               _cellEntityAssetId = getCellAssetId _gameStatus cell
                                               }
 
 cellEntityToCell :: CellEntity -> Cell

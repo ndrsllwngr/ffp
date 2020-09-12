@@ -20,13 +20,14 @@ getGameStateEntityMaybe (x:_) = Just $ entityVal x
 getGameStateEntityMaybe _     = Nothing
 
 getRemainingFlags :: Board -> Int -> Int
-getRemainingFlags board bombCount_ = bombCount_ - length (filter _isFlagged $ toList board)
+getRemainingFlags _board _bombCount = _bombCount - length (filter _isFlagged $ toList _board)
 
 getCellAssetId :: GameStatus -> Cell -> String
-getCellAssetId gameStatus (Cell isFlagged isRevealed hasBomb neighboringBombs _) = case gameStatus of Ongoing -> getCellAssetIdOngoing isFlagged isRevealed hasBomb neighboringBombs
-                                                                                                      Won -> getCellAssetIdWon isFlagged isRevealed hasBomb neighboringBombs
-                                                                                                      Lost -> getCellAssetIdLost isFlagged isRevealed hasBomb neighboringBombs
-                                                                                                      Paused -> error "HELLO" -- TODO check
+getCellAssetId _gameStatus (Cell _isFlagged _isRevealed _hasBomb _neighboringBombs _) = 
+  case _gameStatus of Ongoing -> getCellAssetIdOngoing _isFlagged _isRevealed _hasBomb _neighboringBombs
+                      Won -> getCellAssetIdWon _isFlagged _isRevealed _hasBomb _neighboringBombs
+                      Lost -> getCellAssetIdLost _isFlagged _isRevealed _hasBomb _neighboringBombs
+                      Paused -> "closed"
 -- isFlagged Bool
 -- isRevealed Bool
 -- hasBomb Bool
