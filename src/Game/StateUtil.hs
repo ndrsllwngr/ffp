@@ -11,9 +11,9 @@ import Control.Lens
 
 -- Removes a game with a given ID from the in-memory state
 removeGameById :: TVar (Map String GameState) -> String -> IO (Map String GameState)
-removeGameById tGames _gameId = atomically $ do
+removeGameById tGames gameId_ = atomically $ do
     games <- readTVar tGames
-    let filteredMap = Map.filter (\g -> (g ^. gameId) /= _gameId) games
+    let filteredMap = Map.filter (\g -> (g ^. gameId) /= gameId_) games
     swapTVar tGames filteredMap
 
 -- Returns a list of all ongoing games contained by the in-memory state
@@ -24,13 +24,13 @@ getAllGames tGames = do
 
 -- Returns an Optional of a GameState for a given gameID 
 getGameById :: TVar (Map String GameState) -> String -> IO (Maybe GameState)
-getGameById tGames _gameId = do
+getGameById tGames gameId_ = do
     games <- readTVarIO tGames
-    return $ Map.lookup _gameId games
+    return $ Map.lookup gameId_ games
 
 -- Sets the GameState for a given gameID 
 setGameStateForGameId :: TVar (Map String GameState) -> String -> GameState -> IO (Map String GameState)
-setGameStateForGameId tGames _gameId game = atomically $ do
+setGameStateForGameId tGames gameId_ game = atomically $ do
   games <- readTVar tGames
-  let newMap = Map.insert _gameId game games
+  let newMap = Map.insert gameId_ game games
   swapTVar tGames newMap
