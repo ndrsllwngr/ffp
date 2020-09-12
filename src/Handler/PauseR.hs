@@ -9,6 +9,7 @@ import           Game.Game
 import           Marshalling
 import           Import
 import           Control.Lens
+import           Handler.ChannelR(broadcast)
 
 -- PAUSE GAME
 postPauseR :: Text -> Handler Value
@@ -28,11 +29,12 @@ postPauseR gameIdText = do
           -- remove game from in memory state
           _ <- liftIO $ removeGameById tGames gameId_
           -- Insert GameState to DB with status Paused & updated timestamps
-          insertedGameStateEntity <- runDB $ insert $ gsEntity & gameStateEntityStatus .~ "Paused"
-                                                               & gameStateEntityUpdatedAt .~ now
-                                                               & gameStateEntityTimeElapsed .~ calculateTimeElapsed (gsEntity ^. gameStateEntityLastStartedAt) (gsEntity ^. gameStateEntityTimeElapsed) now
+          let  updatedGameStateEntity = gsEntity & gameStateEntityStatus .~ "Paused"
+                                                 & gameStateEntityUpdatedAt .~ now
+                                                 & gameStateEntityTimeElapsed .~ calculateTimeElapsed (gsEntity ^. gameStateEntityLastStartedAt) (gsEntity ^. gameStateEntityTimeElapsed) now
+          insertedGameStateEntity <- runDB $ insert $ updatedGameStateEntity
 
-
+          broadcast (gameState ^. channel) updatedGameStateEntity
           -- return GameState
           returnJson insertedGameStateEntity -- TODO check if return is working    
       Nothing -> notFound                                 

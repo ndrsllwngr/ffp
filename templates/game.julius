@@ -68,6 +68,7 @@ const resetGame = (gameId) => {
     data: JSON.stringify({}),
     success: function (data) {
       console.info("[SUCCESS] RESET GAME", { data });
+      console.log(gameStatus);
       if (gameStatus === "Won" || gameStatus === "Lost") {
         console.log("Reloading window...", { status });
         window.location.reload();
@@ -161,7 +162,11 @@ const renderDigits = (number, id) => {
   return;
 };
 
+// TODO #controls (toggle)
+
 $(document).ready(function () {
+  let elFace = document.getElementById("face");
+  gameStatus = elFace.getAttribute("status");
   setFlags();
   setFace();
   var src = new EventSource("@{ChannelR gameIdText}");
@@ -169,6 +174,12 @@ $(document).ready(function () {
     // console.log({ input });
     var message = JSON.parse(input.data);
     var obj = JSON.parse(message);
+    if (obj.status === "Paused") {
+      console.info("PAUSED GAME", obj.status);
+      const newUrl = "@{GamesR}";
+      console.log("Rerouting...", { newUrl });
+      window.location.assign(newUrl);
+    }
     console.log({ obj });
     gameStatus = obj.status; // to ensure status in reset method
     let elFlags = document.getElementById("flags");
