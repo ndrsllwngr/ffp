@@ -162,8 +162,6 @@ const renderDigits = (number, id) => {
   return;
 };
 
-// TODO #controls (toggle)
-
 $(document).ready(function () {
   let elFace = document.getElementById("face");
   gameStatus = elFace.getAttribute("status");
@@ -187,6 +185,7 @@ $(document).ready(function () {
     elFace.setAttribute("status", message.status);
     console.log(elFace.getAttribute("status"));
     setFace();
+    toggleControls(message.status);
     updateBoard(message.board, message.gameId, message.status);
   };
 });
@@ -216,6 +215,15 @@ const updateBoard = (newBoard, gameId, status) => {
         }
       }
     }
+  }
+};
+
+const toggleControls = (status) => {
+  let el = document.getElementById("controls");
+  if (status !== "Ongoing") {
+    el.className = "hidden";
+  } else {
+    el.classList.remove("hidden");
   }
 };
 
