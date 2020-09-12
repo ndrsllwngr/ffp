@@ -93,7 +93,7 @@ putGameR gameIdText = do
           let gameStateEntity = gameStateToGameStateEntity gameStateAfterMove
           broadcast (gameStateAfterMove ^. channel) gameStateEntity
           defaultLayout $ do
-                  let (gameTableId) = gameIds
+                  let gameTableId = gameIds
                   aDomId <- newIdent
                   setTitle "Game"
                   $(widgetFile "game")
@@ -101,8 +101,8 @@ putGameR gameIdText = do
       Nothing -> notFound
 
 
-gameIds :: (Text)
-gameIds = ("js-gameTableId")
+gameIds :: Text
+gameIds = "js-gameTableId"
 
 
 getTimeElapsed :: UTCTime -> Int -> UTCTime -> String -> Int
