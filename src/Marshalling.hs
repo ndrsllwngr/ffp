@@ -70,8 +70,8 @@ cellEntityToCell cellEntity = Cell {
                                 _isFlagged         = cellEntity ^. cellEntityIsFlagged ,
                                 _isRevealed        = cellEntity ^. cellEntityIsRevealed,
                                 _hasBomb           = cellEntity ^. cellEntityHasBomb ,
-                                _neighboringBombs  = cellEntity ^. cellEntityNeighboringBombs ,
-                                _coordinate        = (cellEntity ^. cellEntityCoordX, cellEntity ^. cellEntityCoordY)
+                                neighboringBombs  = cellEntity ^. cellEntityNeighboringBombs ,
+                                coordinate        = (cellEntity ^. cellEntityCoordX, cellEntity ^. cellEntityCoordY)
                               }
 
 moveToMoveEntity :: Move -> MoveEntity

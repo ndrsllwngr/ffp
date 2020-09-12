@@ -30,8 +30,8 @@ type Coordinate = (Int,Int)
 data Cell = Cell { _isFlagged        :: Bool,
                    _isRevealed       :: Bool,
                    _hasBomb          :: Bool,
-                   _neighboringBombs :: Int,
-                   _coordinate       :: Coordinate
+                   neighboringBombs :: Int,
+                   coordinate       :: Coordinate
                    } deriving (Show, Eq)
 makeLenses ''Cell
 
@@ -46,9 +46,9 @@ generateBoard (h,w) bombCount seed = matrix h w (\(i,j) -> Cell {
                                                               _hasBomb = coordinateToCellNumber (i,j) (h,w) `elem` bombPos,
                                                               -- the amount of neighboring bombs is equal to:
                                                               -- the length of the intersection between the neighbouring cell numbers & the bomb cell numbers
-                                                              _neighboringBombs = length $ map toCellNumber (neighbourCells (i,j) (h,w)) `intersect` bombPos,
+                                                              neighboringBombs = length $ map toCellNumber (neighbourCells (i,j) (h,w)) `intersect` bombPos,
                                                               -- the cells coordinate
-                                                              _coordinate = (i,j)
+                                                              coordinate = (i,j)
                                                             })
                                                             where
                                                                 -- initialize randomizer with seed
