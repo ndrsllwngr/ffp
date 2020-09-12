@@ -39,3 +39,47 @@ $(function () {
     });
   });
 });
+
+const difficulty = {
+  beginner: {
+    height: 9,
+    width: 9,
+    bombCount: 10,
+  },
+  intermediate: {
+    height: 16,
+    width: 16,
+    bombCount: 40,
+  },
+  expert: {
+    height: 16,
+    width: 30,
+    bombCount: 99,
+  },
+};
+
+const startGame = (level) => {
+  console.log("START GAME", { level });
+
+  $.ajax({
+    url: "@{GamesR}",
+    type: "POST",
+    contentType: "application/json",
+    data: JSON.stringify({
+      height: difficulty[level].height,
+      width: difficulty[level].width,
+      bombCount: difficulty[level].bombCount,
+      seed: null,
+    }),
+    success: function (data) {
+      console.info("[SUCCESS] START GAME", { data });
+      // RE-ROUTE TO NEW GAME
+      const newUrl = "/game/" + data.gameId;
+      console.log({ newUrl });
+      window.location.assign(newUrl);
+    },
+    error: function (data) {
+      console.error("[ERROR] START GAME", { data });
+    },
+  });
+};

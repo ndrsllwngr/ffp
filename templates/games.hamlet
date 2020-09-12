@@ -16,6 +16,10 @@
         <div .row>
             <div .col-lg-6>
                 <div .bs-callout.bs-callout-info.well>
+                    <div>
+                        <button onclick="startGame('beginner')">Beginner
+                        <button onclick="startGame('intermediate')">Intermediate
+                        <button onclick="startGame('expert')">Expert
                     <form .form-horizontal ##{newGameFormId}>
                         <div .field>
                             <label for="bombCountField">Bomb count</label>
