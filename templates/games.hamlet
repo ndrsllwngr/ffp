@@ -18,9 +18,6 @@
                 <div .bs-callout.bs-callout-info.well>
                     <form .form-horizontal ##{newGameFormId}>
                         <div .field>
-                            <label for="gameIdField">Game name</label>
-                            <input type="text" ##{gameIdField} required></input>
-                        <div .field>
                             <label for="bombCountField">Bomb count</label>
                             <input type="number" ##{bombCountField} required></input>
                         <div .field>
@@ -45,12 +42,12 @@
                  $forall game <- gameStateEntitiesPaused
                      <div .row>
                          <a href="/game/#{game ^. gameStateEntityGameId}">
-                             GameID: #{game ^. gameStateEntityGameId}, Status: #{game ^. gameStateEntityStatus}, Creation date: #{show $ game ^. gameStateEntityCreatedAt}, Size: #{showSize $ game ^. gameStateEntityBoard}, Num of bombs: #{game ^. gameStateEntityBombCount}
+                             GameID: #{game ^. gameStateEntityGameId}, Status: #{game ^. gameStateEntityStatus}, Creation date: #{show $ game ^. gameStateEntityCreatedAt}, Size: #{showSize $ game ^. gameStateEntityBoard}, Num of bombs: #{game ^. gameStateEntityBombCount}, Time Elapsed: #{game ^. gameStateEntityTimeElapsed}
 
         <div .row>
             Finished Games:
                 $forall game <- gameStateEntitiesWonOrLost
                     <div .row>
                         <a href="/game/#{game ^. gameStateEntityGameId}">
-                            GameID: #{game ^. gameStateEntityGameId}, Status: #{game ^. gameStateEntityStatus}, Creation date: #{show $ game ^. gameStateEntityCreatedAt}, Size: #{showSize $ game ^. gameStateEntityBoard}, Num of bombs: #{game ^. gameStateEntityBombCount}
+                            GameID: #{game ^. gameStateEntityGameId}, Status: #{game ^. gameStateEntityStatus}, Creation date: #{show $ game ^. gameStateEntityCreatedAt}, Size: #{showSize $ game ^. gameStateEntityBoard}, Num of bombs: #{game ^. gameStateEntityBombCount}, Time Elapsed: #{game ^. gameStateEntityTimeElapsed}
     <hr>

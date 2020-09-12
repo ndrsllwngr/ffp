@@ -14,27 +14,27 @@
                         and <tt>Handler/Home.hs</tt> for the implementation).
         <div .row ##{aDomId}>
             <div class="flex flex-row items-start">
-                <div id="flags" remainingFlags="#{getRemainingFlags (gameStateEntity ^. gameStateEntityBoard) (gameStateEntity ^. gameStateEntityBombCount)}">
-                <div id="face" status="#{gameStateEntity ^. gameStateEntityStatus}" onclick="resetGame('#{gameStateEntity ^. gameStateEntityGameId}','#{gameStateEntity ^. gameStateEntityStatus}')">
+                <div id="flags" remainingFlags="#{(gameStateEntity ^. gameStateEntityFlagsRemaining)}">
+                <div id="face" status="#{gameStateEntity ^. gameStateEntityStatus}" onclick="resetGame('#{gameStateEntity ^. gameStateEntityGameId}')">
                 <div id="seconds" init="False" prevTime="#{getTimeElapsed(gameStateEntity ^. gameStateEntityLastStartedAt) (gameStateEntity ^. gameStateEntityTimeElapsed) now (gameStateEntity ^. gameStateEntityStatus)}">
         <div .row>
             <div .col-lg-6>
                 <div .bs-callout.bs-callout-info.well>
-                    $if (gameStateEntity ^. gameStateEntityStatus) == "Ongoing"
-                        <button onclick="pauseGame('#{gameStateEntity ^. gameStateEntityGameId}')">
-                            Pause game
-                        <button onclick="revealAll('#{gameStateEntity ^. gameStateEntityGameId}')">
-                            Reveal all non flagged fields
+                    <div id="controls">
+                        $if (gameStateEntity ^. gameStateEntityStatus) == "Ongoing"
+                            <button onclick="pauseGame('#{gameStateEntity ^. gameStateEntityGameId}')">
+                                Pause game
+                            <button onclick="revealAll('#{gameStateEntity ^. gameStateEntityGameId}')">
+                                Reveal all non flagged fields
                     <table ##{gameTableId}style="width:40%">
                         $forall row <- gameStateEntity ^. gameStateEntityBoard
                             <tr>
                                 $forall cellEntity <- row ^. rowCells
-                                    <td ##{cellId}>
+                                    <td id="x#{(cellEntity ^. cellEntityCoordX)}y#{(cellEntity ^. cellEntityCoordY)}">
                                         $if (gameStateEntity ^. gameStateEntityStatus) == "Ongoing"
-                                            <div onclick="makeMove(#{cellEntity ^. cellEntityCoordX}, #{cellEntity ^. cellEntityCoordY}, '#{gameStateEntity ^. gameStateEntityGameId}', event)">
-                                                <img src="#{getCellTile (cellEntity ^. cellEntityIsFlagged) (cellEntity ^. cellEntityIsRevealed) (cellEntity ^. cellEntityHasBomb) (cellEntity ^. cellEntityNeighboringBombs)}" width="24" height="24">
-                                        $elseif (gameStateEntity ^. gameStateEntityStatus) == "Won"
-                                            <img src="#{getCellTileWon (cellEntity ^. cellEntityIsFlagged) (cellEntity ^. cellEntityIsRevealed) (cellEntity ^. cellEntityHasBomb) (cellEntity ^. cellEntityNeighboringBombs)}" width="24" height="24">
+                                            <div .div onclick="makeMove(#{cellEntity ^. cellEntityCoordX}, #{cellEntity ^. cellEntityCoordY}, '#{gameStateEntity ^. gameStateEntityGameId}', event)">
+                                                <img .img src="/static/assets/#{(cellEntity ^. cellEntityAssetId)}.svg" width="24" height="24">
                                         $else
-                                            <img src="#{getCellTileLost (cellEntity ^. cellEntityIsFlagged) (cellEntity ^. cellEntityIsRevealed) (cellEntity ^. cellEntityHasBomb) (cellEntity ^. cellEntityNeighboringBombs)}" width="24" height="24">
+                                            <div .div>
+                                                <img .img src="/static/assets/#{(cellEntity ^. cellEntityAssetId)}.svg" width="24" height="24">
     <hr>

@@ -26,6 +26,7 @@ library
       Game.Game
       Game.StateUtil
       Game.Util
+      Handler.ChannelR
       Handler.Comment
       Handler.Common
       Handler.GameR
@@ -75,6 +76,7 @@ library
     , random-shuffle
     , safe
     , shakespeare >=2.0 && <2.1
+    , string-random
     , template-haskell
     , text >=0.11 && <2.0
     , time
@@ -137,6 +139,7 @@ executable minesweepskell
     , random-shuffle
     , safe
     , shakespeare >=2.0 && <2.1
+    , string-random
     , template-haskell
     , text >=0.11 && <2.0
     , time
@@ -202,6 +205,7 @@ test-suite minesweepskell-test
     , random-shuffle
     , safe
     , shakespeare >=2.0 && <2.1
+    , string-random
     , template-haskell
     , text >=0.11 && <2.0
     , time

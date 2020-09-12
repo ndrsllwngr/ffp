@@ -6,22 +6,26 @@ module Game.Game (newGame,
                   GameState (..),
                   GameStatus (..),
                   Move (..),
-                  board,        
-                  moves,        
-                  bombCount,    
-                  seed,    
-                  status,       
-                  gameId,       
-                  createdAt,    
-                  updatedAt,    
+                  board,
+                  moves,
+                  bombCount,
+                  seed,
+                  status,
+                  gameId,
+                  createdAt,
+                  updatedAt,
                   lastStartedAt,
                   timeElapsed,
-                  getDimensions) where
+                  getDimensions,
+                  channel,
+                  calculateTimeElapsed) where
 
 import           ClassyPrelude.Conduit (UTCTime)
 import           Game.Board
-import           Game.Util
 import           Control.Lens
+import           Data.Time (diffUTCTime)
+import           Network.Wai.EventSource (ServerEvent (..))
+import           Control.Concurrent.Chan
 
 data Move = Reveal Coordinate UTCTime | RevealAllNonFlagged UTCTime | Flag Coordinate UTCTime deriving (Show, Eq, Read) -- TODO maybe add unflag
 data GameStatus = Ongoing | Won | Lost | Paused deriving (Show, Eq, Read)
@@ -36,28 +40,30 @@ data GameState = GameState { _board          :: Board,
                              _createdAt      :: UTCTime,
                              _updatedAt      :: UTCTime,
                              _lastStartedAt  :: UTCTime,
-                             _timeElapsed    :: Int
+                             _timeElapsed    :: Int,
+                             _channel        :: Chan ServerEvent
                             }
-makeLenses ''GameState                                     
+makeLenses ''GameState
 
 instance Show GameState where
-    show (GameState b m bombs s st _ _ _ _ _) = "Bombcount: " ++ show bombs ++ " Seed: " ++ show s ++ " Status: " ++ show st ++ "\n" ++ show m ++ "\n" ++ show b
+    show (GameState b m bombs s st _ _ _ _ _ _) = "Bombcount: " ++ show bombs ++ " Seed: " ++ show s ++ " Status: " ++ show st ++ "\n" ++ show m ++ "\n" ++ show b
 
 
 -- Creates a new game for a given Dimension, bombCount & seed
-newGame :: Dimension -> Int -> Int -> String -> UTCTime -> GameState
-newGame (h,w) b s gId now = GameState { 
-                                _board         = generateBoard (h,w) b s,
-                                _moves         = [],
-                                _bombCount     = b,
-                                _seed          = s,
-                                _status        = Ongoing,
-                                _gameId        = gId,       
-                                _createdAt     = now,    
-                                _updatedAt     = now,    
-                                _lastStartedAt = now, 
-                                _timeElapsed   = 0
-                               }
+newGame :: Dimension -> Int -> Int -> String -> UTCTime -> Chan ServerEvent -> GameState
+newGame (h,w) b s gId now channel_ = GameState {
+                                        _board         = generateBoard (h,w) b s,
+                                        _moves         = [],
+                                        _bombCount     = b,
+                                        _seed          = s,
+                                        _status        = Ongoing,
+                                        _gameId        = gId,
+                                        _createdAt     = now,
+                                        _updatedAt     = now,
+                                        _lastStartedAt = now,
+                                        _timeElapsed   = 0,
+                                        _channel       = channel_
+                                     }
 
 -- Executes a move on a given GameState
 -- TODO handle illegal moves e.g. outOfBounds Action, action on a board with status Won || Lost
@@ -69,7 +75,7 @@ makeMove state m  = state & board       .~ boardAfterMove
                           & timeElapsed .~ elapsed
                           where (boardAfterMove, time)  = case m of (Flag c t) -> (flagCell (state ^. board) c,t)
                                                                     (Reveal c t) -> (revealCell (state ^. board ) c,t)
-                                                                    (RevealAllNonFlagged t) -> (revealAllNonFlaggedCells (state ^. board),t) 
+                                                                    (RevealAllNonFlagged t) -> (revealAllNonFlaggedCells (state ^. board),t)
                                 finishGame              = calculateTimeElapsed (state ^. lastStartedAt) (state ^. timeElapsed) time
                                 st                      = checkStatus boardAfterMove
                                 elapsed                 = case st of Won   -> finishGame
@@ -85,3 +91,8 @@ checkStatus b = case (checkWon b, checkLost b) of  (_,True)      -> Lost
 -- Returns the Dimension of the board contained by a given GameState
 getDimensions :: GameState -> Dimension
 getDimensions state = getDimensionsForBoard $ state ^. board
+
+calculateTimeElapsed :: UTCTime -> Int -> UTCTime -> Int
+calculateTimeElapsed lastStartedAt_ timePrevElapsed now = do
+  let (timeElapsed_, _) = properFraction $ diffUTCTime now lastStartedAt_
+  timePrevElapsed + timeElapsed_
