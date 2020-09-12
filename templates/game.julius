@@ -28,7 +28,6 @@ const makeMove = (x, y, gameId, event) => {
     }),
     success: function (data) {
       console.info("[SUCCESS] MAKE MOVE", { data });
-      //window.location.reload();
     },
     error: function (data) {
       console.error("[ERROR] MAKE MOVE", { data });
@@ -38,7 +37,6 @@ const makeMove = (x, y, gameId, event) => {
 
 // Reveal all
 const revealAll = (gameId) => {
-
     console.log("REVEAL ALL", { gameId });
 
     $.ajax({
@@ -50,7 +48,6 @@ const revealAll = (gameId) => {
         }),
         success: function (data) {
           console.info("[SUCCESS] REVEAL ALL", { data });
-          //window.location.reload();
         },
         error: function (data) {
           console.error("[ERROR] REVEAL ALL", { data });
@@ -59,10 +56,6 @@ const revealAll = (gameId) => {
 };
 // Reset game
 const resetGame = (gameId, status) => {
-  //if (status === "Won" || status === "Lost") {
-  //  return;
-  //}
-
   console.log("RESET GAME", { gameId, status });
 
   $.ajax({
@@ -128,7 +121,7 @@ const setTimer = () => {
 const setFace = () => {
   let el = document.getElementById("face");
   let status = el.getAttribute("status");
-  //console.log({ el, status });
+  console.log({ el, status });
   let asset;
   if (status === "Lost") {
     asset = "/static/assets/face_lose.svg";
@@ -137,7 +130,7 @@ const setFace = () => {
   } else {
     asset = "/static/assets/face_unpressed.svg";
   }
-  el.innerHTML = `<img src="${asset}" alt="face sad" class="h-12" />`;
+  el.innerHTML = `<img src="${asset}" alt="face" class="h-12" />`;
   return;
 };
 
@@ -170,7 +163,16 @@ $(document).ready(function() {
   src.onmessage = function(input) {
     console.log({input});
     var message = JSON.parse(input.data);
-    console.log({message});
+    var obj = JSON.parse(message);
+    console.log(obj);
+    let elFlags = document.getElementById("flags");
+    let remainingFlags = elFlags.setAttribute("remainingFlags","0");
+    let elFace = document.getElementById("face");
+    elFace.setAttribute("status",obj.status);
+    console.log(elFace.getAttribute("status"));
+    setFace();
+    //let elTime = document.getElementById("seconds");
+    //let timeElapsed = elTime.setAttribute("prevTime",elTime.getAttribute("prevTime"));
     // if (message.id == "player-new"){
     //   $("#player_join_"+message.side).replaceWith("<div id='joined'>Joined</div>");
     // } else if (message.id == "mark-new") {
