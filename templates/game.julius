@@ -184,6 +184,7 @@ $(document).ready(function () {
     let elFace = document.getElementById("face");
     elFace.setAttribute("status", message.status);
     console.log(elFace.getAttribute("status"));
+    setFlags();
     setFace();
     toggleControls(message.status);
     updateBoard(message.board, message.gameId, message.status);
