@@ -39,8 +39,8 @@
                 <form .flex .flex-wrap .-mx-3 .mb-2>
                  <div .w-full .px-3 .mb-6 .md:mb-0>
                   <div .inline-flex .content-between .w-full .mt-3>
-                   <input .appearance-none .block .w-full .bg-gray-200 .text-gray-700 .border .border-gray-200 .rounded .py-3 .px-4 .leading-tight .focus:outline-none .focus:bg-white .focus:border-gray-500 #grid-zip placeholder="8X9JY" type="text">
-                   <button .ml-5 .bg-gray-300 .hover:bg-gray-400 .text-gray-800 .font-bold .py-4 .leading-tight .px-4 .rounded onclick="startGame('expert')">
+                   <input .appearance-none .block .w-full .bg-gray-200 .text-gray-700 .border .border-gray-200 .rounded .py-3 .px-4 .leading-tight .focus:outline-none .focus:bg-white .focus:border-gray-500 #joingameid placeholder="8X9JY" type="text">
+                   <button .ml-5 .bg-gray-300 .hover:bg-gray-400 .text-gray-800 .font-bold .py-4 .leading-tight .px-4 .rounded onclick="joinGame()">
                     Join
              <div .flex .flex-col .px-12 .py-10 .w-full .sm:w-1/2 .border-t-2 .sm:border-t-0 .sm:border-l .sm:border-b .border-gray-200>
               <div .flex .flex-grow>
@@ -51,22 +51,22 @@
                  Configure a custom game board.
                 <form .flex .flex-wrap .-mx-3 .mb-2 .mt-3 .h-full .items-end ##{newGameFormId}>
                  <div .w-full .md:w-1/3 .px-3 .mb-6 .md:mb-0>
-                  <label .block .uppercase .tracking-wide .text-gray-700 .text-xs .font-bold .mb-2 for="grid-city">
+                  <label .block .uppercase .tracking-wide .text-gray-700 .text-xs .font-bold .mb-2 for="widthField">
                    Width
-                  <input .appearance-none .block .w-full .bg-gray-200 .text-gray-700 .border .border-gray-200 .rounded .py-4 .px-4 .leading-tight .focus:outline-none .focus:bg-white .focus:border-gray-500 #grid-city placeholder="30" type="number" ##{widthField} required>
+                  <input .appearance-none .block .w-full .bg-gray-200 .text-gray-700 .border .border-gray-200 .rounded .py-4 .px-4 .leading-tight .focus:outline-none .focus:bg-white .focus:border-gray-500 placeholder="30" type="number" ##{widthField} required>
                  <div .w-full .md:w-1/3 .px-3 .mb-6 .md:mb-0>
-                  <label .block .uppercase .tracking-wide .text-gray-700 .text-xs .font-bold .mb-2 for="grid-state">
+                  <label .block .uppercase .tracking-wide .text-gray-700 .text-xs .font-bold .mb-2 for="heightField">
                    Height
-                  <input .appearance-none .block .w-full .bg-gray-200 .text-gray-700 .border .border-gray-200 .rounded .py-4 .px-4 .leading-tight .focus:outline-none .focus:bg-white .focus:border-gray-500 #grid-zip placeholder="30" type="number" ##{heightField} required>
+                  <input .appearance-none .block .w-full .bg-gray-200 .text-gray-700 .border .border-gray-200 .rounded .py-4 .px-4 .leading-tight .focus:outline-none .focus:bg-white .focus:border-gray-500 placeholder="30" type="number" ##{heightField} required>
                  <div .w-full .md:w-1/3 .px-3 .mb-6 .md:mb-0>
-                  <label .block .uppercase .tracking-wide .text-gray-700 .text-xs .font-bold .mb-2 for="grid-zip">
+                  <label .block .uppercase .tracking-wide .text-gray-700 .text-xs .font-bold .mb-2 for="bombCountField">
                    Mines
-                  <input .appearance-none .block .w-full .bg-gray-200 .text-gray-700 .border .border-gray-200 .rounded .py-4 .px-4 .leading-tight .focus:outline-none .focus:bg-white .focus:border-gray-500 #grid-zip placeholder="150" type="number" ##{bombCountField} required>
+                  <input .appearance-none .block .w-full .bg-gray-200 .text-gray-700 .border .border-gray-200 .rounded .py-4 .px-4 .leading-tight .focus:outline-none .focus:bg-white .focus:border-gray-500 placeholder="150" type="number" ##{bombCountField} required>
                  <div .w-full .px-3 .mb-6 .md:mb-0 .mt-3>
-                  <label .block .uppercase .tracking-wide .text-gray-700 .text-xs .font-bold .mb-2 for="grid-state">
+                  <label .block .uppercase .tracking-wide .text-gray-700 .text-xs .font-bold .mb-2 for="randomSeedField">
                    Seed
                   <div .inline-flex .content-between .w-full>
-                   <input .appearance-none .block .w-full .bg-gray-200 .text-gray-700 .border .border-gray-200 .rounded .py-4 .px-4 .leading-tight .focus:outline-none .focus:bg-white .focus:border-gray-500 #grid-zip placeholder="4853248" type="number" ##{randomSeedField}>
+                   <input .appearance-none .block .w-full .bg-gray-200 .text-gray-700 .border .border-gray-200 .rounded .py-4 .px-4 .leading-tight .focus:outline-none .focus:bg-white .focus:border-gray-500 placeholder="4853248" type="number" ##{randomSeedField}>
                    <button .ml-5 .bg-gray-300 .hover:bg-gray-400 .text-gray-800 .font-bold .rounded .py-4 .px-4 .leading-tight type=submit>
                     Start
              <div .flex .flex-col .px-12 .py-10 .w-full .sm:w-1/2 .border-t-2 .sm:border-r .sm:border-t .border-gray-200>
