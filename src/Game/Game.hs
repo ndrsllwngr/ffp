@@ -48,22 +48,20 @@ instance Show GameState where
 
 
 -- Creates a new game for a given Dimension, bombCount & seed
-newGame :: Dimension -> Int -> Int -> String -> UTCTime -> IO GameState
-newGame (h,w) b s gId now = do
-                   channel_ <- newChan
-                   return GameState {
-                                _board         = generateBoard (h,w) b s,
-                                _moves         = [],
-                                _bombCount     = b,
-                                _seed          = s,
-                                _status        = Ongoing,
-                                _gameId        = gId,
-                                _createdAt     = now,
-                                _updatedAt     = now,
-                                _lastStartedAt = now,
-                                _timeElapsed   = 0,
-                                _channel       = channel_
-                               }
+newGame :: Dimension -> Int -> Int -> String -> UTCTime -> Chan ServerEvent -> GameState
+newGame (h,w) b s gId now channel_ = GameState {
+                                        _board         = generateBoard (h,w) b s,
+                                        _moves         = [],
+                                        _bombCount     = b,
+                                        _seed          = s,
+                                        _status        = Ongoing,
+                                        _gameId        = gId,
+                                        _createdAt     = now,
+                                        _updatedAt     = now,
+                                        _lastStartedAt = now,
+                                        _timeElapsed   = 0,
+                                        _channel       = channel_
+                                     }
 
 -- Executes a move on a given GameState
 -- TODO handle illegal moves e.g. outOfBounds Action, action on a board with status Won || Lost

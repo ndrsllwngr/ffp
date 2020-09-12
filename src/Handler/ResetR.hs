@@ -15,8 +15,7 @@ import           Control.Lens
 -- RESET GAME
 postResetR :: Text -> Handler Value
 postResetR gameIdText = do
-    app <- getYesod
-    -- Get the in-memory state of ongoing games
+    app <- getYesod    -- Get the in-memory state of ongoing games
     let tGames = games app
     let gameId_ = unpack gameIdText
     
@@ -33,16 +32,20 @@ postResetR gameIdText = do
                           gameStateDBEntities <- runDB $ selectList [GameStateEntityGameId ==. unpack gameIdText] [Desc GameStateEntityUpdatedAt, LimitTo 1]
                           -- Delete game with given id from Database (if present)
                           _ <- runDB $ deleteBy $ UniqueGameStateEntity gameId_ 
-                          case getGameStateEntityMaybe gameStateDBEntities of
-                              Just gameStateEntity -> do return liftIO $ gameStateEntityToGameState gameStateEntity
-                          -- Map the Maybe GameStateEntity to a Maybe GameState and return it
-                          --return res
+                          -- Create new channel
+                          channel <- newChan
+                          -- Map the Maybe GameStateEntity to a Maybe Gamestate and return it        
+                          return $ (`gameStateEntityToGameState` channel) <$> getGameStateEntityMaybe gameStateDBEntities
+                       
+                         
     
     case gameMaybe of
          Just gameState -> do
                 now <- liftIO getCurrentTime
+                -- Create new channel
+                channel <- newChan
                 -- create a new game with the same parameters
-                resetGameState <- liftIO $ newGame (getDimensions gameState) (gameState ^. bombCount) (gameState ^. seed) (gameState ^.gameId) now
+                let resetGameState = newGame (getDimensions gameState) (gameState ^. bombCount) (gameState ^. seed) (gameState ^.gameId) now channel
                 -- Store/Override the gamestate for the given ID in the in-memory state
                 _ <- liftIO $ setGameStateForGameId tGames gameId_ resetGameState
                 returnJson $ gameStateToGameStateEntity resetGameState
