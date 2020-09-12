@@ -2,20 +2,19 @@ $(function () {
   $("##{rawJS newGameFormId}").submit(function (event) {
     event.preventDefault();
 
-    var gameId = $("##{rawJS gameIdField}").val();
     var bombCount = $("##{rawJS bombCountField}").val();
     var width = $("##{rawJS widthField}").val();
     var height = $("##{rawJS heightField}").val();
     var randomSeed = $("##{rawJS randomSeedField}").val();
 
     // (Browsers that enforce the "required" attribute on the textarea won't see this alert)
-    if (!gameId || !bombCount || !width || !height) {
-      console.warn({ gameId, bombCount, width, height });
+    if (!bombCount || !width || !height) {
+      console.warn({ bombCount, width, height });
       alert("Please fill out the create new game form first.");
       return;
     }
 
-    console.log("CREATE GAME", { gameId, bombCount, width, height, event });
+    console.log("CREATE GAME", { bombCount, width, height, event });
 
     $.ajax({
       url: "@{GamesR}",
@@ -26,12 +25,11 @@ $(function () {
         width: parseInt(width, 10),
         bombCount: parseInt(bombCount, 10),
         seed: randomSeed ? parseInt(randomSeed, 10) : null,
-        gameId: gameId,
       }),
       success: function (data) {
         console.info("[SUCCESS] CREATE GAME", { data });
         // RE-ROUTE TO NEW GAME
-        const newUrl = "/game/" + gameId;
+        const newUrl = "/game/" + data.gameId;
         console.log({ newUrl });
         window.location.assign(newUrl);
       },
@@ -41,3 +39,47 @@ $(function () {
     });
   });
 });
+
+const difficulty = {
+  beginner: {
+    height: 9,
+    width: 9,
+    bombCount: 10,
+  },
+  intermediate: {
+    height: 16,
+    width: 16,
+    bombCount: 40,
+  },
+  expert: {
+    height: 16,
+    width: 30,
+    bombCount: 99,
+  },
+};
+
+const startGame = (level) => {
+  console.log("START GAME", { level });
+
+  $.ajax({
+    url: "@{GamesR}",
+    type: "POST",
+    contentType: "application/json",
+    data: JSON.stringify({
+      height: difficulty[level].height,
+      width: difficulty[level].width,
+      bombCount: difficulty[level].bombCount,
+      seed: null,
+    }),
+    success: function (data) {
+      console.info("[SUCCESS] START GAME", { data });
+      // RE-ROUTE TO NEW GAME
+      const newUrl = "/game/" + data.gameId;
+      console.log({ newUrl });
+      window.location.assign(newUrl);
+    },
+    error: function (data) {
+      console.error("[ERROR] START GAME", { data });
+    },
+  });
+};

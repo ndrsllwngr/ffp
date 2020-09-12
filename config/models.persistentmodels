@@ -40,7 +40,6 @@ NewGameRequest json
     width Int
     bombCount Int
     seed Int Maybe
-    gameId String
     deriving Eq
     deriving Show
 
@@ -57,6 +56,7 @@ GameStateEntity json
     updatedAt UTCTime
     lastStartedAt UTCTime
     timeElapsed Int
+    flagsRemaining Int
     UniqueGameStateEntity gameId
     deriving Eq
     deriving Show
@@ -81,6 +81,7 @@ CellEntity json
     isRevealed Bool
     hasBomb Bool
     neighboringBombs Int
+    assetId String
     deriving Eq
     deriving Show
 

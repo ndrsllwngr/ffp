@@ -17,3 +17,4 @@
 /game/#Text GameR GET PUT
 /game/#Text/pause PauseR POST
 /game/#Text/reset ResetR POST
+/game/#Text/channel ChannelR GET

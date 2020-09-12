@@ -14,7 +14,13 @@ module Game.Board  (generateBoard,
                     Coordinate,
                     Dimension,
                     Board,
-                    Cell (..)
+                    Cell (..),
+                    isFlagged       ,
+                    isRevealed      ,
+                    hasBomb         ,
+                    neighboringBombs,
+                    coordinate
+                    
                     ) where
 
 import           Data.List
