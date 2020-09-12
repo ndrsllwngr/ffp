@@ -105,16 +105,16 @@ const pauseGame = (gameId) => {
 const setTimer = () => {
   let el = document.getElementById("seconds");
   let prevTime = parseInt(el.getAttribute("prevTime"), 10);
+  let movesNotEmpty = el.getAttribute("movesNotEmpty");
   //console.log({ el, prevTime });
   let elFace = document.getElementById("face");
   let status = elFace.getAttribute("status");
 
-  let newTime = prevTime + 1;
-
-  if (status === "Ongoing") {
+  if (status === "Ongoing" && movesNotEmpty == 'True') {
+    newTime = prevTime + 1;
     renderDigits(newTime, "seconds");
     el.setAttribute("prevTime", newTime);
-  } else if (!el.getAttribute("init").match("True")) {
+  } else if (!status === "Ongoing" && !el.getAttribute("init").match("True")) {
     renderDigits(prevTime, "seconds");
     el.setAttribute("init", "True");
     myStopFunction();
@@ -167,6 +167,8 @@ $(document).ready(function () {
   gameStatus = elFace.getAttribute("status");
   setFlags();
   setFace();
+  renderDigits(0, "seconds");
+
   var src = new EventSource("@{ChannelR gameIdText}");
   src.onmessage = function (input) {
     // console.log({ input });
@@ -179,8 +181,22 @@ $(document).ready(function () {
     }
     console.log({ message });
     gameStatus = message.status; // to ensure status in reset method
+    // Set timer
+    let elSeconds = document.getElementById("seconds");
+    // Game is running, run timer
+    if (message.moves.length > 0) {
+      elSeconds.setAttribute("movesNotEmpty", "True");
+    // Game has stopped, stop timer
+    } else {
+      elSeconds.setAttribute("movesNotEmpty", "False");
+      elSeconds.setAttribute("prevTime", 0)
+      renderDigits(0, "seconds");
+      newTime = 0;
+    }
+    // Set flags
     let elFlags = document.getElementById("flags");
     elFlags.setAttribute("remainingFlags", message.flagsRemaining);
+    // Set face
     let elFace = document.getElementById("face");
     elFace.setAttribute("status", message.status);
     console.log(elFace.getAttribute("status"));
@@ -227,7 +243,8 @@ const toggleControls = (status) => {
   }
 };
 
-var timer = setInterval(setTimer, 1000);
+let timer = setInterval(setTimer, 1000);
+let newTime = 0;
 
 const myStopFunction = () => {
   clearInterval(timer);
