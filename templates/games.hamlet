@@ -18,9 +18,6 @@
                 <div .bs-callout.bs-callout-info.well>
                     <form .form-horizontal ##{newGameFormId}>
                         <div .field>
-                            <label for="gameIdField">Game name</label>
-                            <input type="text" ##{gameIdField} required></input>
-                        <div .field>
                             <label for="bombCountField">Bomb count</label>
                             <input type="number" ##{bombCountField} required></input>
                         <div .field>

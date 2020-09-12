@@ -171,23 +171,22 @@ $(document).ready(function () {
   src.onmessage = function (input) {
     // console.log({ input });
     var message = JSON.parse(input.data);
-    var obj = JSON.parse(message);
-    if (obj.status === "Paused") {
-      console.info("PAUSED GAME", obj.status);
+    if (message.status === "Paused") {
+      console.info("PAUSED GAME", message.status);
       const newUrl = "@{GamesR}";
       console.log("Rerouting...", { newUrl });
       window.location.assign(newUrl);
     }
-    console.log({ obj });
-    gameStatus = obj.status; // to ensure status in reset method
+    console.log({ message });
+    gameStatus = message.status; // to ensure status in reset method
     let elFlags = document.getElementById("flags");
-    elFlags.setAttribute("remainingFlags", obj.flagsRemaining);
+    elFlags.setAttribute("remainingFlags", message.flagsRemaining);
     let elFace = document.getElementById("face");
-    elFace.setAttribute("status", obj.status);
+    elFace.setAttribute("status", message.status);
     console.log(elFace.getAttribute("status"));
     setFace();
-    toggleControls(obj.status);
-    updateBoard(obj.board, obj.gameId, obj.status);
+    toggleControls(message.status);
+    updateBoard(message.board, message.gameId, message.status);
   };
 });
 
