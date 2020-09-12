@@ -20,11 +20,12 @@
         <div .row>
             <div .col-lg-6>
                 <div .bs-callout.bs-callout-info.well>
-                    $if (gameStateEntity ^. gameStateEntityStatus) == "Ongoing"
-                        <button onclick="pauseGame('#{gameStateEntity ^. gameStateEntityGameId}')">
-                            Pause game
-                        <button onclick="revealAll('#{gameStateEntity ^. gameStateEntityGameId}')">
-                            Reveal all non flagged fields
+                    <div id="controls">
+                        $if (gameStateEntity ^. gameStateEntityStatus) == "Ongoing"
+                            <button onclick="pauseGame('#{gameStateEntity ^. gameStateEntityGameId}')">
+                                Pause game
+                            <button onclick="revealAll('#{gameStateEntity ^. gameStateEntityGameId}')">
+                                Reveal all non flagged fields
                     <table ##{gameTableId}style="width:40%">
                         $forall row <- gameStateEntity ^. gameStateEntityBoard
                             <tr>
@@ -34,5 +35,6 @@
                                             <div .div onclick="makeMove(#{cellEntity ^. cellEntityCoordX}, #{cellEntity ^. cellEntityCoordY}, '#{gameStateEntity ^. gameStateEntityGameId}', event)">
                                                 <img .img src="/static/assets/#{(cellEntity ^. cellEntityAssetId)}.svg" width="24" height="24">
                                         $else
-                                             <img .img src="/static/assets/#{(cellEntity ^. cellEntityAssetId)}.svg" width="24" height="24">
+                                            <div .div>
+                                                <img .img src="/static/assets/#{(cellEntity ^. cellEntityAssetId)}.svg" width="24" height="24">
     <hr>
