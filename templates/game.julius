@@ -11,6 +11,8 @@ const digits = [
   "/static/assets/d9.svg",
 ];
 
+var gameStatus = "";
+
 // Toggle flag, or reveal cell
 const makeMove = (x, y, gameId, event) => {
   event.preventDefault();
@@ -55,9 +57,10 @@ const revealAll = (gameId) => {
   });
 };
 // Reset game
-const resetGame = (gameId, status) => {
-  console.log("RESET GAME", { gameId, status });
+const resetGame = (gameId) => {
+  console.log("RESET GAME", { gameId });
 
+  const status = gameStatus;
   $.ajax({
     url: "/game/" + gameId + "/reset",
     type: "POST",
@@ -65,7 +68,7 @@ const resetGame = (gameId, status) => {
     data: JSON.stringify({}),
     success: function (data) {
       console.info("[SUCCESS] RESET GAME", { data });
-      if (status === "Won" || status === "Lost") {
+      if (gameStatus === "Won" || gameStatus === "Lost") {
         console.log("Reloading window...", { status });
         window.location.reload();
       }
@@ -87,8 +90,9 @@ const pauseGame = (gameId) => {
     data: JSON.stringify({}),
     success: function (data) {
       console.info("[SUCCESS] PAUSE GAME", { data });
+      const newUrl = "@{GamesR}";
       console.log("Rerouting...", { newUrl });
-      window.location.assign("/games");
+      window.location.assign(newUrl);
     },
     error: function (data) {
       console.error("[ERROR] PAUSE GAME", { data });
@@ -101,10 +105,11 @@ const setTimer = () => {
   let el = document.getElementById("seconds");
   let prevTime = parseInt(el.getAttribute("prevTime"), 10);
   //console.log({ el, prevTime });
-
-  let newTime = prevTime + 1;
   let elFace = document.getElementById("face");
   let status = elFace.getAttribute("status");
+
+  let newTime = prevTime + 1;
+
   if (status === "Ongoing") {
     renderDigits(newTime, "seconds");
     el.setAttribute("prevTime", newTime);
@@ -120,7 +125,7 @@ const setTimer = () => {
 const setFace = () => {
   let el = document.getElementById("face");
   let status = el.getAttribute("status");
-  console.log({ el, status });
+
   let asset;
   if (status === "Lost") {
     asset = "/static/assets/face_lose.svg";
@@ -136,11 +141,12 @@ const setFace = () => {
 const setFlags = () => {
   let el = document.getElementById("flags");
   let remainingFlags = parseInt(el.getAttribute("remainingFlags"), 10);
-  //console.log(remainingFlags);
+
   renderDigits(remainingFlags, "flags");
 };
 
 // Split digits and render each digit seperately
+// TODO use attributes instead
 const renderDigits = (number, id) => {
   let el = document.getElementById(id);
   let numberStr;
@@ -160,35 +166,22 @@ $(document).ready(function () {
   setFace();
   var src = new EventSource("@{ChannelR gameIdText}");
   src.onmessage = function (input) {
-    console.log({ input });
+    // console.log({ input });
     var message = JSON.parse(input.data);
     var obj = JSON.parse(message);
-    console.log(obj);
+    console.log({ obj });
+    gameStatus = obj.status; // to ensure status in reset method
     let elFlags = document.getElementById("flags");
     elFlags.setAttribute("remainingFlags", obj.flagsRemaining);
     let elFace = document.getElementById("face");
     elFace.setAttribute("status", obj.status);
     console.log(elFace.getAttribute("status"));
     setFace();
-    updateBoard(obj.board);
-    //let elTime = document.getElementById("seconds");
-    //let timeElapsed = elTime.setAttribute("prevTime",elTime.getAttribute("prevTime"));
-    // if (message.id == "player-new"){
-    //   $("#player_join_"+message.side).replaceWith("<div id='joined'>Joined</div>");
-    // } else if (message.id == "mark-new") {
-    //   var markId = "#cell_"+message.x+"_"+message.y;
-    //   $(markId).replaceWith(
-    //     "<div id='"+markId+"' class='mark-"+message.mark+"'></div>"
-    //   );
-    // } else if (message.id == "alert") {
-    //   $("#messages").prepend(
-    //     "<div class='message'>"+message.content+"</div>"
-    //   );
-    // }
+    updateBoard(obj.board, obj.gameId, obj.status);
   };
 });
 
-const updateBoard = (newBoard) => {
+const updateBoard = (newBoard, gameId, status) => {
   var row;
   for (row = 0; row < newBoard.length; row++) {
     var column;
@@ -201,6 +194,16 @@ const updateBoard = (newBoard) => {
       let newCell = newBoard[row].cells[column];
       if (cellImgTag.getAttribute("src") !== newCell.image) {
         cellImgTag.setAttribute("src", `/static/assets/${newCell.assetId}.svg`);
+      }
+      if (status == "Ongoing") {
+        cellDivTag.setAttribute(
+          "onclick",
+          `makeMove(${row + 1},${column + 1},'${gameId}',event)`
+        );
+      } else {
+        if (cellDivTag.getAttribute("onclick")) {
+          cellDivTag.removeAttribute("onclick");
+        }
       }
     }
   }

@@ -15,7 +15,7 @@
         <div .row ##{aDomId}>
             <div class="flex flex-row items-start">
                 <div id="flags" remainingFlags="#{(gameStateEntity ^. gameStateEntityFlagsRemaining)}">
-                <div id="face" status="#{gameStateEntity ^. gameStateEntityStatus}" onclick="resetGame('#{gameStateEntity ^. gameStateEntityGameId}','#{gameStateEntity ^. gameStateEntityStatus}')">
+                <div id="face" status="#{gameStateEntity ^. gameStateEntityStatus}" onclick="resetGame('#{gameStateEntity ^. gameStateEntityGameId}')">
                 <div id="seconds" init="False" prevTime="#{getTimeElapsed(gameStateEntity ^. gameStateEntityLastStartedAt) (gameStateEntity ^. gameStateEntityTimeElapsed) now (gameStateEntity ^. gameStateEntityStatus)}">
         <div .row>
             <div .col-lg-6>
