@@ -13,6 +13,8 @@
                         (see <tt>Handler/Comment.hs</tt>, <tt>templates/homepage.julius</tt>,
                         and <tt>Handler/Home.hs</tt> for the implementation).
         <div .row ##{aDomId}>
+            <a  href="@{GamesR}">
+                go back
             <div class="flex flex-row items-start">
                 <div id="flags" remainingFlags="#{(gameStateEntity ^. gameStateEntityFlagsRemaining)}">
                 <div id="face" status="#{gameStateEntity ^. gameStateEntityStatus}" onclick="resetGame('#{gameStateEntity ^. gameStateEntityGameId}')">

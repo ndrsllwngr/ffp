@@ -76,7 +76,7 @@
                  Paused
                 <p .text-gray-600 .mt-1 .text-sm .md:text-base>
                  Select a game to continue playing.
-                <ul .pt-1 .mt-auto .list-disc>
+                <ul .pt-1 .list-disc>
                     $forall game <- gameStateEntitiesPaused
                         <li>
                             <a .inline-flex .items-center .text-teal-600 .hover:text-teal-800 href="/game/#{game ^. gameStateEntityGameId}">
@@ -91,7 +91,7 @@
                  History
                 <p .text-gray-600 .mt-1 .text-sm .md:text-base>
                  List of finished games.
-                <ul .pt-1 .mt-auto .list-disc>
+                <ul .pt-1 .list-disc>
                     $forall game <- gameStateEntitiesWonOrLost
                         <li>
                             <a .inline-flex .items-center .text-teal-600 .hover:text-teal-800 href="/game/#{game ^. gameStateEntityGameId}">
