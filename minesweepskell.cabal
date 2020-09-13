@@ -161,10 +161,7 @@ test-suite minesweepskell-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
-      Handler.CommentSpec
       Handler.CommonSpec
-      Handler.HomeSpec
-      Handler.ProfileSpec
       TestImport
       Paths_minesweepskell
   hs-source-dirs:

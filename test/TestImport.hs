@@ -64,28 +64,3 @@ dropAllCollections :: (MonadIO m, MonadBaseControl IO m, MonadFail m) => Action 
 dropAllCollections = (filter (not . isSystemCollection) <$> allCollections) >>= mapM dropCollection
       where
         isSystemCollection = isPrefixOf "system."
-
--- | Authenticate as a user. This relies on the `auth-dummy-login: true` flag
--- being set in test-settings.yaml, which enables dummy authentication in
--- Foundation.hs
-authenticateAs :: Entity User -> YesodExample App ()
-authenticateAs (Entity _ u) = do
-    request $ do
-        setMethod "POST"
-        addPostParam "ident" $ _userIdent u
-        setUrl $ AuthR $ PluginR "dummy" []
-
--- | Create a user.  The dummy email entry helps to confirm that foreign-key
--- checking is switched off in wipeDB for those database backends which need it.
-createUser :: Text -> YesodExample App (Entity User)
-createUser ident = runDB $ do
-    user <- insertEntity User
-        { _userIdent = ident
-        , _userPassword = Nothing
-        }
-    _ <- insert Email
-        { _emailEmail = ident
-        , _emailUserId = Just $ entityKey user
-        , _emailVerkey = Nothing
-        }
-    return user
