@@ -136,7 +136,7 @@ const setFace = () => {
   if (status === "Lost") {
     faceImg.setAttribute("src", `/static/assets/face_lose.svg`);
   } else if (status === "Won") {
-    faceImg.setAttribute("src", `/static/assets/face_won.svg`);
+    faceImg.setAttribute("src", `/static/assets/face_win.svg`);
   } else {
     faceImg.setAttribute("src", `/static/assets/face_unpressed.svg`);
   }
