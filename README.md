@@ -27,11 +27,11 @@ Fortgeschrittene Funktionale Programmierung - Group project (2020)
 
 ## Description
 
-Minesweepskell is a web implementation of the widely known video game Minesweeper fully written in the Haskell functional programming language.
+Minesweepskell is a web implementation of the widely known video game Minesweeper fully written in the functional programming language Haskell.
 
 ## Features
 
-- Minesweeper Web App with three predefined difficulties as well as customizable games
+- Minesweeper Web App with three predefined difficulties as well as customisable games
 - Slim & blazing fast UI powered by server side events
 - Join other players on their game either to view them playing or to play together
 - Pause games & continue later
@@ -148,13 +148,14 @@ stack test --flag minesweepskell:library-only --flag minesweepskell:dev
 
 (Because `yesod devel` passes the `library-only` and `dev` flags, matching those flags means you don't need to recompile between tests and development, and it disables optimization to speed up your test compile times).
 
-## Dependencies
+## Dependencies (excerpt)
 
 ```
 yesod
 mongodb
 persistent
 lens
+matrix-lens
 ...
 ```
 
