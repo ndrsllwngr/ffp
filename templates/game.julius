@@ -58,6 +58,11 @@ const revealAll = (gameId) => {
 };
 // Reset game
 const resetGame = (gameId) => {
+  if (gameStatus !== "Ongoing") {
+    console.log("INVALID ACTION");
+    return;
+  }
+
   console.log("RESET GAME", { gameId });
 
   const status = gameStatus;
@@ -151,7 +156,7 @@ const renderDigits = (number, id) => {
   numberStr = number < 999 ? String(number) : "999";
   if (number < 10) numberStr = "00" + numberStr;
   else if (number < 100) numberStr = "0" + numberStr;
-  
+
   let img0s = document.getElementById(id + "0s");
   let img10s = document.getElementById(id + "10s");
   let img100s = document.getElementById(id + "100s");
@@ -227,7 +232,10 @@ const updateBoard = (newBoard, gameId, status) => {
         ? cellDivTag.querySelector(".img")
         : oldCellTdEl.querySelector(".img");
       let newCell = newBoard[row].cells[column];
-      if (cellImgTag.getAttribute("src") !== `/static/assets/${newCell.assetId}.svg`) {
+      if (
+        cellImgTag.getAttribute("src") !==
+        `/static/assets/${newCell.assetId}.svg`
+      ) {
         cellImgTag.setAttribute("src", `/static/assets/${newCell.assetId}.svg`);
       }
       if (status == "Ongoing") {
@@ -249,7 +257,7 @@ const goBack = () => {
   const newUrl = "@{GamesR}";
   console.log("Rerouting...", { newUrl });
   window.location.assign(newUrl);
-}
+};
 
 const toggleControls = (status) => {
   console.log("TOGGLE CONTROLS");
@@ -258,11 +266,15 @@ const toggleControls = (status) => {
   const gameId = goBackBtn.getAttribute("gameId");
   if (status !== "Ongoing") {
     goBackBtn.textContent = "← Back";
-    goBackBtn.onclick= function() { goBack(); };
+    goBackBtn.onclick = function () {
+      goBack();
+    };
     revealAllBtn.className = "hidden";
   } else {
     goBackBtn.textContent = "Pause Game";
-    goBackBtn.onclick = function() { pauseGame(gameId); };
+    goBackBtn.onclick = function () {
+      pauseGame(gameId);
+    };
     revealAllBtn.classList.remove("hidden");
   }
 };
