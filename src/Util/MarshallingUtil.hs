@@ -53,6 +53,10 @@ getCellAssetIdWon False _ False 8 = "type8"
 getCellAssetIdWon True _ True _ = "flag"
 getCellAssetIdWon _ _ _ _ = "closed"
 
+-- isFlagged Bool
+-- isRevealed Bool
+-- hasBomb Bool
+-- neighboringBombs Int
 getCellAssetIdLost :: Bool -> Bool -> Bool -> Int -> String
 getCellAssetIdLost False True False 0 = "type0"
 getCellAssetIdLost False True False 1 = "type1"
@@ -64,6 +68,7 @@ getCellAssetIdLost False True False 6 = "type6"
 getCellAssetIdLost False True False 7 = "type7"
 getCellAssetIdLost False True False 8 = "type8"
 getCellAssetIdLost True False False _ = "mine_wrong"
+getCellAssetIdLost True _ True _ = "flag"
 getCellAssetIdLost False True True _ = "mine_red"
-getCellAssetIdLost _ False True _ = "mine"
+getCellAssetIdLost False False True _ = "mine"
 getCellAssetIdLost _ _ _ _ = "closed"
