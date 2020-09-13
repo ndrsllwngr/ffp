@@ -111,14 +111,16 @@ const pauseGame = (gameId) => {
 const setTimer = () => {
   let el = document.getElementById("seconds");
   let prevTime = parseInt(el.getAttribute("prevTime"), 10);
-  let movesNotEmpty = el.getAttribute("movesNotEmpty");
+  let isBeforeFirstMove = el.getAttribute("isBeforeFirstMove");
   let elFace = document.getElementById("face");
   let status = elFace.getAttribute("status");
 
-  if (status === "Ongoing" && movesNotEmpty == "True") {
+  // Game is running and not before first move, run timer
+  if (status === "Ongoing" && isBeforeFirstMove == "False") {
     newTime = prevTime + 1;
     renderDigits(newTime, "seconds");
     el.setAttribute("prevTime", newTime);
+    // Render previous time and stop timer
   } else {
     renderDigits(prevTime, "seconds");
     myStopFunction();
@@ -198,10 +200,11 @@ $(document).ready(function () {
     let elSeconds = document.getElementById("seconds");
     // Game is running, run timer
     if (message.moves.length > 0) {
-      elSeconds.setAttribute("movesNotEmpty", "True");
-      // Game has stopped, stop timer
+      elSeconds.setAttribute("isBeforeFirstMove", "False");
+      myStopFunction();
+      timer = setInterval(setTimer, 1000);
+      // Game is not running, show timeElapsed
     } else {
-      elSeconds.setAttribute("movesNotEmpty", "False");
       elSeconds.setAttribute("prevTime", 0);
       renderDigits(message.timeElapsed, "seconds");
       newTime = 0;
@@ -278,7 +281,7 @@ const toggleControls = (status) => {
   }
 };
 
-let timer = setInterval(setTimer, 1000);
+var timer = setInterval(setTimer, 1000);
 let newTime = 0;
 
 const myStopFunction = () => {
