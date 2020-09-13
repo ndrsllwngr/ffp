@@ -58,10 +58,6 @@ const revealAll = (gameId) => {
 };
 // Reset game
 const resetGame = (gameId) => {
-  if (gameStatus !== "Ongoing") {
-    console.log("INVALID ACTION");
-    return;
-  }
 
   console.log("RESET GAME", { gameId });
 
@@ -74,9 +70,14 @@ const resetGame = (gameId) => {
     success: function (data) {
       console.info("[SUCCESS] RESET GAME", { data });
       console.log(gameStatus);
-      if (gameStatus === "Won" || gameStatus === "Lost") {
-        console.log("Reloading window...", { status });
+      if (gameId === data.gameId) {
+        console.log("Same gameID - Reloading window...", { status });
         window.location.reload();
+      } else {
+        console.log("New gameID - Rerouting to new game...", { status });
+         const newUrl = "/game/" + data.gameId;
+         console.log("Rerouting...", { newUrl });
+         window.location.assign(newUrl);
       }
     },
     error: function (data) {

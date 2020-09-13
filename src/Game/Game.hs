@@ -16,6 +16,7 @@ module Game.Game (newGame,
                   updatedAt,
                   lastStartedAt,
                   timeElapsed,
+                  isGameOver,
                   getDimensions,
                   channel,
                   calculateTimeElapsed,
@@ -80,7 +81,17 @@ makeMove state m  = state & board       .~ boardAfterMove
                                 elapsed                 = case st of Won   -> finishGame
                                                                      Lost  -> finishGame
                                                                      _     -> state ^. timeElapsed
-
+   
+   
+-- Returns the Status of a given board
+isGameOver :: GameState -> Bool
+isGameOver state = case state ^. status of Ongoing -> False
+                                           Paused -> False
+                                           Lost -> True
+                                           Won -> True
+                                       
+                                                                  
+                                                                     
 -- Returns the Status of a given board
 checkStatus :: Board -> GameStatus
 checkStatus b = case (checkWon b, checkLost b) of  (_,True)      -> Lost
