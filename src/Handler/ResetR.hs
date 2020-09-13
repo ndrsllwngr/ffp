@@ -12,14 +12,15 @@ import           Import
 import           Control.Lens
 import           Handler.ChannelR(broadcast)
 import           System.Random (randomIO)
+import           Text.StringRandom
 
 -- RESET GAME
 postResetR :: Text -> Handler Value
 postResetR gameIdText = do
-    app <- getYesod    -- Get the in-memory state of ongoing games
+    app <- getYesod    
+    -- Get the in-memory state of ongoing games
     let tGames = games app
     let gameId_ = unpack gameIdText
-    newSeed <- liftIO (randomIO :: IO Int)
     -- Try to get the game from the in-memory state
     gameStateMaybe <- liftIO $ getGameById tGames gameId_
     
@@ -41,8 +42,17 @@ postResetR gameIdText = do
     case gameMaybe of
          Just gameState -> do
                 now <- liftIO getCurrentTime
+               
+                -- Generate a new 5 character random game id
+                randomString <- liftIO $ stringRandomIO "^[A-Z1-9]{5}$"
+                
+                -- Generate a new random seed
+                newSeed <- liftIO (randomIO :: IO Int)
+                
+                -- if the game was already over use a new game id otherwise use the same game id for the new game
+                let gameId_ = if isGameOver gameState then unpack randomString else gameState ^.gameId
                 -- create a new game with the same parameters
-                let resetGameState = newGame (getDimensions gameState) (gameState ^. bombCount) newSeed (gameState ^.gameId) now (gameState ^. channel)
+                let resetGameState = newGame (getDimensions gameState) (gameState ^. bombCount) newSeed gameId_ now (gameState ^. channel)
                 -- Store/Override the GameState for the given ID in the in-memory state
                 _ <- liftIO $ setGameStateForGameId tGames gameId_ resetGameState
                 let gameStateEntity = gameStateToGameStateEntity resetGameState
