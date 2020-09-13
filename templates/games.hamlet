@@ -7,14 +7,22 @@
          <div .flex .flex-col .min-h-screen .lg:flex-row .lg:items-center .lg:p-8>
           <div .flex .flex-col .flex-grow .bg-white .lg:shadow-2xl .lg:rounded-lg .lg:overflow-hidden>
            <div .flex-grow .flex .flex-col .justify-center .p-12>
-            <div .md:pl-16 .pl-0>
-             <h1 .sm:font-light .text-2xl .sm:text-3xl .md:text-4xl .text-gray-900 .mt-6>
+            <div .pl-0>
+             <h1 .sm:font-light .text-2xl .sm:text-3xl .md:text-4xl .text-gray-900>
               Welcome to Minesweepskell!
              <p .sm:text-xl .text-gray-600 .mt-3 .leading-relaxed>
-              A fun
-              <i>
-               (ctional)
-              Web-Minesweeper game.
+              Minesweepskell is a web implementation of the widely known video game Minesweeper fully written in the Haskell functional programming language.
+             <ul .list-disc .text-gray-600 .text-sm .md:text-base .mt-6>
+                <li .text-gray-600 .mt-1 .text-sm .md:text-base>
+                    Minesweeper Web App with three predefined difficulties as well as customizable games
+                <li .text-gray-600 .mt-1 .text-sm .md:text-base>
+                    Slim & blazing fast UI powered by server side events
+                <li .text-gray-600 .mt-1 .text-sm .md:text-base>
+                    Join other players on their game either to view them playing or to play together
+                <li .text-gray-600 .mt-1 .text-sm .md:text-base>
+                    Pause games & continue later
+                <li .text-gray-600 .mt-1 .text-sm .md:text-base>
+                    History of all finished games to revisit your best & worst performances
            <div .bg-gray-100 .border-t-2 .border-gray-200>
             <div .flex .flex-wrap>
              <div .flex .flex-col .px-12 .py-10 .w-full .sm:w-1/2 .sm:border-r .sm:border-b .border-gray-200>
