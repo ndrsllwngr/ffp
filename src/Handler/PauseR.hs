@@ -32,7 +32,7 @@ postPauseR gameIdText = do
           let  updatedGameStateEntity = gsEntity & gameStateEntityStatus .~ "Paused"
                                                  & gameStateEntityUpdatedAt .~ now
                                                  & gameStateEntityTimeElapsed .~ calculateTimeElapsed (gsEntity ^. gameStateEntityLastStartedAt) (gsEntity ^. gameStateEntityTimeElapsed) now
-          insertedGameStateEntity <- runDB $ insert $ updatedGameStateEntity
+          insertedGameStateEntity <- runDB $ insert updatedGameStateEntity
 
           broadcast (gameState ^. channel) updatedGameStateEntity
           -- return GameState
