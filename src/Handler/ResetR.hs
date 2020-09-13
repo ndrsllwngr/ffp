@@ -33,8 +33,6 @@ postResetR gameIdText = do
     Nothing -> do
       -- Try to fetch game from Database
       gameStateDBEntities <- runDB $ selectList [GameStateEntityGameId ==. unpack gameIdText] [Desc GameStateEntityUpdatedAt, LimitTo 1]
-      -- Delete game with given id from Database (if present)
-      _ <- runDB $ deleteBy $ UniqueGameStateEntity gameId_
       -- Create new channel
       channel_ <- newChan
       -- Map the Maybe GameStateEntity to a Maybe GameState and return it
