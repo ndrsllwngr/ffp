@@ -15,8 +15,8 @@ module Marshalling (
                     ) where
 
 import           Data.Matrix
-import           Import 
-import           Game.Util
+import           Import
+import           Util.MarshallingUtil
 import           Game.Board
 import           Game.Game
 import           Control.Lens
@@ -50,7 +50,7 @@ gameStateEntityToGameState entity _channel =  GameState {
                                                         _lastStartedAt = entity ^. gameStateEntityLastStartedAt,
                                                         _timeElapsed   = entity ^. gameStateEntityTimeElapsed,
                                                         _channel       = _channel
-                                              } where rowsToBoard rows = Data.Matrix.fromLists $ map (map cellEntityToCell . _rowCells) rows --TODO how to use lense here?
+                                              } where rowsToBoard rows = Data.Matrix.fromLists $ map (map cellEntityToCell . _rowCells) rows
 
 statusEntityToStatus :: [Char] -> GameStatus
 statusEntityToStatus "Ongoing" = Ongoing

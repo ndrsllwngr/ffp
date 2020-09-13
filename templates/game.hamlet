@@ -19,13 +19,16 @@
        <span .font-mono .font-semibold .bg-gray-200 .text-sm .sm:text-base .text-gray-700 .subpixel-antialiased .px-2 .py-2 .rounded>
         #{gameStateEntity ^. gameStateEntityGameId}
        , Seed
-       <span .font-mono .font-semibold .bg-gray-200 .text-sm .sm:text-base .text-gray-700 .subpixel-antialiased .px-2 .py-2 .rounded>
+       <span #seed .font-mono .font-semibold .bg-gray-200 .text-sm .sm:text-base .text-gray-700 .subpixel-antialiased .px-2 .py-2 .rounded>
         #{gameStateEntity ^. gameStateEntitySeed}
      <div .md:pl-5 .pl-0 .mt-6>
       <ul .sm:text-xl .text-gray-600 .mt-3 .leading-relaxed .list-disc>
        <li>
-        Uncover the board but be careful to mark all mines first!
-       <li>
+        Uncover the whole board with
+        <span .font-mono .font-semibold .bg-gray-200 .text-sm .sm:text-base .text-gray-700 .subpixel-antialiased .px-2 .py-2 .rounded>
+         Reveal All Cells
+        but be careful to mark all mines first!
+       <li .mt-2>
         <span .font-mono .font-semibold .bg-gray-200 .text-sm .sm:text-base .text-gray-700 .subpixel-antialiased .px-2 .py-2 .rounded>
          Left Click
         to reveal a cell.
@@ -39,23 +42,23 @@
         <div .flex .flex-row .items-start>
          <div #flags remainingFlags="#{(gameStateEntity ^. gameStateEntityFlagsRemaining)}">
           <div .flex .flex-row .bg-gray-800 .p-1>
-           <img id="flags100s" src="/static/assets/d0.svg" alt="0" class="h-12">
-           <img id="flags10s" src="/static/assets/d0.svg" alt="0" class="h-12 ml-1">
-           <img id="flags0s" src="/static/assets/d0.svg" alt="0" class="h-12 ml-1">
+           <img #flags100s src="/static/assets/d0.svg" alt="0" .h-12>
+           <img #flags10s src="/static/assets/d0.svg" alt="0" .h-12 .ml-1>
+           <img #flags0s src="/static/assets/d0.svg" alt="0" .h-12 .ml-1>
          <div .p-1 .bg-gray-800 #face status="#{gameStateEntity ^. gameStateEntityStatus}" onclick="resetGame('#{gameStateEntity ^. gameStateEntityGameId}')">
-           <img #faceImg src="/static/assets/face_unpressed.svg" class="h-12">
-         <div #seconds init="False" prevTime="#{getTimeElapsed(gameStateEntity ^. gameStateEntityLastStartedAt) (gameStateEntity ^. gameStateEntityTimeElapsed) now (gameStateEntity ^. gameStateEntityStatus)}" movesNotEmpty="#{length (gameStateEntity ^. gameStateEntityMoves) > 0 }">
+           <img #faceImg src="/static/assets/face_unpressed.svg" .h-12>
+         <div #seconds prevTime="#{getTimeElapsed(gameStateEntity ^. gameStateEntityLastStartedAt) (gameStateEntity ^. gameStateEntityTimeElapsed) now (gameStateEntity ^. gameStateEntityStatus)}" isBeforeFirstMove="#{length (gameStateEntity ^. gameStateEntityMoves) == 0 }">
           <div .flex .flex-row .bg-gray-800 .p-1>
-            <img id="seconds100s" src="/static/assets/d0.svg" alt="0" class="h-12">
-            <img id="seconds10s" src="/static/assets/d0.svg" alt="0" class="h-12 ml-1">
-            <img id="seconds0s" src="/static/assets/d0.svg" alt="0" class="h-12 ml-1">
+            <img #seconds100s src="/static/assets/d0.svg" alt="0" .h-12>
+            <img #seconds10s src="/static/assets/d0.svg" alt="0" .h-12 .ml-1>
+            <img #seconds0s src="/static/assets/d0.svg" alt="0" .h-12 .ml-1>
        <div .flex .flex-grow .mt-6>
         <div .flex .flex-row .items-start>
          <table ##{gameTableId}>
           $forall row <- gameStateEntity ^. gameStateEntityBoard
                             <tr>
                                 $forall cellEntity <- row ^. rowCells
-                                    <td id="x#{(cellEntity ^. cellEntityCoordX)}y#{(cellEntity ^. cellEntityCoordY)}">
+                                    <td #x#{(cellEntity ^. cellEntityCoordX)}y#{(cellEntity ^. cellEntityCoordY)}>
                                         $if (gameStateEntity ^. gameStateEntityStatus) == "Ongoing"
                                             <div .div onclick="makeMove(#{cellEntity ^. cellEntityCoordX}, #{cellEntity ^. cellEntityCoordY}, '#{gameStateEntity ^. gameStateEntityGameId}', event)">
                                                 <img .img src="/static/assets/#{(cellEntity ^. cellEntityAssetId)}.svg" width="24" height="24">

@@ -18,13 +18,8 @@ import           Database.Persist.Quasi
 import           Language.Haskell.TH.Syntax
 
 -- You can define all of your database entities in the entities file.
--- You can find more information on persistent and how to declare entities
--- at:
+-- You can find more information on persistent and how to declare entities at:
 -- http://www.yesodweb.com/book/persistent/
--- share [mkPersist sqlSettings, mkMigrate "migrateAll"]
---    $(persistFileWith lowerCaseSettings "config/models.persistentmodels")
 let mongoSettings = mkPersistSettings (ConT ''MongoContext)
-  in share [mkPersist mongoSettings { mpsGenerateLenses = True }] -- TODO this could be used to not prefix fields: mpsPrefixFields = False
+  in share [mkPersist mongoSettings { mpsGenerateLenses = True }]
     $(persistFileWith upperCaseSettings "config/models.persistentmodels")
--- in share [mkPersist mongoSettings] -- mkMigrate "migrateAll"
---    $(persistFileWith lowerCaseSettings "config/models.persistentmodels")

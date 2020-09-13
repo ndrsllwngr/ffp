@@ -20,9 +20,7 @@ module Application
     , db
     ) where
 
-import           Control.Monad.Logger                 (liftLoc) -- runLoggingT
--- import Database.Persist.Postgresql          (createPostgresqlPool, pgConnStr,
---                                              pgPoolSize, runSqlPool)
+import           Control.Monad.Logger                 (liftLoc)
 import           Database.Persist.MongoDB             (MongoContext)
 import           Import
 import           Data.Map as Map
@@ -47,15 +45,12 @@ import           System.Log.FastLogger                (defaultBufSize,
 
 -- Import all relevant handler modules here.
 -- Don't forget to add new modules to your cabal file!
-import           Handler.Comment
-import           Handler.Common
+import           Handler.CommonR
 import           Handler.GameR
 import           Handler.GamesR
 import           Handler.PauseR
 import           Handler.ResetR
 import           Handler.ChannelR
-import           Handler.Home
-import           Handler.Profile
 
 -- This line actually creates our YesodDispatch instance. It is the second half
 -- of the call to mkYesodData which occurs in Foundation.hs. Please see the
@@ -86,15 +81,9 @@ makeFoundation appSettings = do
         -- The App {..} syntax is an example of record wild cards. For more
         -- information, see:
         -- https://ocharles.org.uk/blog/posts/2014-12-04-record-wildcards.html
-        -- tempFoundation = mkFoundation $ error "connPool forced in tempFoundation" TODO check if applicable, else remove
-        -- logFunc = messageLoggerSource tempFoundation appLogger TODO check if applicable, else remove
 
     -- Create the database connection pool
-    -- pool <- flip runLoggingT logFunc $ createPoolConfig $ appDatabaseConf appSettings
     pool <- createPoolConfig $ appDatabaseConf appSettings
-
-    -- Perform database migration using our application's logging settings.
-    -- runLoggingT (runSqlPool (runMigration migrateAll) pool) logFunc
 
     -- Return the foundation
     return $ mkFoundation pool

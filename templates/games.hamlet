@@ -11,18 +11,7 @@
              <h1 .sm:font-light .text-2xl .sm:text-3xl .md:text-4xl .text-gray-900>
               Welcome to Minesweepskell!
              <p .sm:text-xl .text-gray-600 .mt-3 .leading-relaxed>
-              Minesweepskell is a web implementation of the widely known video game Minesweeper fully written in the Haskell functional programming language.
-             <ul .list-disc .text-gray-600 .text-sm .md:text-base .mt-6>
-                <li .text-gray-600 .mt-1 .text-sm .md:text-base>
-                    Minesweeper Web App with three predefined difficulties as well as customizable games
-                <li .text-gray-600 .mt-1 .text-sm .md:text-base>
-                    Slim & blazing fast UI powered by server side events
-                <li .text-gray-600 .mt-1 .text-sm .md:text-base>
-                    Join other players on their game either to view them playing or to play together
-                <li .text-gray-600 .mt-1 .text-sm .md:text-base>
-                    Pause games & continue later
-                <li .text-gray-600 .mt-1 .text-sm .md:text-base>
-                    History of all finished games to revisit your best & worst performances
+              Minesweepskell is a web implementation of the widely known video game Minesweeper fully written in the functional programming language Haskell.
            <div .bg-gray-100 .border-t-2 .border-gray-200>
             <div .flex .flex-wrap>
              <div .flex .flex-col .px-12 .py-10 .w-full .sm:w-1/2 .sm:border-r .sm:border-b .border-gray-200>
@@ -47,7 +36,7 @@
                 <div .flex .flex-wrap .-mx-3 .mb-2>
                  <form .w-full .px-3 .mb-6 .md:mb-0 ##{joinGameFormId}>
                   <div .inline-flex .content-between .w-full .mt-3 >
-                   <input .appearance-none .block .w-full .bg-gray-200 .text-gray-700 .border .border-gray-200 .rounded .py-3 .px-4 .leading-tight .focus:outline-none .focus:bg-white .focus:border-gray-500 ##{joingameid} placeholder="8X9JY" type="text" required style="text-transform: uppercase;" maxlength="5">
+                   <input .appearance-none .block .w-full .bg-gray-200 .text-gray-700 .border .border-gray-200 .rounded .py-3 .px-4 .leading-tight .focus:outline-none .focus:bg-white .focus:border-gray-500 ##{joinGameId} placeholder="8X9JY" type="text" required style="text-transform: uppercase;" maxlength="5">
                    <button .ml-5 .bg-gray-300 .hover:bg-gray-400 .text-gray-800 .font-bold .py-4 .leading-tight .px-4 .rounded type="submit">
                     Join
              <div .flex .flex-col .px-12 .py-10 .w-full .sm:w-1/2 .border-t-2 .sm:border-t-0 .sm:border-l .sm:border-b .border-gray-200>

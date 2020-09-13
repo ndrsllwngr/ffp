@@ -24,16 +24,11 @@ library
       Foundation
       Game.Board
       Game.Game
-      Game.StateUtil
-      Game.Util
       Handler.ChannelR
-      Handler.Comment
-      Handler.Common
+      Handler.CommonR
       Handler.GameR
       Handler.GamesR
-      Handler.Home
       Handler.PauseR
-      Handler.Profile
       Handler.ResetR
       Import
       Import.NoFoundation
@@ -41,6 +36,9 @@ library
       Model
       Settings
       Settings.StaticFiles
+      Util.HandlerUtil
+      Util.MarshallingUtil
+      Util.StateUtil
   other-modules:
       Paths_minesweepskell
   hs-source-dirs:
@@ -163,10 +161,7 @@ test-suite minesweepskell-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
-      Handler.CommentSpec
       Handler.CommonSpec
-      Handler.HomeSpec
-      Handler.ProfileSpec
       TestImport
       Paths_minesweepskell
   hs-source-dirs:
