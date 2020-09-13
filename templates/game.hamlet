@@ -47,7 +47,7 @@
            <img id="flags0s" src="/static/assets/d0.svg" alt="0" class="h-12 ml-1">
          <div .p-1 .bg-gray-800 #face status="#{gameStateEntity ^. gameStateEntityStatus}" onclick="resetGame('#{gameStateEntity ^. gameStateEntityGameId}')">
            <img #faceImg src="/static/assets/face_unpressed.svg" class="h-12">
-         <div #seconds prevTime="#{getTimeElapsed(gameStateEntity ^. gameStateEntityLastStartedAt) (gameStateEntity ^. gameStateEntityTimeElapsed) now (gameStateEntity ^. gameStateEntityStatus)}" movesNotEmpty="#{length (gameStateEntity ^. gameStateEntityMoves) > 0 }">
+         <div #seconds prevTime="#{getTimeElapsed(gameStateEntity ^. gameStateEntityLastStartedAt) (gameStateEntity ^. gameStateEntityTimeElapsed) now (gameStateEntity ^. gameStateEntityStatus)}" isBeforeFirstMove="#{length (gameStateEntity ^. gameStateEntityMoves) == 0 }">
           <div .flex .flex-row .bg-gray-800 .p-1>
             <img id="seconds100s" src="/static/assets/d0.svg" alt="0" class="h-12">
             <img id="seconds10s" src="/static/assets/d0.svg" alt="0" class="h-12 ml-1">

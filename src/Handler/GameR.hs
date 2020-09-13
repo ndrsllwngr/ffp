@@ -44,7 +44,7 @@ getGameR gameIdText = do
                   let status_ = gsEntity ^. gameStateEntityStatus
                   -- If the game was Paused before, move it from the database back into the in memory storage and set the state to Ongoing
                   gameStateEntity <- if status_ == "Paused" then do let updateEntity = gsEntity & gameStateEntityStatus .~ "Ongoing"
-                                                                                                & gameStateEntityLastStartedAt .~ now
+                                                                                                & gameStateEntityLastStartedAt .~ (if null (gsEntity ^. gameStateEntityMoves) then Nothing else Just now)
                                                                     channel_ <- newChan
                                                                     let gameState = gameStateEntityToGameState updateEntity channel_
                                                                     -- Load game back into in-memory state
@@ -81,8 +81,10 @@ putGameR gameIdText = do
           let move = moveRequestToMove moveRequest now
           -- Check if move was illegal move
           unless (isMoveInBounds move gameState) $ error "Move out of bounds"
+          -- Set lastStartedAt if it was the first move
+          let updatedGameState = if null (gameState ^. moves) then gameState & (lastStartedAt ?~ now) else gameState
           -- Perform move
-          let gameStateAfterMove = makeMove gameState move
+          let gameStateAfterMove = makeMove updatedGameState move
           -- Check the new status of the game after the move has been Executed
           _ <- case gameStateAfterMove ^. status of
                                               -- if game is ongoing update it in Memory
