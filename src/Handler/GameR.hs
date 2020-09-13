@@ -44,7 +44,7 @@ getGameR gameIdText = do
                   let status_ = gsEntity ^. gameStateEntityStatus
                   -- If the game was Paused before, move it from the database back into the in memory storage and set the state to Ongoing
                   gameStateEntity <- if status_ == "Paused" then do let updateEntity = gsEntity & gameStateEntityStatus .~ "Ongoing"
-                                                                                                & gameStateEntityLastStartedAt .~ Just now
+                                                                                                & gameStateEntityLastStartedAt ?~ now
                                                                     channel_ <- newChan
                                                                     let gameState = gameStateEntityToGameState updateEntity channel_
                                                                     -- Load game back into in-memory state
