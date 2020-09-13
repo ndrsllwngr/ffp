@@ -123,6 +123,8 @@ For more information take a look at https://docs.mongodb.com/manual/tutorial/ins
 
 ## Usage
 
+`stack build && stack exec -- yesod devel` to run the project locally.
+
 ### Development
 
 - Build libraries: `stack build`
