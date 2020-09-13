@@ -35,6 +35,8 @@
         <span .font-mono .font-semibold .bg-gray-200 .text-sm .sm:text-base .text-gray-700 .subpixel-antialiased .px-2 .py-2 .rounded>
          Alt + Click
         to flag a cell.
+       <li .mt-2>
+        Click the face to restart. A new seed will be chosen.
     <div .bg-gray-100 .border-t-2 .border-gray-200>
      <div .flex .flex-wrap>
       <div .flex .flex-col .px-12 .py-10 .items-center .w-full .sm:border-r .sm:border-b .border-gray-200>
