@@ -58,6 +58,11 @@ const revealAll = (gameId) => {
 };
 // Reset game
 const resetGame = (gameId) => {
+  if (gameStatus !== "Ongoing") {
+    console.log("INVALID ACTION");
+    return;
+  }
+
   console.log("RESET GAME", { gameId });
 
   const status = gameStatus;
@@ -110,7 +115,7 @@ const setTimer = () => {
   let elFace = document.getElementById("face");
   let status = elFace.getAttribute("status");
 
-  if (status === "Ongoing" && movesNotEmpty == 'True') {
+  if (status === "Ongoing" && movesNotEmpty == "True") {
     newTime = prevTime + 1;
     renderDigits(newTime, "seconds");
     el.setAttribute("prevTime", newTime);
@@ -126,16 +131,15 @@ const setTimer = () => {
 const setFace = () => {
   let el = document.getElementById("face");
   let status = el.getAttribute("status");
+  let faceImg = document.getElementById("faceImg");
 
-  let asset;
   if (status === "Lost") {
-    asset = "/static/assets/face_lose.svg";
+    faceImg.setAttribute("src", `/static/assets/face_lose.svg`);
   } else if (status === "Won") {
-    asset = "/static/assets/face_active.svg";
+    faceImg.setAttribute("src", `/static/assets/face_won.svg`);
   } else {
-    asset = "/static/assets/face_unpressed.svg";
+    faceImg.setAttribute("src", `/static/assets/face_unpressed.svg`);
   }
-  el.innerHTML = `<img src="${asset}" alt="face" class="h-12" />`;
   return;
 };
 
@@ -147,18 +151,28 @@ const setFlags = () => {
 };
 
 // Split digits and render each digit seperately
-// TODO use attributes instead
 const renderDigits = (number, id) => {
-  let el = document.getElementById(id);
   let numberStr;
   numberStr = number < 999 ? String(number) : "999";
   if (number < 10) numberStr = "00" + numberStr;
   else if (number < 100) numberStr = "0" + numberStr;
-  let resSeconds = numberStr
-    .split("")
-    .map((n, i) => `<img key=${i} src=${digits[n]} alt=${n} class="h-12" />`);
-  let inner = `<div class="flex flex-row">${resSeconds.join("")}</div>`;
-  el.innerHTML = inner;
+
+  let img0s = document.getElementById(id + "0s");
+  let img10s = document.getElementById(id + "10s");
+  let img100s = document.getElementById(id + "100s");
+
+  if (img0s.getAttribute("src") !== `/static/assets/d${numberStr[2]}.svg`) {
+    img0s.setAttribute("src", `/static/assets/d${numberStr[2]}.svg`);
+    img0s.setAttribute("alt", `${numberStr[2]}`);
+  }
+  if (img10s.getAttribute("src") !== `/static/assets/d${numberStr[1]}.svg`) {
+    img10s.setAttribute("src", `/static/assets/d${numberStr[1]}.svg`);
+    img0s.setAttribute("alt", `${numberStr[1]}`);
+  }
+  if (img100s.getAttribute("src") !== `/static/assets/d${numberStr[0]}.svg`) {
+    img100s.setAttribute("src", `/static/assets/d${numberStr[0]}.svg`);
+    img0s.setAttribute("alt", `${numberStr[0]}`);
+  }
   return;
 };
 
@@ -167,7 +181,7 @@ $(document).ready(function () {
   gameStatus = elFace.getAttribute("status");
   setFlags();
   setFace();
-  renderDigits(0, "seconds");
+  toggleControls(gameStatus);
 
   var src = new EventSource("@{ChannelR gameIdText}");
   src.onmessage = function (input) {
@@ -186,10 +200,10 @@ $(document).ready(function () {
     // Game is running, run timer
     if (message.moves.length > 0) {
       elSeconds.setAttribute("movesNotEmpty", "True");
-    // Game has stopped, stop timer
+      // Game has stopped, stop timer
     } else {
       elSeconds.setAttribute("movesNotEmpty", "False");
-      elSeconds.setAttribute("prevTime", 0)
+      elSeconds.setAttribute("prevTime", 0);
       renderDigits(0, "seconds");
       newTime = 0;
     }
@@ -202,7 +216,7 @@ $(document).ready(function () {
     console.log(elFace.getAttribute("status"));
     setFlags();
     setFace();
-    toggleControls(message.status);
+    toggleControls(gameStatus);
     updateBoard(message.board, message.gameId, message.status);
   };
 });
@@ -218,7 +232,10 @@ const updateBoard = (newBoard, gameId, status) => {
         ? cellDivTag.querySelector(".img")
         : oldCellTdEl.querySelector(".img");
       let newCell = newBoard[row].cells[column];
-      if (cellImgTag.getAttribute("src") !== newCell.image) {
+      if (
+        cellImgTag.getAttribute("src") !==
+        `/static/assets/${newCell.assetId}.svg`
+      ) {
         cellImgTag.setAttribute("src", `/static/assets/${newCell.assetId}.svg`);
       }
       if (status == "Ongoing") {
@@ -235,12 +252,30 @@ const updateBoard = (newBoard, gameId, status) => {
   }
 };
 
+const goBack = () => {
+  console.info("GO BACK");
+  const newUrl = "@{GamesR}";
+  console.log("Rerouting...", { newUrl });
+  window.location.assign(newUrl);
+};
+
 const toggleControls = (status) => {
-  let el = document.getElementById("controls");
+  console.log("TOGGLE CONTROLS");
+  let goBackBtn = document.getElementById("goBackBtn");
+  let revealAllBtn = document.getElementById("revealAllBtn");
+  const gameId = goBackBtn.getAttribute("gameId");
   if (status !== "Ongoing") {
-    el.className = "hidden";
+    goBackBtn.textContent = "← Back";
+    goBackBtn.onclick = function () {
+      goBack();
+    };
+    revealAllBtn.className = "hidden";
   } else {
-    el.classList.remove("hidden");
+    goBackBtn.textContent = "Pause Game";
+    goBackBtn.onclick = function () {
+      pauseGame(gameId);
+    };
+    revealAllBtn.classList.remove("hidden");
   }
 };
 
