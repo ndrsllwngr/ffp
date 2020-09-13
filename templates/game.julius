@@ -58,7 +58,6 @@ const revealAll = (gameId) => {
 };
 // Reset game
 const resetGame = (gameId) => {
-
   console.log("RESET GAME", { gameId });
 
   const status = gameStatus;
@@ -74,9 +73,9 @@ const resetGame = (gameId) => {
         console.log("Same gameID ", { status });
       } else {
         console.log("New gameID - Rerouting to new game...", { status });
-         const newUrl = "/game/" + data.gameId;
-         console.log("Rerouting...", { newUrl });
-         window.location.assign(newUrl);
+        const newUrl = "/game/" + data.gameId;
+        console.log("Rerouting...", { newUrl });
+        window.location.assign(newUrl);
       }
     },
     error: function (data) {
