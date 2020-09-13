@@ -90,9 +90,9 @@
               <div .flex .flex-grow>
                <div .flex .flex-col .leading-relaxed .ml-4 .md:ml-6>
                 <h2 .font-medium .text-gray-800 .text-lg>
-                 History
+                 Completed
                 <p .text-gray-600 .mt-1 .text-sm .md:text-base>
-                 Scientifically sorted completed games.
+                 Select a game to view the final game board.
                 <ul .pt-1 .list-disc>
                     $forall game <- gameStateEntitiesWonOrLost
                         <li>
