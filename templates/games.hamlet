@@ -11,7 +11,7 @@
              <h1 .sm:font-light .text-2xl .sm:text-3xl .md:text-4xl .text-gray-900>
               Welcome to Minesweepskell!
              <p .sm:text-xl .text-gray-600 .mt-3 .leading-relaxed>
-              Minesweepskell is a web implementation of the widely known video game Minesweeper fully written in the Haskell functional programming language.
+              Minesweepskell is a web implementation of the widely known video game Minesweeper fully written in the functional programming language Haskell.
            <div .bg-gray-100 .border-t-2 .border-gray-200>
             <div .flex .flex-wrap>
              <div .flex .flex-col .px-12 .py-10 .w-full .sm:w-1/2 .sm:border-r .sm:border-b .border-gray-200>
