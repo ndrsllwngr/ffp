@@ -18,7 +18,8 @@ module Game.Game (newGame,
                   timeElapsed,
                   getDimensions,
                   channel,
-                  calculateTimeElapsed) where
+                  calculateTimeElapsed,
+                  isMoveInBounds) where
 
 import           Game.Board
 import           Control.Lens
@@ -26,7 +27,7 @@ import           Data.Time (diffUTCTime, UTCTime)
 import           Network.Wai.EventSource (ServerEvent (..))
 import           Control.Concurrent.Chan
 
-data Move = Reveal Coordinate UTCTime | RevealAllNonFlagged UTCTime | Flag Coordinate UTCTime deriving (Show, Eq, Read) -- TODO maybe add unflag
+data Move = Reveal Coordinate UTCTime | RevealAllNonFlagged UTCTime | Flag Coordinate UTCTime deriving (Show, Eq, Read)
 data GameStatus = Ongoing | Won | Lost | Paused deriving (Show, Eq, Read)
 --derivePersistField "Status"
 
@@ -65,7 +66,6 @@ newGame (h,w) b s gId now channel_ = GameState {
                                      }
 
 -- Executes a move on a given GameState
--- TODO handle illegal moves e.g. outOfBounds Action, action on a board with status Won || Lost
 makeMove :: GameState -> Move -> GameState
 makeMove state m  = state & board       .~ boardAfterMove
                           & moves       .~ state ^. moves ++ [m]
@@ -85,7 +85,7 @@ makeMove state m  = state & board       .~ boardAfterMove
 checkStatus :: Board -> GameStatus
 checkStatus b = case (checkWon b, checkLost b) of  (_,True)      -> Lost
                                                    (True,False)  -> Won
-                                                   (False,False) -> Ongoing
+                                                   (False,False) -> Ongoing                      
 
 -- Returns the Dimension of the board contained by a given GameState
 getDimensions :: GameState -> Dimension
@@ -95,3 +95,11 @@ calculateTimeElapsed :: UTCTime -> Int -> UTCTime -> Int
 calculateTimeElapsed lastStartedAt_ timePrevElapsed now = do
   let (timeElapsed_, _) = properFraction $ diffUTCTime now lastStartedAt_
   timePrevElapsed + timeElapsed_
+  
+isMoveInBounds:: Move -> GameState -> Bool
+isMoveInBounds (Reveal c _) gameState = inBounds c (getDimensions gameState)
+isMoveInBounds (Flag c _) gameState = inBounds c (getDimensions gameState)
+isMoveInBounds _ _ = True
+
+
+ 

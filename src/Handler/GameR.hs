@@ -78,8 +78,11 @@ putGameR gameIdText = do
       Just gameState -> do 
           moveRequest <- (requireCheckJsonBody :: Handler MoveRequest)
           now <- liftIO getCurrentTime
+          let move = moveRequestToMove moveRequest now
+          -- Check if move was illegal move
+          unless (isMoveInBounds move gameState) $ error "Move out of bounds"
           -- Perform move
-          let gameStateAfterMove = makeMove gameState $ moveRequestToMove moveRequest now
+          let gameStateAfterMove = makeMove gameState move
           -- Check the new status of the game after the move has been Executed
           _ <- case gameStateAfterMove ^. status of
                                               -- if game is ongoing update it in Memory

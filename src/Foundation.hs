@@ -16,13 +16,8 @@ import           Import.NoFoundation
 import           Text.Hamlet              (hamletFile)
 import           Text.Jasmine             (minifym)
 import           Game.Game                (GameState)
-
--- Used only when in "auth-dummy-login" setting is enabled.
-import           Yesod.Auth.Dummy
-
 import qualified Data.CaseInsensitive     as CI
 import qualified Data.Text.Encoding       as TE
-import           Yesod.Auth.OpenId        (IdentifierType (Claimed), authOpenId)
 import           Yesod.Core.Types         (Logger)
 import qualified Yesod.Core.Unsafe        as Unsafe
 import           Yesod.Default.Util       (addStaticContentExternal)
@@ -102,7 +97,7 @@ instance Yesod App where
     defaultLayout :: Widget -> Handler Html
     defaultLayout widget = do
         master <- getYesod
-       
+
         -- We break up the default layout into two components:
         -- default-layout is the contents of the body tag, and
         -- default-layout-wrapper is the entire page. Since the final
