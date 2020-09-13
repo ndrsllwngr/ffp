@@ -236,5 +236,6 @@
     <orderEntry type="library" name="reflection-2.1.6" level="project" />
     <orderEntry type="library" name="type-equality-1" level="project" />
     <orderEntry type="library" name="matrix-lens-0.1.0.0" level="project" />
+    <orderEntry type="library" name="string-random-0.1.3.0" level="project" />
   </component>
 </module>
