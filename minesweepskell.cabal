@@ -27,13 +27,10 @@ library
       Game.StateUtil
       Game.Util
       Handler.ChannelR
-      Handler.Comment
       Handler.Common
       Handler.GameR
       Handler.GamesR
-      Handler.Home
       Handler.PauseR
-      Handler.Profile
       Handler.ResetR
       Import
       Import.NoFoundation
