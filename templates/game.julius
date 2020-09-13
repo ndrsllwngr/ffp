@@ -176,6 +176,7 @@ $(document).ready(function () {
   gameStatus = elFace.getAttribute("status");
   setFlags();
   setFace();
+  toggleControls(gameStatus);
 
   var src = new EventSource("@{ChannelR gameIdText}");
   src.onmessage = function (input) {
@@ -210,7 +211,7 @@ $(document).ready(function () {
     console.log(elFace.getAttribute("status"));
     setFlags();
     setFace();
-    toggleControls(message.status);
+    toggleControls(gameStatus);
     updateBoard(message.board, message.gameId, message.status);
   };
 });
@@ -243,12 +244,26 @@ const updateBoard = (newBoard, gameId, status) => {
   }
 };
 
+const goBack = () => {
+  console.info("GO BACK");
+  const newUrl = "@{GamesR}";
+  console.log("Rerouting...", { newUrl });
+  window.location.assign(newUrl);
+}
+
 const toggleControls = (status) => {
-  let el = document.getElementById("controls");
+  console.log("TOGGLE CONTROLS");
+  let goBackBtn = document.getElementById("goBackBtn");
+  let revealAllBtn = document.getElementById("revealAllBtn");
+  const gameId = goBackBtn.getAttribute("gameId");
   if (status !== "Ongoing") {
-    el.className = "hidden";
+    goBackBtn.textContent = "← Back";
+    goBackBtn.onclick= function() { goBack(); };
+    revealAllBtn.className = "hidden";
   } else {
-    el.classList.remove("hidden");
+    goBackBtn.textContent = "Pause Game";
+    goBackBtn.onclick = function() { pauseGame(gameId); };
+    revealAllBtn.classList.remove("hidden");
   }
 };
 

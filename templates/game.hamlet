@@ -8,11 +8,11 @@
    <div .flex .flex-col .flex-grow .bg-white .lg:shadow-2xl .lg:rounded-lg .lg:overflow-hidden>
     <div .flex-grow .flex .flex-col .justify-center .p-12>
      <div .inline-flex .justify-between .w-full .mt-3>
-      <div #controls>
-       <button .ml-5 .bg-gray-300 .hover:bg-gray-400 .text-gray-800 .font-bold .rounded .py-4 .px-4 .leading-tight onclick="pauseGame('#{gameStateEntity ^. gameStateEntityGameId}')">
+      <div>
+       <button #goBackBtn .ml-5 .bg-gray-300 .hover:bg-gray-400 .text-gray-800 .font-bold .rounded .py-4 .px-4 .leading-tight onclick="pauseGame('#{gameStateEntity ^. gameStateEntityGameId}')" gameId="#{gameStateEntity ^. gameStateEntityGameId}">
         ← Back
        $if (gameStateEntity ^. gameStateEntityStatus) == "Ongoing"
-            <button .ml-5 .bg-gray-300 .hover:bg-gray-400 .text-gray-800 .font-bold .rounded .py-4 .px-4 .leading-tight onclick="revealAll('#{gameStateEntity ^. gameStateEntityGameId}')">
+            <button #revealAllBtn .ml-5 .bg-gray-300 .hover:bg-gray-400 .text-gray-800 .font-bold .rounded .py-4 .px-4 .leading-tight onclick="revealAll('#{gameStateEntity ^. gameStateEntityGameId}')" gameId="#{gameStateEntity ^. gameStateEntityGameId}">
                 Reveal All Cells
       <p .sm:text-xl .text-gray-600 .mt-3 .leading-relaxed>
        Identifier
