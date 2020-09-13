@@ -95,14 +95,20 @@ revealCell board c = resultBoard where
 revealAllNonFlaggedCells :: Board -> Board
 revealAllNonFlaggedCells board = board & flattened . filtered (not . _isFlagged) . isRevealed .~ True
 
--- Toggles the isFlagged state of a cell at a given coordinate for a given board, will only flag cell if cell was not already revealed       
--- TODO This would be much cleaner if there was a setter which had a reference to the object itself 
--- TODO Then the code would look something like the following (not sure if there is any possibility to do this):
--- flagCell board c = board & elemAt c . isFlagged `magic set function` (_revealed && _flagged || not _revealed && not _flagged)                     
+-- Toggles the isFlagged state of a cell at a given coordinate for a given board, will only flag cell if cell was not already revealed & if enough flags are left               
 flagCell :: Board -> Coordinate -> Board
-flagCell board c = board & elemAt c . isFlagged .~ (revealed && flagged || not revealed && not flagged) where flagged   = board ^. (elemAt c . isFlagged)
-                                                                                                              revealed  = board ^. (elemAt c . isRevealed)
-                                                              
+flagCell board c = case performMove of True -> board & elemAt c . isFlagged .~ updatedValue where 
+                                       False -> board
+                   where flagged      = board ^. (elemAt c . isFlagged)
+                         revealed     = board ^. (elemAt c . isRevealed)
+                         updatedValue = revealed && flagged || not revealed && not flagged
+                         performMove  = hasFlagsLeft board || flagged
+
+-- Checks if a board has flags left to be placed (less flags than bombs)
+hasFlagsLeft :: Board -> Bool
+hasFlagsLeft board = bombCount > flagCount where bombCount = length $ filter _hasBomb (toList board)
+                                                 flagCount = length $ filter _isFlagged (toList board)
+
 -- Checks if any bomb has been revealed
 checkLost :: Board -> Bool
 checkLost board = any (\c -> c ^. isRevealed && c ^. hasBomb) (toList board)
