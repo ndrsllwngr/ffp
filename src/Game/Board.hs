@@ -97,8 +97,10 @@ revealAllNonFlaggedCells board = board & flattened . filtered (not . _isFlagged)
 
 -- Toggles the isFlagged state of a cell at a given coordinate for a given board, will only flag cell if cell was not already revealed & if enough flags are left               
 flagCell :: Board -> Coordinate -> Board
-flagCell board c = case performMove of True -> board & elemAt c . isFlagged .~ updatedValue where 
-                                       False -> board
+flagCell board c = if performMove then
+                       board & elemAt c . isFlagged .~ updatedValue
+                   else
+                       board
                    where flagged      = board ^. (elemAt c . isFlagged)
                          revealed     = board ^. (elemAt c . isRevealed)
                          updatedValue = not flagged
