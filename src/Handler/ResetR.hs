@@ -54,7 +54,7 @@ postResetR gameIdText = do
                 -- create a new game with the same parameters
                 let resetGameState = newGame (getDimensions gameState) (gameState ^. bombCount) newSeed newGameId_ now (gameState ^. channel)
                 -- Store/Override the GameState for the given ID in the in-memory state
-                _ <- liftIO $ setGameStateForGameId tGames gameId_ resetGameState
+                _ <- liftIO $ setGameStateForGameId tGames newGameId_ resetGameState
                 let gameStateEntity = gameStateToGameStateEntity resetGameState
                 broadcast (resetGameState ^. channel) gameStateEntity
                 returnJson gameStateEntity
