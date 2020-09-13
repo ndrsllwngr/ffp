@@ -34,7 +34,7 @@ getGamesR = do
     --let gameStateEntitiesOngoing = map gameStateToGameStateEntity gamesOngoing
     defaultLayout $ do
             let (newGameFormId, joinGameFormId, joingameid, bombCountField, widthField, heightField, randomSeedField) = variables
-            setTitle "Create New Game"
+            setTitle "Minesweepskell"
             $(widgetFile "games")
 
 -- INIT NEW GAME

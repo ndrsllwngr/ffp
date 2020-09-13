@@ -33,7 +33,7 @@ getGameR gameIdText = do
           let gameStateEntity = gameStateToGameStateEntity gameState
           defaultLayout $ do
                   let gameTableId = gameIds
-                  setTitle "Game"
+                  setTitle $ toHtml $ gameId_ ++ " | Minesweepskell"
                   $(widgetFile "game")
 
       -- If no game was found in the in-memory state check database if a Paused/Won/Lost game with the given ID is present
@@ -57,7 +57,7 @@ getGameR gameIdText = do
                                                             else do return gsEntity
                   defaultLayout $ do
                           let gameTableId = gameIds
-                          setTitle "Game"
+                          setTitle $ toHtml $ gameId_ ++ " | Minesweepskell"
                           $(widgetFile "game")
               -- If game was neither in Memory (Ongoing) nor in Database (Paused/Won/Lost) return 404
               Nothing -> notFound                                               
