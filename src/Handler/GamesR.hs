@@ -68,4 +68,4 @@ variables :: (Text, Text, Text, Text, Text, Text, Text)
 variables = ("js-newGameFormId", "js-joinGameFormId", "js-joingameid", "js-bombCountField", "js-widthField", "js-heightField", "js-randomSeedField")
 
 showSize :: [Row] -> String
-showSize b = showS (getHeightAndWidthFromBoard b) where showS (h,w) = "width: " ++ show w ++ ", height: " ++ show h
+showSize b = showS (getHeightAndWidthFromBoard b) where showS (h,w) = show w ++ "x" ++ show h
