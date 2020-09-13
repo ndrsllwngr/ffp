@@ -126,16 +126,15 @@ const setTimer = () => {
 const setFace = () => {
   let el = document.getElementById("face");
   let status = el.getAttribute("status");
+  let faceImg = document.getElementById("faceImg");
 
-  let asset;
   if (status === "Lost") {
-    asset = "/static/assets/face_lose.svg";
+    faceImg.setAttribute("src", `/static/assets/face_lose.svg`);
   } else if (status === "Won") {
-    asset = "/static/assets/face_active.svg";
+    faceImg.setAttribute("src", `/static/assets/face_won.svg`);
   } else {
-    asset = "/static/assets/face_unpressed.svg";
+    faceImg.setAttribute("src", `/static/assets/face_unpressed.svg`);
   }
-  el.innerHTML = `<img src="${asset}" alt="face" class="h-12" />`;
   return;
 };
 
