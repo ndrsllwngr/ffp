@@ -17,8 +17,6 @@ Fortgeschrittene Funktionale Programmierung - Group project (2020)
     - [Requirements](#requirements)
       - [Install Haskell and Yesod](#install-haskell-and-yesod)
       - [Install MongoDB](#install-mongodb)
-        - [Use MongoDB Compass as GUI](#use-mongodb-compass-as-gui)
-        - [Use DataGrip as GUI](#use-datagrip-as-gui)
   - [Usage](#usage)
     - [Development](#development)
         - [ADJUST GHC PROMPT](#adjust-ghc-prompt)
@@ -121,14 +119,7 @@ brew services stop mongodb-community@4.4
 
 For more information take a look at https://docs.mongodb.com/manual/tutorial/install-mongodb-on-os-x/
 
-##### Use MongoDB Compass as GUI
-
-- https://www.mongodb.com/products/compass
-
-##### Use DataGrip as GUI
-
-- https://www.jetbrains.com/de-de/datagrip/
-- ![Screenshot 2020-08-30 at 16 33 59](https://user-images.githubusercontent.com/10077258/91661825-aa5bbe80-eade-11ea-98ce-4a0572999590.png)
+4. Use [MongoDB Compass](https://www.mongodb.com/products/compass) as GUI
 
 ## Usage
 
