@@ -50,11 +50,11 @@ postResetR gameIdText = do
                 newSeed <- liftIO (randomIO :: IO Int)
                 
                 -- if the game was already over use a new game id otherwise use the same game id for the new game
-                let gameId_ = if isGameOver gameState then unpack randomString else gameState ^.gameId
+                let newGameId_ = if isGameOver gameState then unpack randomString else gameState ^.gameId
                 -- create a new game with the same parameters
-                let resetGameState = newGame (getDimensions gameState) (gameState ^. bombCount) newSeed gameId_ now (gameState ^. channel)
+                let resetGameState = newGame (getDimensions gameState) (gameState ^. bombCount) newSeed newGameId_ now (gameState ^. channel)
                 -- Store/Override the GameState for the given ID in the in-memory state
-                _ <- liftIO $ setGameStateForGameId tGames gameId_ resetGameState
+                _ <- liftIO $ setGameStateForGameId tGames newGameId_ resetGameState
                 let gameStateEntity = gameStateToGameStateEntity resetGameState
                 broadcast (resetGameState ^. channel) gameStateEntity
                 returnJson gameStateEntity

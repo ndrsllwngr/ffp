@@ -29,7 +29,7 @@ getGamesR = do
     let gameStateEntitiesWonOrLost = filter (\gs -> gs ^. gameStateEntityStatus == "Lost" || gs ^. gameStateEntityStatus == "Won") gameStateEntities
 
     defaultLayout $ do
-            let (newGameFormId, joinGameFormId, joingameid, bombCountField, widthField, heightField, randomSeedField) = variables
+            let (newGameFormId, joinGameFormId, joinGameId, bombCountField, widthField, heightField, randomSeedField) = variables
             setTitle "Minesweepskell"
             $(widgetFile "games")
 

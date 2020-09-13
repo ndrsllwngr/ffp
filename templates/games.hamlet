@@ -36,7 +36,7 @@
                 <div .flex .flex-wrap .-mx-3 .mb-2>
                  <form .w-full .px-3 .mb-6 .md:mb-0 ##{joinGameFormId}>
                   <div .inline-flex .content-between .w-full .mt-3 >
-                   <input .appearance-none .block .w-full .bg-gray-200 .text-gray-700 .border .border-gray-200 .rounded .py-3 .px-4 .leading-tight .focus:outline-none .focus:bg-white .focus:border-gray-500 ##{joingameid} placeholder="8X9JY" type="text" required style="text-transform: uppercase;" maxlength="5">
+                   <input .appearance-none .block .w-full .bg-gray-200 .text-gray-700 .border .border-gray-200 .rounded .py-3 .px-4 .leading-tight .focus:outline-none .focus:bg-white .focus:border-gray-500 ##{joinGameId} placeholder="8X9JY" type="text" required style="text-transform: uppercase;" maxlength="5">
                    <button .ml-5 .bg-gray-300 .hover:bg-gray-400 .text-gray-800 .font-bold .py-4 .leading-tight .px-4 .rounded type="submit">
                     Join
              <div .flex .flex-col .px-12 .py-10 .w-full .sm:w-1/2 .border-t-2 .sm:border-t-0 .sm:border-l .sm:border-b .border-gray-200>

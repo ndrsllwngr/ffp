@@ -44,7 +44,7 @@ $(function () {
   $("##{rawJS joinGameFormId}").submit(function (event) {
     event.preventDefault();
 
-    var gameId = $("##{rawJS joingameid}").val().toUpperCase();
+    var gameId = $("##{rawJS joinGameId}").val().toUpperCase();
 
     console.warn({ gameId });
     // (Browsers that enforce the "required" attribute on the textarea won't see this alert)
