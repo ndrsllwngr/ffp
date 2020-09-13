@@ -40,7 +40,7 @@ data GameState = GameState { _board          :: Board,
                              _gameId         :: String,
                              _createdAt      :: UTCTime,
                              _updatedAt      :: UTCTime,
-                             _lastStartedAt  :: UTCTime,
+                             _lastStartedAt  :: Maybe UTCTime,
                              _timeElapsed    :: Int,
                              _channel        :: Chan ServerEvent
                             }
@@ -61,7 +61,7 @@ newGame (h,w) b s gId now channel_ = GameState {
                                         _gameId        = gId,
                                         _createdAt     = now,
                                         _updatedAt     = now,
-                                        _lastStartedAt = now,
+                                        _lastStartedAt = Nothing,
                                         _timeElapsed   = 0,
                                         _channel       = channel_
                                      }
@@ -102,10 +102,11 @@ checkStatus b = case (checkWon b, checkLost b) of  (_,True)      -> Lost
 getDimensions :: GameState -> Dimension
 getDimensions state = getDimensionsForBoard $ state ^. board
 
-calculateTimeElapsed :: UTCTime -> Int -> UTCTime -> Int
-calculateTimeElapsed lastStartedAt_ timePrevElapsed now = do
-  let (timeElapsed_, _) = properFraction $ diffUTCTime now lastStartedAt_
-  timePrevElapsed + timeElapsed_
+calculateTimeElapsed :: Maybe UTCTime -> Int -> UTCTime -> Int
+calculateTimeElapsed lastStartedAt_ timePrevElapsed now = case lastStartedAt_ of 
+                                                Just lsa -> timePrevElapsed + fst (properFraction $ diffUTCTime now lsa)
+                                                Nothing  -> 0
+
   
 isMoveInBounds:: Move -> GameState -> Bool
 isMoveInBounds (Reveal c _) gameState = inBounds c (getDimensions gameState)

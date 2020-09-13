@@ -27,7 +27,7 @@ GameStateEntity json
     gameId String
     createdAt UTCTime
     updatedAt UTCTime
-    lastStartedAt UTCTime
+    lastStartedAt UTCTime Maybe
     timeElapsed Int
     flagsRemaining Int
     UniqueGameStateEntity gameId

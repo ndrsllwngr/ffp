@@ -16,7 +16,7 @@ getGameStateEntityMaybe :: [Entity GameStateEntity] -> Maybe GameStateEntity
 getGameStateEntityMaybe (x:_) = Just $ entityVal x
 getGameStateEntityMaybe _     = Nothing
 
-getTimeElapsed :: UTCTime -> Int -> UTCTime -> String -> Int
+getTimeElapsed :: Maybe UTCTime -> Int -> UTCTime -> String -> Int
 getTimeElapsed lastStartedAt_ timeElapsed_ now status_ = case status_ of
                                                           "Won"   -> timeElapsed_
                                                           "Lost"  -> timeElapsed_
