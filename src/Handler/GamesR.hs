@@ -13,7 +13,7 @@ import           Import
 import           Text.Julius           (RawJS (..))
 import           Control.Lens
 import           Text.StringRandom
-import           System.Random (randomIO)
+import           System.Random (randomRIO)
 
 
 getGamesR :: Handler Html
@@ -51,7 +51,7 @@ postGamesR = do
 
     -- Generate a new random seed if no seed has been provided
     seed_ <- case newGameRequest ^. newGameRequestSeed of Just s -> return s
-                                                          Nothing -> liftIO (randomIO :: IO Int)
+                                                          Nothing -> liftIO $ randomRIO (0, 900719925474099)
 
     -- create new channel
     channel_ <- newChan

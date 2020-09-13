@@ -11,7 +11,7 @@ import           Util.HandlerUtil
 import           Import
 import           Control.Lens
 import           Handler.ChannelR(broadcast)
-import           System.Random (randomIO)
+import           System.Random (randomRIO)
 import           Text.StringRandom
 
 -- RESET GAME
@@ -47,7 +47,7 @@ postResetR gameIdText = do
                 randomString <- liftIO $ stringRandomIO "^[A-Z1-9]{5}$"
                 
                 -- Generate a new random seed
-                newSeed <- liftIO (randomIO :: IO Int)
+                newSeed <- liftIO $ randomRIO (0, 900719925474099)
                 
                 -- if the game was already over use a new game id otherwise use the same game id for the new game
                 let newGameId_ = if isGameOver gameState then unpack randomString else gameState ^.gameId
