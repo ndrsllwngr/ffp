@@ -101,8 +101,8 @@ flagCell board c = case performMove of True -> board & elemAt c . isFlagged .~ u
                                        False -> board
                    where flagged      = board ^. (elemAt c . isFlagged)
                          revealed     = board ^. (elemAt c . isRevealed)
-                         updatedValue = revealed && flagged || not revealed && not flagged
-                         performMove  = hasFlagsLeft board || flagged
+                         updatedValue = not flagged
+                         performMove  = (hasFlagsLeft board || flagged) && not revealed
 
 -- Checks if a board has flags left to be placed (less flags than bombs)
 hasFlagsLeft :: Board -> Bool
