@@ -71,8 +71,7 @@ const resetGame = (gameId) => {
       console.info("[SUCCESS] RESET GAME", { data });
       console.log(gameStatus);
       if (gameId === data.gameId) {
-        console.log("Same gameID - Reloading window...", { status });
-        window.location.reload();
+        console.log("Same gameID ", { status });
       } else {
         console.log("New gameID - Rerouting to new game...", { status });
          const newUrl = "/game/" + data.gameId;
@@ -203,11 +202,15 @@ $(document).ready(function () {
       elSeconds.setAttribute("isBeforeFirstMove", "False");
       myStopFunction();
       timer = setInterval(setTimer, 1000);
-      // Game is not running, show timeElapsed
+      // Game is in init state, set prevTime to 0
     } else {
+      elSeconds.setAttribute("isBeforeFirstMove", "True");
       elSeconds.setAttribute("prevTime", 0);
-      renderDigits(message.timeElapsed, "seconds");
+      renderDigits(0, "seconds");
       newTime = 0;
+    }
+    if (message.status == "Won" || message.status == "Lost") {
+      elSeconds.setAttribute("prevTime", message.timeElapsed);
     }
     // Set flags
     let elFlags = document.getElementById("flags");
@@ -271,13 +274,17 @@ const toggleControls = (status) => {
     goBackBtn.onclick = function () {
       goBack();
     };
-    revealAllBtn.className = "hidden";
+    if (revealAllBtn) {
+      revealAllBtn.className = "hidden";
+    }
   } else {
     goBackBtn.textContent = "Pause Game";
     goBackBtn.onclick = function () {
       pauseGame(gameId);
     };
-    revealAllBtn.classList.remove("hidden");
+    if (revealAllBtn) {
+      revealAllBtn.classList.remove("hidden");
+    }
   }
 };
 
