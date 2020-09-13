@@ -111,7 +111,6 @@ const setTimer = () => {
   let el = document.getElementById("seconds");
   let prevTime = parseInt(el.getAttribute("prevTime"), 10);
   let movesNotEmpty = el.getAttribute("movesNotEmpty");
-  //console.log({ el, prevTime });
   let elFace = document.getElementById("face");
   let status = elFace.getAttribute("status");
 
@@ -119,9 +118,8 @@ const setTimer = () => {
     newTime = prevTime + 1;
     renderDigits(newTime, "seconds");
     el.setAttribute("prevTime", newTime);
-  } else if (!status === "Ongoing" && !el.getAttribute("init").match("True")) {
+  } else {
     renderDigits(prevTime, "seconds");
-    el.setAttribute("init", "True");
     myStopFunction();
   }
   return;
@@ -204,7 +202,7 @@ $(document).ready(function () {
     } else {
       elSeconds.setAttribute("movesNotEmpty", "False");
       elSeconds.setAttribute("prevTime", 0);
-      renderDigits(0, "seconds");
+      renderDigits(message.timeElapsed, "seconds");
       newTime = 0;
     }
     // Set flags
