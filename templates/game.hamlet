@@ -17,8 +17,16 @@
                 go back
             <div class="flex flex-row items-start">
                 <div id="flags" remainingFlags="#{(gameStateEntity ^. gameStateEntityFlagsRemaining)}">
+                    <div class="flex flex-row">
+                        <img src="/static/assets/d0.svg" alt="0" class="h-12">
+                        <img src="/static/assets/d0.svg" alt="0" class="h-12">
+                        <img src="/static/assets/d0.svg" alt="0" class="h-12">
                 <div id="face" status="#{gameStateEntity ^. gameStateEntityStatus}" onclick="resetGame('#{gameStateEntity ^. gameStateEntityGameId}')">
                 <div id="seconds" init="False" prevTime="#{getTimeElapsed(gameStateEntity ^. gameStateEntityLastStartedAt) (gameStateEntity ^. gameStateEntityTimeElapsed) now (gameStateEntity ^. gameStateEntityStatus)}" movesNotEmpty="#{length (gameStateEntity ^. gameStateEntityMoves) > 0 }">
+                    <div class="flex flex-row">
+                        <img src="/static/assets/d0.svg" alt="0" class="h-12">
+                        <img src="/static/assets/d0.svg" alt="0" class="h-12">
+                        <img src="/static/assets/d0.svg" alt="0" class="h-12">
         <div .row>
             <div .col-lg-6>
                 <div .bs-callout.bs-callout-info.well>

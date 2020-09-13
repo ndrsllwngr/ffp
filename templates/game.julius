@@ -110,7 +110,7 @@ const setTimer = () => {
   let elFace = document.getElementById("face");
   let status = elFace.getAttribute("status");
 
-  if (status === "Ongoing" && movesNotEmpty == 'True') {
+  if (status === "Ongoing" && movesNotEmpty == "True") {
     newTime = prevTime + 1;
     renderDigits(newTime, "seconds");
     el.setAttribute("prevTime", newTime);
@@ -167,7 +167,6 @@ $(document).ready(function () {
   gameStatus = elFace.getAttribute("status");
   setFlags();
   setFace();
-  renderDigits(0, "seconds");
 
   var src = new EventSource("@{ChannelR gameIdText}");
   src.onmessage = function (input) {
@@ -186,10 +185,10 @@ $(document).ready(function () {
     // Game is running, run timer
     if (message.moves.length > 0) {
       elSeconds.setAttribute("movesNotEmpty", "True");
-    // Game has stopped, stop timer
+      // Game has stopped, stop timer
     } else {
       elSeconds.setAttribute("movesNotEmpty", "False");
-      elSeconds.setAttribute("prevTime", 0)
+      elSeconds.setAttribute("prevTime", 0);
       renderDigits(0, "seconds");
       newTime = 0;
     }
