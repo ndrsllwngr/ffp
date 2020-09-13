@@ -127,6 +127,7 @@ For more information take a look at https://docs.mongodb.com/manual/tutorial/ins
 
 - Build libraries: `stack build`
 - Start a development server with `stack exec -- yesod devel`, it watches for changes and recompiles the project automatically.
+- Go to `http:localhost:3000` to see landing page
 - Run `stack clean --full && stack build` to clean the project and to rebuild it.
 
 ##### ADJUST GHC PROMPT
@@ -158,8 +159,10 @@ lens
 matrix-lens
 ...
 ```
-
 For more details take a look at the [package.yaml](package.yaml).
+
+## Code formatting
+Along with the [IntelliJ plugin for Haskell](https://github.com/rikvdkleij/intellij-haskell) [Ormolu](https://github.com/tweag/ormolu) is used as automatic code formatter.
 
 ## Contributors
 
