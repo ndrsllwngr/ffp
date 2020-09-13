@@ -7,9 +7,9 @@ $(function () {
     var height = $("##{rawJS heightField}").val();
     var randomSeed = $("##{rawJS randomSeedField}").val();
 
+    console.warn({ bombCount, width, height, randomSeed });
     // (Browsers that enforce the "required" attribute on the textarea won't see this alert)
     if (!bombCount || !width || !height) {
-      console.warn({ bombCount, width, height });
       alert("Please fill out the create new game form first.");
       return;
     }
@@ -37,6 +37,26 @@ $(function () {
         console.error("[ERROR] CREATE GAME", { data });
       },
     });
+  });
+});
+
+$(function () {
+  $("##{rawJS joinGameFormId}").submit(function (event) {
+    event.preventDefault();
+
+    var gameId = $("##{rawJS joingameid}").val().toUpperCase();
+
+    console.warn({ gameId });
+    // (Browsers that enforce the "required" attribute on the textarea won't see this alert)
+    if (!gameId) {
+      alert("Please fill out the join game form first.");
+      return;
+    }
+
+    console.log("JOINING GAME", { gameId });
+    const newUrl = "/game/" + gameId;
+    console.log({ newUrl });
+    window.location.assign(newUrl);
   });
 });
 
