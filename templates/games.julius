@@ -40,13 +40,25 @@ $(function () {
   });
 });
 
-const joinGame = () => {
-  console.log("JOINING GAME");
-  let el = document.getElementById("joingameid");
-  const newUrl = "/game/" + el.value;
-  console.log({ newUrl });
-  window.location.assign(newUrl); // TODO not yet working?
-};
+$(function () {
+  $("##{rawJS joinGameFormId}").submit(function (event) {
+    event.preventDefault();
+
+    var gameId = $("##{rawJS joingameid}").val();
+
+    console.warn({ gameId });
+    // (Browsers that enforce the "required" attribute on the textarea won't see this alert)
+    if (!gameId) {
+      alert("Please fill out the join game form first.");
+      return;
+    }
+
+    console.log("JOINING GAME", { gameId });
+    const newUrl = "/game/" + gameId;
+    console.log({ newUrl });
+    window.location.assign(newUrl);
+  });
+});
 
 const difficulty = {
   beginner: {

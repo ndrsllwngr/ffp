@@ -18,9 +18,9 @@ import           System.Random (randomIO)
 
 getGamesR :: Handler Html
 getGamesR = do
-    app <- getYesod
+    --app <- getYesod
     -- Get the in-memory state of ongoing games
-    let tGames = games app
+    --let tGames = games app
     -- Get games from database
     gameStateDBEntities <- runDB $ selectList [] [Desc GameStateEntityUpdatedAt]
     let gameStateEntities = map entityVal gameStateDBEntities
@@ -29,11 +29,11 @@ getGamesR = do
     -- List of finished games
     let gameStateEntitiesWonOrLost = filter (\gs -> gs ^. gameStateEntityStatus == "Lost" || gs ^. gameStateEntityStatus == "Won") gameStateEntities
     -- Get ongoing games from in-memory State
-    gamesOngoing <- liftIO $ getAllGames tGames
+    --gamesOngoing <- liftIO $ getAllGames tGames
     -- Parse List of GameStates to a List of GameStateEntities
-    let gameStateEntitiesOngoing = map gameStateToGameStateEntity gamesOngoing
+    --let gameStateEntitiesOngoing = map gameStateToGameStateEntity gamesOngoing
     defaultLayout $ do
-            let (newGameFormId, bombCountField, widthField, heightField, randomSeedField) = variables
+            let (newGameFormId, joinGameFormId, joingameid, bombCountField, widthField, heightField, randomSeedField) = variables
             setTitle "Create New Game"
             $(widgetFile "games")
 
@@ -64,8 +64,8 @@ postGamesR = do
     _ <- liftIO $ setGameStateForGameId tGames gameId_ newGameState
     returnJson $ gameStateToGameStateEntity newGameState 
 
-variables :: (Text, Text, Text, Text, Text)
-variables = ("js-newGameFormId", "js-bombCountField", "js-widthField", "js-heightField", "js-randomSeedField")
+variables :: (Text, Text, Text, Text, Text, Text, Text)
+variables = ("js-newGameFormId", "js-joinGameFormId", "js-joingameid", "js-bombCountField", "js-widthField", "js-heightField", "js-randomSeedField")
 
 showSize :: [Row] -> String
 showSize b = showS (getHeightAndWidthFromBoard b) where showS (h,w) = "width: " ++ show w ++ ", height: " ++ show h
