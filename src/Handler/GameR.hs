@@ -14,7 +14,6 @@ import           Marshalling
 import           Control.Lens
 import           Handler.ChannelR(broadcast)
 
-
 -- GET GAME VIEW
 getGameR :: Text -> Handler Html
 getGameR gameIdText = do
@@ -98,7 +97,6 @@ putGameR gameIdText = do
           returnJson gameStateEntity
       -- If the game was not the in-memory state return 404 since no game which moves can be executed on was found
       Nothing -> notFound
-
 
 gameIds :: Text
 gameIds = "js-gameTableId"

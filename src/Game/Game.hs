@@ -29,8 +29,8 @@ import           Network.Wai.EventSource (ServerEvent (..))
 import           Control.Concurrent.Chan
 
 data Move = Reveal Coordinate UTCTime | RevealAllNonFlagged UTCTime | Flag Coordinate UTCTime deriving (Show, Eq, Read)
+
 data GameStatus = Ongoing | Won | Lost | Paused deriving (Show, Eq, Read)
---derivePersistField "Status"
 
 data GameState = GameState { _board          :: Board,
                              _moves          :: [Move],
@@ -48,7 +48,6 @@ makeLenses ''GameState
 
 instance Show GameState where
     show (GameState b m bombs s st _ _ _ _ _ _) = "Bombcount: " ++ show bombs ++ " Seed: " ++ show s ++ " Status: " ++ show st ++ "\n" ++ show m ++ "\n" ++ show b
-
 
 -- Creates a new game for a given Dimension, bombCount & seed
 newGame :: Dimension -> Int -> Int -> String -> UTCTime -> Chan ServerEvent -> GameState
@@ -82,16 +81,13 @@ makeMove state m  = state & board       .~ boardAfterMove
                                                                      Lost  -> finishGame
                                                                      _     -> state ^. timeElapsed
    
-   
 -- Returns the Status of a given board
 isGameOver :: GameState -> Bool
 isGameOver state = case state ^. status of Ongoing -> False
                                            Paused -> False
                                            Lost -> True
                                            Won -> True
-                                       
-                                                                  
-                                                                     
+                                                                                                          
 -- Returns the Status of a given board
 checkStatus :: Board -> GameStatus
 checkStatus b = case (checkWon b, checkLost b) of  (_,True)      -> Lost
@@ -107,7 +103,6 @@ calculateTimeElapsed lastStartedAt_ timePrevElapsed now = case lastStartedAt_ of
                                                 Just lsa -> timePrevElapsed + fst (properFraction $ diffUTCTime now lsa)
                                                 Nothing  -> 0
 
-  
 isMoveInBounds:: Move -> GameState -> Bool
 isMoveInBounds (Reveal c _) gameState = inBounds c (getDimensions gameState)
 isMoveInBounds (Flag c _) gameState = inBounds c (getDimensions gameState)

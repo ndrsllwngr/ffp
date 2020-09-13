@@ -15,7 +15,7 @@ import           Control.Lens
 import           Text.StringRandom
 import           System.Random (randomRIO)
 
-
+-- GET GAMES IN DB
 getGamesR :: Handler Html
 getGamesR = do
     -- Get games from database
@@ -49,7 +49,7 @@ postGamesR = do
     -- Parse the newGameRequest
     newGameRequest <- (requireCheckJsonBody :: Handler NewGameRequest)
 
-    -- Generate a new random seed if no seed has been provided
+    -- Generate a new random seed if no seed has been provided, bounded because of JavaScript max number limit
     seed_ <- case newGameRequest ^. newGameRequestSeed of Just s -> return s
                                                           Nothing -> liftIO $ randomRIO (0, 900719925474099)
 

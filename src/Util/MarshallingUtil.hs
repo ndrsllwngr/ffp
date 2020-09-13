@@ -14,6 +14,7 @@ getCellAssetId gameStatus_ (Cell isFlagged_ isRevealed_ hasBomb_ neighboringBomb
                       Won -> getCellAssetIdWon isFlagged_ isRevealed_ hasBomb_ neighboringBombs_
                       Lost -> getCellAssetIdLost isFlagged_ isRevealed_ hasBomb_ neighboringBombs_
                       Paused -> "closed"
+                      
 -- isFlagged Bool
 -- isRevealed Bool
 -- hasBomb Bool

@@ -46,7 +46,7 @@ postResetR gameIdText = do
                 -- Generate a new 5 character random game id
                 randomString <- liftIO $ stringRandomIO "^[A-Z1-9]{5}$"
                 
-                -- Generate a new random seed
+                -- Generate a new random seed, bounded because of JavaScript max number limit
                 newSeed <- liftIO $ randomRIO (0, 900719925474099)
                 
                 -- if the game was already over use a new game id otherwise use the same game id for the new game

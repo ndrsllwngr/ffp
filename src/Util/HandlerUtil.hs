@@ -7,8 +7,6 @@ import           Import.NoFoundation (headEx, Entity, entityVal, UTCTime)
 import           Control.Lens
 import           Game.Game(calculateTimeElapsed)
 
-
-
 getHeightAndWidthFromBoard :: [Row] -> (Int, Int)
 getHeightAndWidthFromBoard rows = (length rows, length $ headEx rows ^. rowCells)
   

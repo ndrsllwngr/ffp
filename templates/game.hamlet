@@ -12,8 +12,8 @@
        <button #goBackBtn .ml-5 .bg-gray-300 .hover:bg-gray-400 .text-gray-800 .font-bold .rounded .py-4 .px-4 .leading-tight onclick="pauseGame('#{gameStateEntity ^. gameStateEntityGameId}')" gameId="#{gameStateEntity ^. gameStateEntityGameId}">
         ← Back
        $if (gameStateEntity ^. gameStateEntityStatus) == "Ongoing"
-            <button #revealAllBtn .ml-5 .bg-gray-300 .hover:bg-gray-400 .text-gray-800 .font-bold .rounded .py-4 .px-4 .leading-tight onclick="revealAll('#{gameStateEntity ^. gameStateEntityGameId}')" gameId="#{gameStateEntity ^. gameStateEntityGameId}">
-                Reveal All Cells
+        <button #revealAllBtn .ml-5 .bg-gray-300 .hover:bg-gray-400 .text-gray-800 .font-bold .rounded .py-4 .px-4 .leading-tight onclick="revealAll('#{gameStateEntity ^. gameStateEntityGameId}')" gameId="#{gameStateEntity ^. gameStateEntityGameId}">
+         Reveal All Cells
       <p .sm:text-xl .text-gray-600 .mt-3 .leading-relaxed>
        Identifier
        <span .font-mono .font-semibold .bg-gray-200 .text-sm .sm:text-base .text-gray-700 .subpixel-antialiased .px-2 .py-2 .rounded>
@@ -49,19 +49,19 @@
            <img #faceImg src="/static/assets/face_unpressed.svg" .h-12>
          <div #seconds prevTime="#{getTimeElapsed(gameStateEntity ^. gameStateEntityLastStartedAt) (gameStateEntity ^. gameStateEntityTimeElapsed) now (gameStateEntity ^. gameStateEntityStatus)}" isBeforeFirstMove="#{length (gameStateEntity ^. gameStateEntityMoves) == 0 }">
           <div .flex .flex-row .bg-gray-800 .p-1>
-            <img #seconds100s src="/static/assets/d0.svg" alt="0" .h-12>
-            <img #seconds10s src="/static/assets/d0.svg" alt="0" .h-12 .ml-1>
-            <img #seconds0s src="/static/assets/d0.svg" alt="0" .h-12 .ml-1>
+           <img #seconds100s src="/static/assets/d0.svg" alt="0" .h-12>
+           <img #seconds10s src="/static/assets/d0.svg" alt="0" .h-12 .ml-1>
+           <img #seconds0s src="/static/assets/d0.svg" alt="0" .h-12 .ml-1>
        <div .flex .flex-grow .mt-6>
         <div .flex .flex-row .items-start>
          <table ##{gameTableId}>
           $forall row <- gameStateEntity ^. gameStateEntityBoard
-                            <tr>
-                                $forall cellEntity <- row ^. rowCells
-                                    <td #x#{(cellEntity ^. cellEntityCoordX)}y#{(cellEntity ^. cellEntityCoordY)}>
-                                        $if (gameStateEntity ^. gameStateEntityStatus) == "Ongoing"
-                                            <div .div onclick="makeMove(#{cellEntity ^. cellEntityCoordX}, #{cellEntity ^. cellEntityCoordY}, '#{gameStateEntity ^. gameStateEntityGameId}', event)">
-                                                <img .img src="/static/assets/#{(cellEntity ^. cellEntityAssetId)}.svg" width="24" height="24">
-                                        $else
-                                            <div .div>
-                                                <img .img src="/static/assets/#{(cellEntity ^. cellEntityAssetId)}.svg" width="24" height="24">
+           <tr>
+            $forall cellEntity <- row ^. rowCells
+             <td #x#{(cellEntity ^. cellEntityCoordX)}y#{(cellEntity ^. cellEntityCoordY)}>
+              $if (gameStateEntity ^. gameStateEntityStatus) == "Ongoing"
+               <div .div onclick="makeMove(#{cellEntity ^. cellEntityCoordX}, #{cellEntity ^. cellEntityCoordY}, '#{gameStateEntity ^. gameStateEntityGameId}', event)">
+                <img .img src="/static/assets/#{(cellEntity ^. cellEntityAssetId)}.svg" width="24" height="24">
+              $else
+               <div .div>
+                <img .img src="/static/assets/#{(cellEntity ^. cellEntityAssetId)}.svg" width="24" height="24">    

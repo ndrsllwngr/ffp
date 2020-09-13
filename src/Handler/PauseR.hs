@@ -36,6 +36,6 @@ postPauseR gameIdText = do
 
           broadcast (gameState ^. channel) updatedGameStateEntity
           -- return GameState
-          returnJson updatedGameStateEntity   
+          returnJson updatedGameStateEntity
       Nothing -> notFound                                 
 

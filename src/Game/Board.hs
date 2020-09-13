@@ -1,8 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
 
-
-
-
 module Game.Board  (generateBoard,
                     revealCell,
                     revealAllNonFlaggedCells,
@@ -127,7 +124,6 @@ coordinateToCellNumber (i,j) (_,w) = (i-1) * w + j
 -- Checks if a coordinate is inBounds of a given Board size
 inBounds :: Coordinate -> Dimension -> Bool
 inBounds (i,j) (h,w) = (i > 0) && (i <= h) && (j > 0) && (j <= w)
-
 
 -- Calculates all inBounds direct (non diagonal) neighbour cells of a given cell
 directNeighbourCells :: Coordinate -> Dimension -> [Coordinate]

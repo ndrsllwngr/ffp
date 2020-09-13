@@ -24,7 +24,7 @@ getChannelR gameIdText = do
         Nothing -> return ()
                   
 broadcast :: Chan ServerEvent -> GameStateEntity -> Handler ()
-broadcast chan gse = do
-      liftIO $ Chan.writeChan chan $ serverEvent $ return $ fromString message
+broadcast channel_ gse = do
+      liftIO $ Chan.writeChan channel_ $ serverEvent $ return $ fromString message
                         where message = Char8.unpack $ encode gse
                               serverEvent = ServerEvent Nothing Nothing

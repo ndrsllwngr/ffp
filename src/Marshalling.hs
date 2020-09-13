@@ -1,5 +1,4 @@
 {-# LANGUAGE MultiParamTypeClasses #-}
-{-# LANGUAGE NamedFieldPuns        #-}
 {-# LANGUAGE NoImplicitPrelude     #-}
 {-# LANGUAGE TypeFamilies          #-}
 {-# LANGUAGE BlockArguments #-}
@@ -61,13 +60,13 @@ statusEntityToStatus _         = error "Invalid StatusEntity"
 
 cellToCellEntity :: Cell -> GameStatus -> CellEntity
 cellToCellEntity cell _gameStatus = CellEntity {
-                                               _cellEntityCoordX = fst $ cell ^. coordinate,
-                                               _cellEntityCoordY = snd $ cell ^. coordinate,
-                                               _cellEntityIsFlagged = cell ^. isFlagged,
-                                               _cellEntityIsRevealed = cell ^. isRevealed,
-                                               _cellEntityHasBomb = cell ^. hasBomb,
+                                               _cellEntityCoordX           = fst $ cell ^. coordinate,
+                                               _cellEntityCoordY           = snd $ cell ^. coordinate,
+                                               _cellEntityIsFlagged        = cell ^. isFlagged,
+                                               _cellEntityIsRevealed       = cell ^. isRevealed,
+                                               _cellEntityHasBomb          = cell ^. hasBomb,
                                                _cellEntityNeighboringBombs = cell ^. neighboringBombs,
-                                               _cellEntityAssetId = getCellAssetId _gameStatus cell
+                                               _cellEntityAssetId          = getCellAssetId _gameStatus cell
                                               }
 
 cellEntityToCell :: CellEntity -> Cell
