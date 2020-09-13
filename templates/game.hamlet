@@ -19,7 +19,7 @@
        <span .font-mono .font-semibold .bg-gray-200 .text-sm .sm:text-base .text-gray-700 .subpixel-antialiased .px-2 .py-2 .rounded>
         #{gameStateEntity ^. gameStateEntityGameId}
        , Seed
-       <span .font-mono .font-semibold .bg-gray-200 .text-sm .sm:text-base .text-gray-700 .subpixel-antialiased .px-2 .py-2 .rounded>
+       <span #seed .font-mono .font-semibold .bg-gray-200 .text-sm .sm:text-base .text-gray-700 .subpixel-antialiased .px-2 .py-2 .rounded>
         #{gameStateEntity ^. gameStateEntitySeed}
      <div .md:pl-5 .pl-0 .mt-6>
       <ul .sm:text-xl .text-gray-600 .mt-3 .leading-relaxed .list-disc>

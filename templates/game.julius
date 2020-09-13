@@ -204,6 +204,8 @@ $(document).ready(function () {
       timer = setInterval(setTimer, 1000);
       // Game is in init state, set prevTime to 0
     } else {
+      let seedEl = document.getElementById("seed");
+      seedEl.innerHTML = message.seed;
       elSeconds.setAttribute("isBeforeFirstMove", "True");
       elSeconds.setAttribute("prevTime", 0);
       renderDigits(0, "seconds");
