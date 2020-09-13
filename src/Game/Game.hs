@@ -29,7 +29,7 @@ import           Network.Wai.EventSource (ServerEvent (..))
 import           Control.Concurrent.Chan
 
 data Move = Reveal Coordinate UTCTime | RevealAllNonFlagged UTCTime | Flag Coordinate UTCTime deriving (Show, Eq, Read)
-data GameStatus = Ongoing | Won | Lost | Paused deriving (Show, Eq, Read)
+data GameStatus = Ongoing | Won | Lost | Paused | Init deriving (Show, Eq, Read)
 --derivePersistField "Status"
 
 data GameState = GameState { _board          :: Board,
@@ -57,7 +57,7 @@ newGame (h,w) b s gId now channel_ = GameState {
                                         _moves         = [],
                                         _bombCount     = b,
                                         _seed          = s,
-                                        _status        = Ongoing,
+                                        _status        = Init,
                                         _gameId        = gId,
                                         _createdAt     = now,
                                         _updatedAt     = now,
@@ -81,22 +81,21 @@ makeMove state m  = state & board       .~ boardAfterMove
                                 elapsed                 = case st of Won   -> finishGame
                                                                      Lost  -> finishGame
                                                                      _     -> state ^. timeElapsed
-   
-   
+
+
 -- Returns the Status of a given board
 isGameOver :: GameState -> Bool
-isGameOver state = case state ^. status of Ongoing -> False
+isGameOver state = case state ^. status of Init -> False
+                                           Ongoing -> False
                                            Paused -> False
                                            Lost -> True
                                            Won -> True
-                                       
-                                                                  
-                                                                     
+
 -- Returns the Status of a given board
 checkStatus :: Board -> GameStatus
 checkStatus b = case (checkWon b, checkLost b) of  (_,True)      -> Lost
                                                    (True,False)  -> Won
-                                                   (False,False) -> Ongoing                      
+                                                   (False,False) -> Ongoing
 
 -- Returns the Dimension of the board contained by a given GameState
 getDimensions :: GameState -> Dimension

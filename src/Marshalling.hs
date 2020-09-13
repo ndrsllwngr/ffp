@@ -57,6 +57,7 @@ statusEntityToStatus "Ongoing" = Ongoing
 statusEntityToStatus "Won"     = Won
 statusEntityToStatus "Lost"    = Lost
 statusEntityToStatus "Paused"  = Paused
+statusEntityToStatus "Init"    = Init
 statusEntityToStatus _         = error "Invalid StatusEntity"
 
 cellToCellEntity :: Cell -> GameStatus -> CellEntity

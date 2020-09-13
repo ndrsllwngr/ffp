@@ -59,7 +59,7 @@
                             <tr>
                                 $forall cellEntity <- row ^. rowCells
                                     <td id="x#{(cellEntity ^. cellEntityCoordX)}y#{(cellEntity ^. cellEntityCoordY)}">
-                                        $if (gameStateEntity ^. gameStateEntityStatus) == "Ongoing"
+                                        $if canPerformMove (gameStateEntity ^. gameStateEntityStatus)
                                             <div .div onclick="makeMove(#{cellEntity ^. cellEntityCoordX}, #{cellEntity ^. cellEntityCoordY}, '#{gameStateEntity ^. gameStateEntityGameId}', event)">
                                                 <img .img src="/static/assets/#{(cellEntity ^. cellEntityAssetId)}.svg" width="24" height="24">
                                         $else

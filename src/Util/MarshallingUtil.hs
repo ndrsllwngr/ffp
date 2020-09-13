@@ -10,7 +10,8 @@ getRemainingFlags _board _bombCount = _bombCount - length (filter _isFlagged $ t
 
 getCellAssetId :: GameStatus -> Cell -> String
 getCellAssetId gameStatus_ (Cell isFlagged_ isRevealed_ hasBomb_ neighboringBombs_ _) = 
-  case gameStatus_ of Ongoing -> getCellAssetIdOngoing isFlagged_ isRevealed_ hasBomb_ neighboringBombs_
+  case gameStatus_ of Init -> getCellAssetIdOngoing isFlagged_ isRevealed_ hasBomb_ neighboringBombs_
+                      Ongoing -> getCellAssetIdOngoing isFlagged_ isRevealed_ hasBomb_ neighboringBombs_
                       Won -> getCellAssetIdWon isFlagged_ isRevealed_ hasBomb_ neighboringBombs_
                       Lost -> getCellAssetIdLost isFlagged_ isRevealed_ hasBomb_ neighboringBombs_
                       Paused -> "closed"

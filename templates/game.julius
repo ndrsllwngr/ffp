@@ -237,7 +237,7 @@ const updateBoard = (newBoard, gameId, status) => {
       ) {
         cellImgTag.setAttribute("src", `/static/assets/${newCell.assetId}.svg`);
       }
-      if (status == "Ongoing") {
+      if (status == "Ongoing" || status == "Init") {
         cellDivTag.setAttribute(
           "onclick",
           `makeMove(${row + 1},${column + 1},'${gameId}',event)`

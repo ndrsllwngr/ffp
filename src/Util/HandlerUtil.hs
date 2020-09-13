@@ -1,6 +1,7 @@
 module Util.HandlerUtil (getGameStateEntityMaybe,
                          getHeightAndWidthFromBoard,
-                         getTimeElapsed) where
+                         getTimeElapsed,
+                         canPerformMove) where
 
 import           Model
 import           Import.NoFoundation (headEx, Entity, entityVal, UTCTime)
@@ -21,3 +22,8 @@ getTimeElapsed lastStartedAt_ timeElapsed_ now status_ = case status_ of
                                                           "Won"   -> timeElapsed_
                                                           "Lost"  -> timeElapsed_
                                                           _       -> calculateTimeElapsed lastStartedAt_ timeElapsed_ now
+                                                          
+canPerformMove :: String -> Bool
+canPerformMove "Init" = True
+canPerformMove "Ongoing" = True
+canPerformMove _ = False
