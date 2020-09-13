@@ -1,4 +1,4 @@
-module Game.StateUtil (removeGameById,
+module Util.StateUtil (removeGameById,
                        getAllGames,
                        getGameById,
                        setGameStateForGameId

@@ -20,10 +20,9 @@ module Game.Game (newGame,
                   channel,
                   calculateTimeElapsed) where
 
-import           ClassyPrelude.Conduit (UTCTime)
 import           Game.Board
 import           Control.Lens
-import           Data.Time (diffUTCTime)
+import           Data.Time (diffUTCTime, UTCTime)
 import           Network.Wai.EventSource (ServerEvent (..))
 import           Control.Concurrent.Chan
 

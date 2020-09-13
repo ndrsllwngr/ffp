@@ -24,10 +24,8 @@ library
       Foundation
       Game.Board
       Game.Game
-      Game.StateUtil
-      Game.Util
       Handler.ChannelR
-      Handler.Common
+      Handler.CommonR
       Handler.GameR
       Handler.GamesR
       Handler.PauseR
@@ -38,6 +36,9 @@ library
       Model
       Settings
       Settings.StaticFiles
+      Util.HandlerUtil
+      Util.MarshallingUtil
+      Util.StateUtil
   other-modules:
       Paths_minesweepskell
   hs-source-dirs:

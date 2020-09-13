@@ -4,7 +4,7 @@
 {-# LANGUAGE OverloadedStrings     #-}
 module Handler.PauseR where
 
-import           Game.StateUtil
+import           Util.StateUtil
 import           Game.Game
 import           Marshalling
 import           Import
@@ -32,10 +32,10 @@ postPauseR gameIdText = do
           let  updatedGameStateEntity = gsEntity & gameStateEntityStatus .~ "Paused"
                                                  & gameStateEntityUpdatedAt .~ now
                                                  & gameStateEntityTimeElapsed .~ calculateTimeElapsed (gsEntity ^. gameStateEntityLastStartedAt) (gsEntity ^. gameStateEntityTimeElapsed) now
-          insertedGameStateEntity <- runDB $ insert updatedGameStateEntity
+          _ <- runDB $ insert updatedGameStateEntity
 
           broadcast (gameState ^. channel) updatedGameStateEntity
           -- return GameState
-          returnJson insertedGameStateEntity -- TODO check if return is working    
+          returnJson updatedGameStateEntity   
       Nothing -> notFound                                 
 

@@ -1,7 +1,7 @@
 module Handler.ChannelR(getChannelR,broadcast) where
 
 import           Game.Game
-import           Game.StateUtil
+import           Util.StateUtil
 import           Import
 import           Control.Lens
 import           Control.Concurrent.Chan as Chan

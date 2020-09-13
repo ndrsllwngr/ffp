@@ -1,23 +1,9 @@
-module Game.Util (getGameStateEntityMaybe,
-                  getHeightAndWidthFromBoard,
-                  getRemainingFlags,
-                  getCellAssetId) where
+module Util.MarshallingUtil (getRemainingFlags,
+                             getCellAssetId) where
 
-import           Model
-import           Import.NoFoundation (headEx, Entity, entityVal)
-import           Control.Lens
 import           Game.Board
 import           Game.Game
 import           Data.Matrix
-
-
-
-getHeightAndWidthFromBoard :: [Row] -> (Int, Int)
-getHeightAndWidthFromBoard rows = (length rows, length $ headEx rows ^. rowCells)
-  
-getGameStateEntityMaybe :: [Entity GameStateEntity] -> Maybe GameStateEntity
-getGameStateEntityMaybe (x:_) = Just $ entityVal x
-getGameStateEntityMaybe _     = Nothing
 
 getRemainingFlags :: Board -> Int -> Int
 getRemainingFlags _board _bombCount = _bombCount - length (filter _isFlagged $ toList _board)

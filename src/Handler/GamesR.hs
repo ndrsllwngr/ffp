@@ -6,9 +6,9 @@
 module Handler.GamesR where
 
 import           Game.Game
-import           Game.StateUtil
+import           Util.StateUtil
 import           Marshalling
-import           Game.Util
+import           Util.HandlerUtil
 import           Import
 import           Text.Julius           (RawJS (..))
 import           Control.Lens

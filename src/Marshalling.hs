@@ -15,8 +15,8 @@ module Marshalling (
                     ) where
 
 import           Data.Matrix
-import           Import 
-import           Game.Util
+import           Import
+import           Util.MarshallingUtil
 import           Game.Board
 import           Game.Game
 import           Control.Lens

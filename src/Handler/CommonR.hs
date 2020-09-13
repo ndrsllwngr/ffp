@@ -4,7 +4,7 @@
 {-# LANGUAGE TemplateHaskell       #-}
 {-# LANGUAGE TypeFamilies          #-}
 -- | Common handler functions.
-module Handler.Common where
+module Handler.CommonR where
 
 import           Data.FileEmbed (embedFile)
 import           Import

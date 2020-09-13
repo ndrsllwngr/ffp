@@ -45,7 +45,7 @@ import           System.Log.FastLogger                (defaultBufSize,
 
 -- Import all relevant handler modules here.
 -- Don't forget to add new modules to your cabal file!
-import           Handler.Common
+import           Handler.CommonR
 import           Handler.GameR
 import           Handler.GamesR
 import           Handler.PauseR

@@ -5,9 +5,9 @@
 module Handler.ResetR where
 
 import           Game.Game 
-import           Game.StateUtil
+import           Util.StateUtil
 import           Marshalling
-import           Game.Util
+import           Util.HandlerUtil
 import           Import
 import           Control.Lens
 import           Handler.ChannelR(broadcast)
@@ -23,7 +23,7 @@ postResetR gameIdText = do
     -- Try to get the game from the in-memory state
     gameStateMaybe <- liftIO $ getGameById tGames gameId_
     
-    -- todo can this be written more elegantly so we dont have to have two  subsequent case matches?
+    -- TODO can this be written more elegantly so we dont have to have two subsequent case matches?
     gameMaybe <- case gameStateMaybe of
                       -- if game was in in-memory state return it
                       Just gameState -> return $ Just gameState
@@ -35,17 +35,15 @@ postResetR gameIdText = do
                           _ <- runDB $ deleteBy $ UniqueGameStateEntity gameId_ 
                           -- Create new channel
                           channel_ <- newChan
-                          -- Map the Maybe GameStateEntity to a Maybe Gamestate and return it
+                          -- Map the Maybe GameStateEntity to a Maybe GameState and return it
                           return $ (`gameStateEntityToGameState` channel_) <$> getGameStateEntityMaybe gameStateDBEntities
-                       
-                         
-    
+                      
     case gameMaybe of
          Just gameState -> do
                 now <- liftIO getCurrentTime
                 -- create a new game with the same parameters
                 let resetGameState = newGame (getDimensions gameState) (gameState ^. bombCount) newSeed (gameState ^.gameId) now (gameState ^. channel)
-                -- Store/Override the gamestate for the given ID in the in-memory state
+                -- Store/Override the GameState for the given ID in the in-memory state
                 _ <- liftIO $ setGameStateForGameId tGames gameId_ resetGameState
                 let gameStateEntity = gameStateToGameStateEntity resetGameState
                 broadcast (resetGameState ^. channel) gameStateEntity
