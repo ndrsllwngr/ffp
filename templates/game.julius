@@ -12,6 +12,7 @@ const digits = [
 ];
 
 var gameStatus = "";
+var src;
 
 // Toggle flag, or reveal cell
 const makeMove = (x, y, gameId, event) => {
@@ -75,6 +76,10 @@ const resetGame = (gameId) => {
         console.log("New gameID - Rerouting to new game...", { status });
         const newUrl = "/game/" + data.gameId;
         console.log("Rerouting...", { newUrl });
+        if (src) {
+          console.log("Closing EventSource");
+          src.close();
+        }
         window.location.assign(newUrl);
       }
     },
@@ -97,6 +102,10 @@ const pauseGame = (gameId) => {
       console.info("[SUCCESS] PAUSE GAME", { data });
       const newUrl = "@{GamesR}";
       console.log("Rerouting...", { newUrl });
+      if (src) {
+        console.log("Closing EventSource");
+        src.close();
+      }
       window.location.assign(newUrl);
     },
     error: function (data) {
@@ -182,7 +191,12 @@ $(document).ready(function () {
   setFace();
   toggleControls(gameStatus);
 
-  var src = new EventSource("@{ChannelR gameIdText}");
+  src = new EventSource("@{ChannelR gameIdText}");
+  src.onerror = function (input) {
+    console.log({ input });
+    console.error("ONERROR!");
+    goBack();
+  };
   src.onmessage = function (input) {
     // console.log({ input });
     var message = JSON.parse(input.data);
@@ -190,6 +204,10 @@ $(document).ready(function () {
       console.info("PAUSED GAME", message.status);
       const newUrl = "@{GamesR}";
       console.log("Rerouting...", { newUrl });
+      if (src) {
+        console.log("Closing EventSource");
+        src.close();
+      }
       window.location.assign(newUrl);
     }
     console.log({ message });
@@ -262,6 +280,10 @@ const goBack = () => {
   console.info("GO BACK");
   const newUrl = "@{GamesR}";
   console.log("Rerouting...", { newUrl });
+  if (src) {
+    console.log("Closing EventSource");
+    src.close();
+  }
   window.location.assign(newUrl);
 };
 
