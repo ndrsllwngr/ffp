@@ -22,23 +22,23 @@ module Game.Board
   )
 where
 
-import Control.Lens
-import Data.List
-import Data.Matrix
-import Data.Matrix.Lens (elemAt, flattened, size)
-import System.Random
-import System.Random.Shuffle
+import           Control.Lens
+import           Data.List
+import           Data.Matrix
+import           Data.Matrix.Lens      (elemAt, flattened, size)
+import           System.Random
+import           System.Random.Shuffle
 
 type Dimension = (Int, Int)
 
 type Coordinate = (Int, Int)
 
 data Cell = Cell
-  { _isFlagged :: Bool,
-    _isRevealed :: Bool,
-    _hasBomb :: Bool,
+  { _isFlagged        :: Bool,
+    _isRevealed       :: Bool,
+    _hasBomb          :: Bool,
     _neighboringBombs :: Int,
-    _coordinate :: Coordinate
+    _coordinate       :: Coordinate
   }
   deriving (Show, Eq)
 
@@ -96,7 +96,7 @@ revealCell board c = resultBoard
           -- the board with the cell (i,j) set to revealed
           cellBoard = setCellToRevealed board c
           -- all the direct neighbours of the cell (i,j)
-          neighbours = directNeighbourCells c dim
+          neighbours = neighbourCells c dim
           -- fold over the list of neighbours and recursively call revealCell for each one
           neighboursBoard = foldl revealCell cellBoard neighbours
       -- In any other case just reveal the cell at (i,j)
