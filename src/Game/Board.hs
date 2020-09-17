@@ -142,17 +142,6 @@ coordinateToCellNumber (i, j) (_, w) = (i -1) * w + j
 inBounds :: Coordinate -> Dimension -> Bool
 inBounds (i, j) (h, w) = (i > 0) && (i <= h) && (j > 0) && (j <= w)
 
--- Calculates all inBounds direct (non diagonal) neighbour cells of a given cell
-directNeighbourCells :: Coordinate -> Dimension -> [Coordinate]
-directNeighbourCells (i, j) d = filter (`inBounds` d) theoreticalNeighbors
-  where
-    theoreticalNeighbors =
-      [ (i -1, j), -- top
-        (i, j -1), -- left
-        (i, j + 1), -- right
-        (i + 1, j) -- bottom
-      ]
-
 -- Calculates all inBounds (including diagonal) neighbour cells of a given cell
 neighbourCells :: Coordinate -> Dimension -> [Coordinate]
 neighbourCells (i, j) d = filter (`inBounds` d) theoreticalNeighbors
