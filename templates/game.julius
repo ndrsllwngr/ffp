@@ -195,7 +195,7 @@ $(document).ready(function () {
   src.onerror = function (input) {
     console.log({ input });
     console.error("ONERROR!");
-    goBack();
+    //goBack();
   };
   src.onmessage = function (input) {
     // console.log({ input });
