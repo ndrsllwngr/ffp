@@ -174,5 +174,5 @@ Along with the [IntelliJ plugin for Haskell](https://github.com/rikvdkleij/intel
 
 ### Individual contributions
 
-Due too the small group size of 3 it is impossible for us to properly distinguish what of our project has been done by whom. We all worked on all parts of our application, especially since we mostly did “pair-programming” (with two or often all three of us working together). So all of us were equally involved in all parts of our application.
-We would be happy to answer questions about our development process, aswell as our individual/collective contributions at the examination.
+Due to the small group size of 3 it is impossible for us to properly distinguish what of our project has been done by whom. We all worked on all parts of our application, especially since we mostly did “pair-programming” (with two or often all three of us working together). So all of us were equally involved in all parts of our application.
+We would be happy to answer questions about our development process, as well as our individual/collective contributions at the examination.
