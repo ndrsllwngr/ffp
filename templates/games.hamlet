@@ -16,7 +16,7 @@
             <div .flex .flex-wrap>
              <div .flex .flex-col .px-12 .py-10 .w-full .sm:w-1/2 .sm:border-r .sm:border-b .border-gray-200>
               <div .flex .flex-grow>
-               <div .leading-relaxed .flex .flex-col .ml-4 .md:ml-6>
+               <div .leading-relaxed .flex-grow .flex .flex-col>
                 <h2 .font-medium .text-gray-800 .text-lg>
                  Quick start
                 <p .text-gray-600 .mt-1 .text-sm .md:text-base>
@@ -41,7 +41,7 @@
                     Join
              <div .flex .flex-col .px-12 .py-10 .w-full .sm:w-1/2 .border-t-2 .sm:border-t-0 .sm:border-l .sm:border-b .border-gray-200>
               <div .flex .flex-grow>
-               <div .flex .flex-col .leading-relaxed .ml-4 .md:ml-6>
+               <div .flex .flex-col .leading-relaxed>
                 <h2 .font-medium .text-gray-800 .text-lg>
                  Custom
                 <p .text-gray-600 .mt-1 .text-sm .md:text-base>
@@ -68,7 +68,7 @@
                     Start
              <div .flex .flex-col .px-12 .py-10 .w-full .sm:w-1/2 .border-t-2 .sm:border-r .sm:border-t .border-gray-200>
               <div .flex .flex-grow>
-               <div .flex .flex-col .flex-grow .leading-relaxed .ml-4 .md:ml-6>
+               <div .flex .flex-col .flex-grow .leading-relaxed>
                 <h2 .font-medium .text-gray-800 .text-lg>
                  Paused
                 <p .text-gray-600 .mt-1 .text-sm .md:text-base>
@@ -89,7 +89,7 @@
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
              <div .flex .flex-col .px-12 .py-10 .w-full .sm:w-1/2 .border-t-2 .sm:border-l .sm:border-t .border-gray-200 .w-full>
               <div .flex .flex-grow>
-               <div .flex .flex-col .flex-grow .leading-relaxed .ml-4 .md:ml-6>
+               <div .flex .flex-col .flex-grow .leading-relaxed>
                 <h2 .font-medium .text-gray-800 .text-lg>
                  Completed
                 <p .text-gray-600 .mt-1 .text-sm .md:text-base>
