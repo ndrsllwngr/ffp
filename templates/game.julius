@@ -26,11 +26,11 @@ const makeMove = (x, y, gameId, event) => {
   });
 
   var action = null;
-  if (event.button === 0 && !event.altKey && !event.shiftKey) {
+  if (event.button === 0 && !event.altKey) {
     action = "Reveal";
-  } else if (event.button === 0 && event.altKey && !event.shiftKey) {
+  } else if (event.button === 2) {
     action = "Flag";
-  } else if (event.button === 0 && !event.altKey && event.shiftKey) {
+  } else if (event.button === 0 && event.altKey) {
     action = "QuickReveal";
   }
 
