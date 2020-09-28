@@ -125,4 +125,4 @@ isMoveInBounds _ _ = True
 
 
 isValidGameConfig :: Dimension -> Int -> Bool
-isValidGameConfig (h, w) bombCount_ = h > 0 && w > 0 && h * w > bombCount_
+isValidGameConfig (h, w) bombCount_ = h > 0 && w > 0 && bombCount_ > 0 && h * w > bombCount_
