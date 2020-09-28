@@ -72,8 +72,8 @@ cellToCellEntity cell _gameStatus =
       _cellEntityCoordY = snd $ cell ^. coordinate,
       _cellEntityIsFlagged = cell ^. isFlagged,
       _cellEntityIsRevealed = cell ^. isRevealed,
-      _cellEntityHasBomb = isGameOverStatus _gameStatus && (cell ^. hasBomb), -- if game is over set hasBomb to False
-      _cellEntityNeighboringBombs = if isGameOverStatus _gameStatus then cell ^. neighboringBombs else -1, -- if game is over set neighboringBombs to -1
+      _cellEntityHasBomb = isGameOverStatus _gameStatus && (cell ^. hasBomb), -- if game is not over yet, set hasBomb to False
+      _cellEntityNeighboringBombs = if isGameOverStatus _gameStatus then cell ^. neighboringBombs else -1, -- if game is not over yet, set neighboringBombs to -1
       _cellEntityAssetId = getCellAssetId _gameStatus cell
     }
 
