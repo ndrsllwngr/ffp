@@ -39,7 +39,7 @@ const makeMove = (x, y, gameId, event) => {
     type: "PUT",
     contentType: "application/json",
     data: JSON.stringify({
-      action: event.altKey ? "Flag" : "Reveal",
+      action: action,
       coordX: x,
       coordY: y,
     }),
