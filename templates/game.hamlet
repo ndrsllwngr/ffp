@@ -35,9 +35,6 @@
         <span .font-mono .font-semibold .bg-gray-200 .text-sm .sm:text-base .text-gray-700 .subpixel-antialiased .px-2 .py-2 .rounded>
          Right Click
         to flag a cell.
-        <span .font-mono .font-semibold .bg-gray-200 .text-sm .sm:text-base .text-gray-700 .subpixel-antialiased .px-2 .py-2 .rounded>
-         Alt + Left Click
-        to quick reveal.
        <li .mt-2>
         Click the face to restart. A new seed will be chosen.
     <div .bg-gray-100 .border-t-2 .border-gray-200>
