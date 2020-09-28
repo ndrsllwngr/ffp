@@ -55,11 +55,15 @@ postGamesR = do
     Just s -> return s
     Nothing -> liftIO $ randomRIO (0, 900719925474099)
 
+  let newGameDim = (newGameRequest ^. newGameRequestHeight, newGameRequest ^. newGameRequestWidth)
+  let newGameBombCount = newGameRequest ^. newGameRequestBombCount
+  
+  unless (isValidGameConfig newGameDim newGameBombCount) $ error "Invalid game parameters"
+
   -- create new channel
   channel_ <- newChan
-
   -- create new game
-  let newGameState = newGame (newGameRequest ^. newGameRequestHeight, newGameRequest ^. newGameRequestWidth) (newGameRequest ^. newGameRequestBombCount) seed_ gameId_ now channel_
+  let newGameState = newGame newGameDim newGameBombCount seed_ gameId_ now channel_
 
   -- write the new game into the in-memory state
   _ <- liftIO $ setGameStateForGameId tGames gameId_ newGameState
