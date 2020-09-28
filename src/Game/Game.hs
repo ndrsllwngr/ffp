@@ -18,6 +18,7 @@ module Game.Game
     lastStartedAt,
     timeElapsed,
     isGameOver,
+    isGameOverStatus,
     getDimensions,
     channel,
     calculateTimeElapsed,
@@ -86,18 +87,19 @@ makeMove state m =
       (RevealAllNonFlagged t) -> (revealAllNonFlaggedCells (state ^. board), t)
     finishGame = calculateTimeElapsed (state ^. lastStartedAt) (state ^. timeElapsed) time
     st = checkStatus boardAfterMove
-    elapsed = case st of
-      Won -> finishGame
-      Lost -> finishGame
-      _ -> state ^. timeElapsed
+    elapsed = if isGameOverStatus st then finishGame else state ^. timeElapsed
 
 -- Returns the Status of a given board
-isGameOver :: GameState -> Bool
-isGameOver state = case state ^. status of
+isGameOverStatus :: GameStatus -> Bool
+isGameOverStatus st = case st of
   Ongoing -> False
   Paused -> False
   Lost -> True
   Won -> True
+
+-- Returns the Status of a given board
+isGameOver :: GameState -> Bool
+isGameOver state = isGameOverStatus $ state ^. status 
 
 -- Returns the Status of a given board
 checkStatus :: Board -> GameStatus
