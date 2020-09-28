@@ -102,6 +102,8 @@ revealCell board c = resultBoard
       -- In any other case just reveal the cell at (i,j)
       _ -> setCellToRevealed board c
 
+-- TODO @griase94 add quickReveal
+
 -- Reveals all cells which have not been flagged
 revealAllNonFlaggedCells :: Board -> Board
 revealAllNonFlaggedCells board = board & flattened . filtered (not . _isFlagged) . isRevealed .~ True

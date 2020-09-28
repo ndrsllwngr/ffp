@@ -18,7 +18,21 @@ var src;
 const makeMove = (x, y, gameId, event) => {
   event.preventDefault();
 
-  console.log("MAKE MOVE", { x, y, gameId, event });
+  console.log("MAKE MOVE", { x, y, gameId }, "EVENT", {
+    button: event.button,
+    altKey: event.altKey,
+    shiftKey: event.shiftKey,
+    event,
+  });
+
+  var action = null;
+  if (event.button === 0 && !event.altKey && !event.shiftKey) {
+    action = "Reveal";
+  } else if (event.button === 0 && event.altKey && !event.shiftKey) {
+    action = "Flag";
+  } else if (event.button === 0 && !event.altKey && event.shiftKey) {
+    action = "QuickReveal";
+  }
 
   $.ajax({
     url: "/game/" + gameId,

@@ -1,4 +1,4 @@
-{-# LANGUAGE BlockArguments #-}
+{-# LANGUAGE BlockArguments  #-}
 {-# LANGUAGE TemplateHaskell #-}
 
 module Game.Game
@@ -25,28 +25,28 @@ module Game.Game
   )
 where
 
-import Control.Concurrent.Chan
-import Control.Lens
-import Data.Time (UTCTime, diffUTCTime)
-import Game.Board
-import Network.Wai.EventSource (ServerEvent (..))
+import           Control.Concurrent.Chan
+import           Control.Lens
+import           Data.Time               (UTCTime, diffUTCTime)
+import           Game.Board
+import           Network.Wai.EventSource (ServerEvent (..))
 
-data Move = Reveal Coordinate UTCTime | RevealAllNonFlagged UTCTime | Flag Coordinate UTCTime deriving (Show, Eq, Read)
+data Move = Reveal Coordinate UTCTime | RevealAllNonFlagged UTCTime | Flag Coordinate UTCTime | QuickReveal Coordinate UTCTime deriving (Show, Eq, Read)
 
 data GameStatus = Ongoing | Won | Lost | Paused deriving (Show, Eq, Read)
 
 data GameState = GameState
-  { _board :: Board,
-    _moves :: [Move],
-    _bombCount :: Int,
-    _seed :: Int,
-    _status :: GameStatus,
-    _gameId :: String,
-    _createdAt :: UTCTime,
-    _updatedAt :: UTCTime,
+  { _board         :: Board,
+    _moves         :: [Move],
+    _bombCount     :: Int,
+    _seed          :: Int,
+    _status        :: GameStatus,
+    _gameId        :: String,
+    _createdAt     :: UTCTime,
+    _updatedAt     :: UTCTime,
     _lastStartedAt :: Maybe UTCTime,
-    _timeElapsed :: Int,
-    _channel :: Chan ServerEvent
+    _timeElapsed   :: Int,
+    _channel       :: Chan ServerEvent
   }
 
 makeLenses ''GameState
@@ -84,26 +84,27 @@ makeMove state m =
       (Flag c t) -> (flagCell (state ^. board) c, t)
       (Reveal c t) -> (revealCell (state ^. board) c, t)
       (RevealAllNonFlagged t) -> (revealAllNonFlaggedCells (state ^. board), t)
+      (QuickReveal c t) -> (flagCell (state ^. board) c, t) -- TODO @griase94
     finishGame = calculateTimeElapsed (state ^. lastStartedAt) (state ^. timeElapsed) time
     st = checkStatus boardAfterMove
     elapsed = case st of
-      Won -> finishGame
+      Won  -> finishGame
       Lost -> finishGame
-      _ -> state ^. timeElapsed
+      _    -> state ^. timeElapsed
 
 -- Returns the Status of a given board
 isGameOver :: GameState -> Bool
 isGameOver state = case state ^. status of
   Ongoing -> False
-  Paused -> False
-  Lost -> True
-  Won -> True
+  Paused  -> False
+  Lost    -> True
+  Won     -> True
 
 -- Returns the Status of a given board
 checkStatus :: Board -> GameStatus
 checkStatus b = case (checkWon b, checkLost b) of
-  (_, True) -> Lost
-  (True, False) -> Won
+  (_, True)      -> Lost
+  (True, False)  -> Won
   (False, False) -> Ongoing
 
 -- Returns the Dimension of the board contained by a given GameState
@@ -113,9 +114,9 @@ getDimensions state = getDimensionsForBoard $ state ^. board
 calculateTimeElapsed :: Maybe UTCTime -> Int -> UTCTime -> Int
 calculateTimeElapsed lastStartedAt_ timePrevElapsed now = case lastStartedAt_ of
   Just lsa -> timePrevElapsed + fst (properFraction $ diffUTCTime now lsa)
-  Nothing -> 0
+  Nothing  -> 0
 
 isMoveInBounds :: Move -> GameState -> Bool
 isMoveInBounds (Reveal c _) gameState = inBounds c (getDimensions gameState)
-isMoveInBounds (Flag c _) gameState = inBounds c (getDimensions gameState)
-isMoveInBounds _ _ = True
+isMoveInBounds (Flag c _) gameState   = inBounds c (getDimensions gameState)
+isMoveInBounds _ _                    = True

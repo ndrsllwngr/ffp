@@ -1,7 +1,7 @@
-{-# LANGUAGE BlockArguments #-}
+{-# LANGUAGE BlockArguments        #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
-{-# LANGUAGE TypeFamilies #-}
-{-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE NoImplicitPrelude     #-}
+{-# LANGUAGE TypeFamilies          #-}
 
 module Marshalling
   ( gameStateToGameStateEntity,
@@ -14,13 +14,13 @@ module Marshalling
   )
 where
 
-import Control.Lens
-import Data.Matrix
-import Game.Board
-import Game.Game
-import Import
-import Network.Wai.EventSource (ServerEvent)
-import Util.MarshallingUtil
+import           Control.Lens
+import           Data.Matrix
+import           Game.Board
+import           Game.Game
+import           Import
+import           Network.Wai.EventSource (ServerEvent)
+import           Util.MarshallingUtil
 
 gameStateToGameStateEntity :: GameState -> GameStateEntity
 gameStateToGameStateEntity state =
@@ -60,10 +60,10 @@ gameStateEntityToGameState entity _channel =
 
 statusEntityToStatus :: [Char] -> GameStatus
 statusEntityToStatus "Ongoing" = Ongoing
-statusEntityToStatus "Won" = Won
-statusEntityToStatus "Lost" = Lost
-statusEntityToStatus "Paused" = Paused
-statusEntityToStatus _ = error "Invalid StatusEntity"
+statusEntityToStatus "Won"     = Won
+statusEntityToStatus "Lost"    = Lost
+statusEntityToStatus "Paused"  = Paused
+statusEntityToStatus _         = error "Invalid StatusEntity"
 
 cellToCellEntity :: Cell -> GameStatus -> CellEntity
 cellToCellEntity cell _gameStatus =
@@ -90,11 +90,13 @@ cellEntityToCell cellEntity =
 moveToMoveEntity :: Move -> MoveEntity
 moveToMoveEntity (Flag (x, y) timeStamp) = MoveEntity "Flag" (Just x) (Just y) timeStamp
 moveToMoveEntity (Reveal (x, y) timeStamp) = MoveEntity "Reveal" (Just x) (Just y) timeStamp
+moveToMoveEntity (QuickReveal (x, y) timeStamp) = MoveEntity "QuickReveal" (Just x) (Just y) timeStamp
 moveToMoveEntity (RevealAllNonFlagged timeStamp) = MoveEntity "RevealAllNonFlagged" Nothing Nothing timeStamp
 
 moveEntityToMove :: MoveEntity -> Move
 moveEntityToMove (MoveEntity "Flag" (Just x) (Just y) timeStamp) = Flag (x, y) timeStamp
 moveEntityToMove (MoveEntity "Reveal" (Just x) (Just y) timeStamp) = Reveal (x, y) timeStamp
+moveEntityToMove (MoveEntity "QuickReveal" (Just x) (Just y) timeStamp) = QuickReveal (x, y) timeStamp
 moveEntityToMove (MoveEntity "RevealAllNonFlagged" _ _ timeStamp) = RevealAllNonFlagged timeStamp
 moveEntityToMove _ = error "Invalid MoveEntity"
 
@@ -102,4 +104,5 @@ moveRequestToMove :: MoveRequest -> UTCTime -> Move
 moveRequestToMove (MoveRequest "RevealAllNonFlagged" _ _) timeStamp = RevealAllNonFlagged timeStamp
 moveRequestToMove (MoveRequest "Flag" (Just x) (Just y)) timeStamp = Flag (x, y) timeStamp
 moveRequestToMove (MoveRequest "Reveal" (Just x) (Just y)) timeStamp = Reveal (x, y) timeStamp
+moveRequestToMove (MoveRequest "QuickReveal" (Just x) (Just y)) timeStamp = QuickReveal (x, y) timeStamp
 moveRequestToMove _ _ = error "Invalid MoveRequest"
