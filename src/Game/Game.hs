@@ -23,6 +23,7 @@ module Game.Game
     channel,
     calculateTimeElapsed,
     isMoveInBounds,
+    isValidGameConfig,
   )
 where
 
@@ -121,3 +122,7 @@ isMoveInBounds :: Move -> GameState -> Bool
 isMoveInBounds (Reveal c _) gameState = inBounds c (getDimensions gameState)
 isMoveInBounds (Flag c _) gameState = inBounds c (getDimensions gameState)
 isMoveInBounds _ _ = True
+
+
+isValidGameConfig :: Dimension -> Int -> Bool
+isValidGameConfig (h, w) bombCount_ = h > 0 && w > 0 && h * w > bombCount_
