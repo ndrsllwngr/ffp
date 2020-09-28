@@ -2,7 +2,7 @@
 
 module Game.Board
   ( generateBoard,
-    revealCell,
+    reveal,
     revealAllNonFlaggedCells,
     flagCell,
     checkLost,
@@ -22,23 +22,23 @@ module Game.Board
   )
 where
 
-import           Control.Lens
-import           Data.List
-import           Data.Matrix
-import           Data.Matrix.Lens      (elemAt, flattened, size)
-import           System.Random
-import           System.Random.Shuffle
+import Control.Lens
+import Data.List
+import Data.Matrix
+import Data.Matrix.Lens (elemAt, flattened, size)
+import System.Random
+import System.Random.Shuffle
 
 type Dimension = (Int, Int)
 
 type Coordinate = (Int, Int)
 
 data Cell = Cell
-  { _isFlagged        :: Bool,
-    _isRevealed       :: Bool,
-    _hasBomb          :: Bool,
+  { _isFlagged :: Bool,
+    _isRevealed :: Bool,
+    _hasBomb :: Bool,
     _neighboringBombs :: Int,
-    _coordinate       :: Coordinate
+    _coordinate :: Coordinate
   }
   deriving (Show, Eq)
 
@@ -79,6 +79,10 @@ generateBoard (h, w) bombCount seed =
 setCellToRevealed :: Board -> Coordinate -> Board
 setCellToRevealed board c = board & elemAt c . isRevealed .~ True
 
+-- wrapper for the reveal actions, if a cell is not revealed yet, reveal it, otherwise try a quick reveal
+reveal :: Board -> Coordinate -> Board
+reveal board c = if board ^. (elemAt c . isRevealed) then quickReveal board c else revealCell board c
+
 -- Reveals a cell at a given coordinate for a given Board
 -- Rule explanation: will also reveal any direct neighbouring Cells which have no bomb and their neighbour cells if the have 0 neighboring bombs
 revealCell :: Board -> Coordinate -> Board
@@ -101,6 +105,23 @@ revealCell board c = resultBoard
           neighboursBoard = foldl revealCell cellBoard neighbours
       -- In any other case just reveal the cell at (i,j)
       _ -> setCellToRevealed board c
+
+-- Quick reveal
+-- If a cell is revealed, has more than one neighboring bomb and the bomb count matches the amount of flagged neighbors all non flagged neighbours can bo quick revealed
+quickReveal :: Board -> Coordinate -> Board
+quickReveal board c = resultBoard
+  where
+    dim = getDimensionsForBoard board
+    cellIsRevealed = board ^. (elemAt c . isRevealed)
+    neighbourCoordinates = neighbourCells c dim
+    neighbours = filter (\cell -> cell ^. coordinate `elem` neighbourCoordinates) (toList board)
+    bombNeighbourCount = board ^. (elemAt c . neighboringBombs)
+    nonFlaggedNeighboursCoordinates = map _coordinate $ filter (\x -> not (x ^. isFlagged)) neighbours
+    flaggedNeighboursCount = length $ filter (^. isFlagged) neighbours
+    -- move is only valid if c is revealed, has neighboring bombs and if the neighboringBombs match the number of flagged neighbours
+    isValidMove = cellIsRevealed && bombNeighbourCount > 0 && bombNeighbourCount == flaggedNeighboursCount
+    --if the move is valid reveal all neighbour cells otherwise return the initial board
+    resultBoard = if isValidMove then foldl setCellToRevealed board nonFlaggedNeighboursCoordinates else board
 
 -- Reveals all cells which have not been flagged
 revealAllNonFlaggedCells :: Board -> Board

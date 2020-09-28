@@ -83,7 +83,7 @@ makeMove state m =
   where
     (boardAfterMove, time) = case m of
       (Flag c t) -> (flagCell (state ^. board) c, t)
-      (Reveal c t) -> (revealCell (state ^. board) c, t)
+      (Reveal c t) -> (reveal (state ^. board) c, t)
       (RevealAllNonFlagged t) -> (revealAllNonFlaggedCells (state ^. board), t)
     finishGame = calculateTimeElapsed (state ^. lastStartedAt) (state ^. timeElapsed) time
     st = checkStatus boardAfterMove

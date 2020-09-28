@@ -33,7 +33,7 @@
          Left Click
         to reveal a cell.
         <span .font-mono .font-semibold .bg-gray-200 .text-sm .sm:text-base .text-gray-700 .subpixel-antialiased .px-2 .py-2 .rounded>
-         Alt + Click
+         Right Click
         to flag a cell.
        <li .mt-2>
         Click the face to restart. A new seed will be chosen.
@@ -62,7 +62,7 @@
             $forall cellEntity <- row ^. rowCells
              <td #x#{(cellEntity ^. cellEntityCoordX)}y#{(cellEntity ^. cellEntityCoordY)}>
               $if (gameStateEntity ^. gameStateEntityStatus) == "Ongoing"
-               <div .div onclick="makeMove(#{cellEntity ^. cellEntityCoordX}, #{cellEntity ^. cellEntityCoordY}, '#{gameStateEntity ^. gameStateEntityGameId}', event)">
+               <div .div onclick="makeMove(#{cellEntity ^. cellEntityCoordX}, #{cellEntity ^. cellEntityCoordY}, '#{gameStateEntity ^. gameStateEntityGameId}', event)" oncontextmenu="makeMove(#{cellEntity ^. cellEntityCoordX}, #{cellEntity ^. cellEntityCoordY}, '#{gameStateEntity ^. gameStateEntityGameId}', event)">
                 <img .img src="/static/assets/#{(cellEntity ^. cellEntityAssetId)}.svg" width="24" height="24">
               $else
                <div .div>

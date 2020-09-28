@@ -18,14 +18,28 @@ var src;
 const makeMove = (x, y, gameId, event) => {
   event.preventDefault();
 
-  console.log("MAKE MOVE", { x, y, gameId, event });
+  console.log("MAKE MOVE", { x, y, gameId }, "EVENT", {
+    button: event.button,
+    event,
+  });
+
+  var action = null;
+  if (event.button === 0) {
+    action = "Reveal";
+  } else if (event.button === 2) {
+    action = "Flag";
+  }
+
+  if (action === null) {
+    return;
+  }
 
   $.ajax({
     url: "/game/" + gameId,
     type: "PUT",
     contentType: "application/json",
     data: JSON.stringify({
-      action: event.altKey ? "Flag" : "Reveal",
+      action: action,
       coordX: x,
       coordY: y,
     }),
