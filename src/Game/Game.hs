@@ -59,7 +59,6 @@ instance Show GameState where
 newGame :: Dimension -> Int -> Int -> String -> UTCTime -> Chan ServerEvent -> GameState
 newGame (h, w) b s gId now channel_ =
   GameState
-    -- cheat proof board on creation
     { _board = generateBoard (h, w) b s,
       _moves = [],
       _bombCount = b,
