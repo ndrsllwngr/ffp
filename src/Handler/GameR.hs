@@ -104,5 +104,12 @@ putGameR gameIdText = do
     -- If the game was not the in-memory state return 404 since no game which moves can be executed on was found
     Nothing -> notFound
 
+-- DELETE GAME
+deleteGameR :: Text -> Handler Text
+deleteGameR gameIdText = do
+  let gameId_ = unpack gameIdText
+  runDB $ deleteBy $ UniqueGameStateEntity gameId_
+  return "Ok"
+
 gameIds :: Text
 gameIds = "js-gameTableId"
