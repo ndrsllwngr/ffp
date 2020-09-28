@@ -19,9 +19,10 @@ Fortgeschrittene Funktionale Programmierung - Group project (2020)
       - [Install MongoDB](#install-mongodb)
   - [Usage](#usage)
     - [Development](#development)
-        - [ADJUST GHC PROMPT](#adjust-ghc-prompt)
+        - [Adjust GHC prompt](#adjust-ghc-prompt)
     - [Tests](#tests)
-  - [Dependencies](#dependencies)
+  - [Dependencies (excerpt)](#dependencies-excerpt)
+  - [Code formatting](#code-formatting)
   - [Contributors](#contributors)
     - [Individual contributions](#individual-contributions)
 
@@ -37,7 +38,7 @@ Minesweepskell is a web implementation of the widely known video game Minesweepe
 - Pause games & continue later
 - History of all finished games to revisit your best & worst performances
 
-![landingpage](docs/landingpage.png) ![game](docs/game.png)
+![landingpage](docs/landingpage.png) ![game](docs/game_lost.png)
 
 ## Architecture
 
@@ -161,9 +162,11 @@ lens
 matrix-lens
 ...
 ```
+
 For more details take a look at the [package.yaml](package.yaml).
 
 ## Code formatting
+
 Along with the [IntelliJ plugin for Haskell](https://github.com/rikvdkleij/intellij-haskell) [Ormolu](https://github.com/tweag/ormolu) is used as automatic code formatter.
 
 ## Contributors
