@@ -90,13 +90,11 @@ cellEntityToCell cellEntity =
 moveToMoveEntity :: Move -> MoveEntity
 moveToMoveEntity (Flag (x, y) timeStamp) = MoveEntity "Flag" (Just x) (Just y) timeStamp
 moveToMoveEntity (Reveal (x, y) timeStamp) = MoveEntity "Reveal" (Just x) (Just y) timeStamp
-moveToMoveEntity (QuickReveal (x, y) timeStamp) = MoveEntity "QuickReveal" (Just x) (Just y) timeStamp
 moveToMoveEntity (RevealAllNonFlagged timeStamp) = MoveEntity "RevealAllNonFlagged" Nothing Nothing timeStamp
 
 moveEntityToMove :: MoveEntity -> Move
 moveEntityToMove (MoveEntity "Flag" (Just x) (Just y) timeStamp) = Flag (x, y) timeStamp
 moveEntityToMove (MoveEntity "Reveal" (Just x) (Just y) timeStamp) = Reveal (x, y) timeStamp
-moveEntityToMove (MoveEntity "QuickReveal" (Just x) (Just y) timeStamp) = QuickReveal (x, y) timeStamp
 moveEntityToMove (MoveEntity "RevealAllNonFlagged" _ _ timeStamp) = RevealAllNonFlagged timeStamp
 moveEntityToMove _ = error "Invalid MoveEntity"
 
@@ -104,5 +102,4 @@ moveRequestToMove :: MoveRequest -> UTCTime -> Move
 moveRequestToMove (MoveRequest "RevealAllNonFlagged" _ _) timeStamp = RevealAllNonFlagged timeStamp
 moveRequestToMove (MoveRequest "Flag" (Just x) (Just y)) timeStamp = Flag (x, y) timeStamp
 moveRequestToMove (MoveRequest "Reveal" (Just x) (Just y)) timeStamp = Reveal (x, y) timeStamp
-moveRequestToMove (MoveRequest "QuickReveal" (Just x) (Just y)) timeStamp = QuickReveal (x, y) timeStamp
 moveRequestToMove _ _ = error "Invalid MoveRequest"

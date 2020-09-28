@@ -31,7 +31,7 @@ import           Data.Time               (UTCTime, diffUTCTime)
 import           Game.Board
 import           Network.Wai.EventSource (ServerEvent (..))
 
-data Move = Reveal Coordinate UTCTime | RevealAllNonFlagged UTCTime | Flag Coordinate UTCTime | QuickReveal Coordinate UTCTime deriving (Show, Eq, Read)
+data Move = Reveal Coordinate UTCTime | RevealAllNonFlagged UTCTime | Flag Coordinate UTCTime deriving (Show, Eq, Read)
 
 data GameStatus = Ongoing | Won | Lost | Paused deriving (Show, Eq, Read)
 
@@ -82,9 +82,8 @@ makeMove state m =
   where
     (boardAfterMove, time) = case m of
       (Flag c t) -> (flagCell (state ^. board) c, t)
-      (Reveal c t) -> (revealCell (state ^. board) c, t)
+      (Reveal c t) -> (reveal (state ^. board) c, t)
       (RevealAllNonFlagged t) -> (revealAllNonFlaggedCells (state ^. board), t)
-      (QuickReveal c t) -> (quickReveal (state ^. board) c, t)
     finishGame = calculateTimeElapsed (state ^. lastStartedAt) (state ^. timeElapsed) time
     st = checkStatus boardAfterMove
     elapsed = case st of
