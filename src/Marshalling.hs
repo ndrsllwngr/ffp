@@ -1,7 +1,7 @@
-{-# LANGUAGE BlockArguments        #-}
+{-# LANGUAGE BlockArguments #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
-{-# LANGUAGE NoImplicitPrelude     #-}
-{-# LANGUAGE TypeFamilies          #-}
+{-# LANGUAGE TypeFamilies #-}
+{-# LANGUAGE NoImplicitPrelude #-}
 
 module Marshalling
   ( gameStateToGameStateEntity,
@@ -14,13 +14,13 @@ module Marshalling
   )
 where
 
-import           Control.Lens
-import           Data.Matrix
-import           Game.Board
-import           Game.Game
-import           Import
-import           Network.Wai.EventSource (ServerEvent)
-import           Util.MarshallingUtil
+import Control.Lens
+import Data.Matrix
+import Game.Board
+import Game.Game
+import Import
+import Network.Wai.EventSource (ServerEvent)
+import Util.MarshallingUtil
 
 gameStateToGameStateEntity :: GameState -> GameStateEntity
 gameStateToGameStateEntity state =
@@ -60,10 +60,10 @@ gameStateEntityToGameState entity _channel =
 
 statusEntityToStatus :: [Char] -> GameStatus
 statusEntityToStatus "Ongoing" = Ongoing
-statusEntityToStatus "Won"     = Won
-statusEntityToStatus "Lost"    = Lost
-statusEntityToStatus "Paused"  = Paused
-statusEntityToStatus _         = error "Invalid StatusEntity"
+statusEntityToStatus "Won" = Won
+statusEntityToStatus "Lost" = Lost
+statusEntityToStatus "Paused" = Paused
+statusEntityToStatus _ = error "Invalid StatusEntity"
 
 cellToCellEntity :: Cell -> GameStatus -> CellEntity
 cellToCellEntity cell _gameStatus =

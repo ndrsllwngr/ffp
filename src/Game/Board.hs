@@ -22,23 +22,23 @@ module Game.Board
   )
 where
 
-import           Control.Lens
-import           Data.List
-import           Data.Matrix
-import           Data.Matrix.Lens      (elemAt, flattened, size)
-import           System.Random
-import           System.Random.Shuffle
+import Control.Lens
+import Data.List
+import Data.Matrix
+import Data.Matrix.Lens (elemAt, flattened, size)
+import System.Random
+import System.Random.Shuffle
 
 type Dimension = (Int, Int)
 
 type Coordinate = (Int, Int)
 
 data Cell = Cell
-  { _isFlagged        :: Bool,
-    _isRevealed       :: Bool,
-    _hasBomb          :: Bool,
+  { _isFlagged :: Bool,
+    _isRevealed :: Bool,
+    _hasBomb :: Bool,
     _neighboringBombs :: Int,
-    _coordinate       :: Coordinate
+    _coordinate :: Coordinate
   }
   deriving (Show, Eq)
 
