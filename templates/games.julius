@@ -103,3 +103,18 @@ const startGame = (level) => {
     },
   });
 };
+
+const deleteGame = (gameId) => {
+  console.log("TEST");
+  $.ajax({
+    url: "/game/" + gameId,
+    type: "DELETE",
+    success: function (data) {
+      console.info("[SUCCESS] DELETE GAME", { data });
+      window.location.reload();
+    },
+    error: function (data) {
+      console.error("[ERROR] DELETE GAME", { data });
+    },
+  });
+};

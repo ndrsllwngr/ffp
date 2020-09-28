@@ -7,7 +7,7 @@
 /robots.txt RobotsR GET
 
 / GamesR GET POST
-/game/#Text GameR GET PUT
+/game/#Text GameR GET PUT DELETE
 /game/#Text/pause PauseR POST
 /game/#Text/reset ResetR POST
 /game/#Text/channel ChannelR GET
