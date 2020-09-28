@@ -68,7 +68,7 @@
                     Start
              <div .flex .flex-col .px-12 .py-10 .w-full .sm:w-1/2 .border-t-2 .sm:border-r .sm:border-t .border-gray-200>
               <div .flex .flex-grow>
-               <div .flex .flex-col .leading-relaxed .ml-4 .md:ml-6>
+               <div .flex .flex-col .flex-grow .leading-relaxed .ml-4 .md:ml-6>
                 <h2 .font-medium .text-gray-800 .text-lg>
                  Paused
                 <p .text-gray-600 .mt-1 .text-sm .md:text-base>
@@ -76,18 +76,20 @@
                 <ul .pt-1 .list-disc>
                  $forall game <- gameStateEntitiesPaused
                   <li>
-                   <a .inline-flex .items-center .text-gray-600 .hover:text-gray-800 href="/game/#{game ^. gameStateEntityGameId}">
-                    <span .font-mono .font-semibold .bg-gray-200 .text-sm .sm:text-base .subpixel-antialiased .px-1 .rounded>
-                     #{game ^. gameStateEntityGameId}
-                    <span .ml-1 .text-sm .md:text-base .font-semibold>
-                     (#{showSize $ game ^. gameStateEntityBoard}, #{game ^. gameStateEntityBombCount} mines, #{game ^. gameStateEntityTimeElapsed}s)
-                    <svg .fill-current .w-4 .h-4 .ml-2 viewbox="0 0 18 12" xmlns="http://www.w3.org/2000/svg">
-                     <path clip-rule="evenodd" d="M14.5858 7H1C0.447715 7 0 6.55228 0 6C0 5.44772 0.447715 5 1 5H14.5858L11.2929 1.70711C10.9024 1.31658 10.9024 0.683418 11.2929 0.292893C11.6834 -0.0976311 12.3166 -0.0976311 12.7071 0.292893L17.7071 5.29289C18.0976 5.68342 18.0976 6.31658 17.7071 6.70711L12.7071 11.7071C12.3166 12.0976 11.6834 12.0976 11.2929 11.7071C10.9024 11.3166 10.9024 10.6834 11.2929 10.2929L14.5858 7Z" fill-rule="evenodd">
-                   <button onclick="deleteGame('#{game ^. gameStateEntityGameId}')">
-                    Delete
-             <div .flex .flex-col .px-12 .py-10 .w-full .sm:w-1/2 .border-t-2 .sm:border-l .sm:border-t .border-gray-200>
+                   <div .flex .flex-row .justify-between>
+                    <a .inline-flex .items-center .text-gray-600 .hover:text-gray-800 href="/game/#{game ^. gameStateEntityGameId}">
+                     <span .font-mono .font-semibold .bg-gray-200 .text-sm .sm:text-base .subpixel-antialiased .px-1 .rounded>
+                      #{game ^. gameStateEntityGameId}
+                     <span .ml-1 .text-sm .md:text-base .font-semibold>
+                      (#{showSize $ game ^. gameStateEntityBoard}, #{game ^. gameStateEntityBombCount} mines, #{game ^. gameStateEntityTimeElapsed}s)
+                     <svg .fill-current .w-4 .h-4 .ml-2 viewbox="0 0 18 12" xmlns="http://www.w3.org/2000/svg">
+                      <path clip-rule="evenodd" d="M14.5858 7H1C0.447715 7 0 6.55228 0 6C0 5.44772 0.447715 5 1 5H14.5858L11.2929 1.70711C10.9024 1.31658 10.9024 0.683418 11.2929 0.292893C11.6834 -0.0976311 12.3166 -0.0976311 12.7071 0.292893L17.7071 5.29289C18.0976 5.68342 18.0976 6.31658 17.7071 6.70711L12.7071 11.7071C12.3166 12.0976 11.6834 12.0976 11.2929 11.7071C10.9024 11.3166 10.9024 10.6834 11.2929 10.2929L14.5858 7Z" fill-rule="evenodd">
+                    <button onclick="deleteGame('#{game ^. gameStateEntityGameId}')">
+                     <svg .stroke-current .w-4 .h-4 .ml-2 .text-gray-600 .hover:text-gray-800 xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+             <div .flex .flex-col .px-12 .py-10 .w-full .sm:w-1/2 .border-t-2 .sm:border-l .sm:border-t .border-gray-200 .w-full>
               <div .flex .flex-grow>
-               <div .flex .flex-col .leading-relaxed .ml-4 .md:ml-6>
+               <div .flex .flex-col .flex-grow .leading-relaxed .ml-4 .md:ml-6>
                 <h2 .font-medium .text-gray-800 .text-lg>
                  Completed
                 <p .text-gray-600 .mt-1 .text-sm .md:text-base>
@@ -96,23 +98,27 @@
                  $forall game <- gameStateEntitiesWonOrLost
                   $if (game ^. gameStateEntityStatus) == "Lost"
                    <li>
-                    <a .inline-flex .items-center .text-red-600 .hover:text-red-800 href="/game/#{game ^. gameStateEntityGameId}">
-                     <span .font-mono .font-semibold .bg-gray-200 .text-sm .sm:text-base .subpixel-antialiased .px-1 .rounded>
-                      #{game ^. gameStateEntityGameId}
-                     <span .ml-1 .text-sm .md:text-base .font-semibold>
-                      (#{showSize $ game ^. gameStateEntityBoard}, #{game ^. gameStateEntityBombCount} mines, #{game ^. gameStateEntityTimeElapsed}s) #{game ^. gameStateEntityStatus}
-                     <svg .fill-current .w-4 .h-4 .ml-2 viewbox="0 0 18 12" xmlns="http://www.w3.org/2000/svg">
-                      <path clip-rule="evenodd" d="M14.5858 7H1C0.447715 7 0 6.55228 0 6C0 5.44772 0.447715 5 1 5H14.5858L11.2929 1.70711C10.9024 1.31658 10.9024 0.683418 11.2929 0.292893C11.6834 -0.0976311 12.3166 -0.0976311 12.7071 0.292893L17.7071 5.29289C18.0976 5.68342 18.0976 6.31658 17.7071 6.70711L12.7071 11.7071C12.3166 12.0976 11.6834 12.0976 11.2929 11.7071C10.9024 11.3166 10.9024 10.6834 11.2929 10.2929L14.5858 7Z" fill-rule="evenodd">
-                    <button onclick="deleteGame('#{game ^. gameStateEntityGameId}')">
-                     Delete
+                    <div .flex .flex-row .justify-between>
+                     <a .inline-flex .items-center .text-red-600 .hover:text-red-800 href="/game/#{game ^. gameStateEntityGameId}">
+                      <span .font-mono .font-semibold .bg-gray-200 .text-sm .sm:text-base .subpixel-antialiased .px-1 .rounded>
+                       #{game ^. gameStateEntityGameId}
+                      <span .ml-1 .text-sm .md:text-base .font-semibold>
+                       (#{showSize $ game ^. gameStateEntityBoard}, #{game ^. gameStateEntityBombCount} mines, #{game ^. gameStateEntityTimeElapsed}s) #{game ^. gameStateEntityStatus}
+                      <svg .fill-current .w-4 .h-4 .ml-2 viewbox="0 0 18 12" xmlns="http://www.w3.org/2000/svg">
+                       <path clip-rule="evenodd" d="M14.5858 7H1C0.447715 7 0 6.55228 0 6C0 5.44772 0.447715 5 1 5H14.5858L11.2929 1.70711C10.9024 1.31658 10.9024 0.683418 11.2929 0.292893C11.6834 -0.0976311 12.3166 -0.0976311 12.7071 0.292893L17.7071 5.29289C18.0976 5.68342 18.0976 6.31658 17.7071 6.70711L12.7071 11.7071C12.3166 12.0976 11.6834 12.0976 11.2929 11.7071C10.9024 11.3166 10.9024 10.6834 11.2929 10.2929L14.5858 7Z" fill-rule="evenodd">
+                     <button onclick="deleteGame('#{game ^. gameStateEntityGameId}')">
+                       <svg .stroke-current .w-4 .h-4 .ml-2 .text-gray-600 .hover:text-gray-800 xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                   $else
                    <li>
-                    <a .inline-flex .items-center .text-teal-600 .hover:text-teal-800 href="/game/#{game ^. gameStateEntityGameId}">
-                     <span .font-mono .font-semibold .bg-gray-200 .text-sm .sm:text-base .subpixel-antialiased .px-1 .rounded>
-                      #{game ^. gameStateEntityGameId}
-                     <span .ml-1 .text-sm .md:text-base .font-semibold>
-                      (#{showSize $ game ^. gameStateEntityBoard}, #{game ^. gameStateEntityBombCount} mines, #{game ^. gameStateEntityTimeElapsed}s) #{game ^. gameStateEntityStatus}
-                     <svg .fill-current .w-4 .h-4 .ml-2 viewbox="0 0 18 12" xmlns="http://www.w3.org/2000/svg">
-                      <path clip-rule="evenodd" d="M14.5858 7H1C0.447715 7 0 6.55228 0 6C0 5.44772 0.447715 5 1 5H14.5858L11.2929 1.70711C10.9024 1.31658 10.9024 0.683418 11.2929 0.292893C11.6834 -0.0976311 12.3166 -0.0976311 12.7071 0.292893L17.7071 5.29289C18.0976 5.68342 18.0976 6.31658 17.7071 6.70711L12.7071 11.7071C12.3166 12.0976 11.6834 12.0976 11.2929 11.7071C10.9024 11.3166 10.9024 10.6834 11.2929 10.2929L14.5858 7Z" fill-rule="evenodd">
-                    <button onclick="deleteGame('#{game ^. gameStateEntityGameId}')">
-                     Delete 
+                    <div .flex .flex-row .justify-between>
+                     <a .inline-flex .items-center .text-teal-600 .hover:text-teal-800 href="/game/#{game ^. gameStateEntityGameId}">
+                      <span .font-mono .font-semibold .bg-gray-200 .text-sm .sm:text-base .subpixel-antialiased .px-1 .rounded>
+                       #{game ^. gameStateEntityGameId}
+                      <span .ml-1 .text-sm .md:text-base .font-semibold>
+                       (#{showSize $ game ^. gameStateEntityBoard}, #{game ^. gameStateEntityBombCount} mines, #{game ^. gameStateEntityTimeElapsed}s) #{game ^. gameStateEntityStatus}
+                      <svg .fill-current .w-4 .h-4 .ml-2 viewbox="0 0 18 12" xmlns="http://www.w3.org/2000/svg">
+                       <path clip-rule="evenodd" d="M14.5858 7H1C0.447715 7 0 6.55228 0 6C0 5.44772 0.447715 5 1 5H14.5858L11.2929 1.70711C10.9024 1.31658 10.9024 0.683418 11.2929 0.292893C11.6834 -0.0976311 12.3166 -0.0976311 12.7071 0.292893L17.7071 5.29289C18.0976 5.68342 18.0976 6.31658 17.7071 6.70711L12.7071 11.7071C12.3166 12.0976 11.6834 12.0976 11.2929 11.7071C10.9024 11.3166 10.9024 10.6834 11.2929 10.2929L14.5858 7Z" fill-rule="evenodd">
+                     <button onclick="deleteGame('#{game ^. gameStateEntityGameId}')">
+                      <svg .stroke-current .w-4 .h-4 .ml-2 .text-gray-600 .hover:text-gray-800 xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/> 
