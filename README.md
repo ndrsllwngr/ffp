@@ -1,8 +1,8 @@
-# ffp
+# Minesweepskell - a fun(ctional) Web Minesweeper written in Haskell
 
 ![Haskell CI](https://github.com/ndrsllwngr/ffp/workflows/Haskell%20CI/badge.svg?branch=develop)
 
-Fortgeschrittene Funktionale Programmierung - Group project (2020)
+Advanced Functional Programming - Group project (2020)
 
 - [ffp](#ffp)
   - [Description](#description)
