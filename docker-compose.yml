@@ -1,0 +1,22 @@
+version: "3.9"  # optional since v1.27.0
+services:
+  mongoDB:
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+  minesweepskell:
+    build: .
+    restart: always
+    ports:
+      - "80:3000"
+    environment:
+      YESOD_DBUSER: root
+      YESOD_DBPASS: example
+      YESOD_DBHOST: localhost
+      YESOD_DBDATABASE: minesweepskell
+      YESOD_PORT: 3000
+    command: stack exec -- yesod devel
+    depends_on:
+        - mongoDB
